@@ -1,0 +1,8 @@
+{
+    "C_Cpp.errorSquiggles": "enabled",
+    "cmake.ignoreCMakeListsMissing": true,
+    "files.associations": {
+        "*.rh": "cpp"
+    },
+    "markdown.preview.breaks": false,
+}

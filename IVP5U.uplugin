@@ -1,0 +1,42 @@
+{
+    "FileVersion": 1,
+    "Version": 1,
+    "VersionName": "1.0.1",
+    "FriendlyName": "IVP5U",
+    "Description": "Import MMD models and motion files plugin for Unreal Engine 5.+",
+    "Category": "Import",
+    "CreatedBy": "bm9,NaN_Name,noname0310",
+    "CreatedByURL": "",
+    "DocsURL": "",
+    "MarketplaceURL": "",
+    "SupportURL": "",
+    "EnabledByDefault": true,
+    "CanContainContent": true,
+    "IsBetaVersion": true,
+    "Installed": false,
+    "Modules": [
+        {
+            "Name": "IVP5U",
+            "Type": "Runtime",
+            "LoadingPhase": "Default",
+            "AdditionalDependencies": [
+                "Engine"
+            ]
+        },
+        {
+            "Name": "MMDCameraImporter",
+            "Type": "Editor",
+            "LoadingPhase": "Default"
+        }
+    ],
+    "Plugins": [
+        {
+            "Name": "LevelSequenceEditor",
+            "Enabled": true
+        },
+        {
+            "Name": "IKRig",
+            "Enabled": true
+        }
+    ]
+}
