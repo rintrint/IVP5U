@@ -11,18 +11,18 @@ DECLARE_LOG_CATEGORY_EXTERN(LogMMDCameraImporter, Log, All);
 class FMmdCameraImporterModule final : public IModuleInterface
 {
 public:
-    /** IModuleInterface implementation */
-    virtual void StartupModule() override;
-    virtual void ShutdownModule() override;
+	/** IModuleInterface implementation */
+	virtual void StartupModule() override;
+	virtual void ShutdownModule() override;
 
 private:
-    void OnSequencerCreated(const TSharedRef<ISequencer> Sequencer);
-    void RegisterMenus();
-    void ImportVmd();
-    bool ImportVmdWithDialog(UMovieSceneSequence *InSequence, ISequencer &InSequencer);
+	void OnSequencerCreated(const TSharedRef<ISequencer> Sequencer);
+	void RegisterMenus();
+	void ImportVmd();
+	bool ImportVmdWithDialog(UMovieSceneSequence* InSequence, ISequencer& InSequencer);
 
 private:
-    TSharedPtr<FUICommandList> PluginCommands;
-    TWeakPtr<ISequencer> WeakSequencer;
-    FDelegateHandle SequencerCreatedHandle;
+	TSharedPtr<FUICommandList> PluginCommands;
+	TWeakPtr<ISequencer> WeakSequencer;
+	FDelegateHandle SequencerCreatedHandle;
 };

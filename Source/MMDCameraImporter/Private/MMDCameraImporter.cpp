@@ -156,7 +156,7 @@ void FMmdCameraImporterModule::StartupModule()
 		FOnSequencerCreated::FDelegate::CreateRaw(this, &FMmdCameraImporterModule::OnSequencerCreated);
 	SequencerCreatedHandle = SequencerModule.RegisterOnSequencerCreated(OnSequencerCreated);
 
-    UToolMenus::RegisterStartupCallback(FSimpleMulticastDelegate::FDelegate::CreateRaw(this, &FMmdCameraImporterModule::RegisterMenus));
+	UToolMenus::RegisterStartupCallback(FSimpleMulticastDelegate::FDelegate::CreateRaw(this, &FMmdCameraImporterModule::RegisterMenus));
 }
 
 void FMmdCameraImporterModule::ShutdownModule()
@@ -183,14 +183,14 @@ void FMmdCameraImporterModule::RegisterMenus()
 	// Owner will be used for cleanup in call to UToolMenus::UnregisterOwner
 	FToolMenuOwnerScoped OwnerScoped(this);
 
-    const FName SequencerToolbarStyleName = "SequencerToolbar";
+	const FName SequencerToolbarStyleName = "SequencerToolbar";
 
-    UToolMenu *SequencerMenu = UToolMenus::Get()->ExtendMenu("Sequencer.MainToolBar");
-    FToolMenuSection &Section = SequencerMenu->FindOrAddSection("MmdCameraImporterExtensions");
-    FToolMenuEntry Entry = FToolMenuEntry::InitToolBarButton(FMmdCameraImporterCommands::Get().ImportVmd);
-    Entry.StyleNameOverride = SequencerToolbarStyleName;
-    Entry.SetCommandList(PluginCommands);
-    Section.AddEntry(Entry);
+	UToolMenu *SequencerMenu = UToolMenus::Get()->ExtendMenu("Sequencer.MainToolBar");
+	FToolMenuSection &Section = SequencerMenu->FindOrAddSection("MmdCameraImporterExtensions");
+	FToolMenuEntry Entry = FToolMenuEntry::InitToolBarButton(FMmdCameraImporterCommands::Get().ImportVmd);
+	Entry.StyleNameOverride = SequencerToolbarStyleName;
+	Entry.SetCommandList(PluginCommands);
+	Section.AddEntry(Entry);
 }
 
 void FMmdCameraImporterModule::ImportVmd()

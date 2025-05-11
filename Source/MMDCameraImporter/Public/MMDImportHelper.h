@@ -7,5 +7,5 @@
 class FMmdImportHelper
 {
 public:
-    static FString ShiftJisToFString(const uint8 *InBuffer, int32 InSize);
+	static FString ShiftJisToFString(const uint8* InBuffer, int32 InSize);
 };

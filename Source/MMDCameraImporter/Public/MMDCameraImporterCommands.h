@@ -9,14 +9,14 @@
 class FMmdCameraImporterCommands final : public TCommands<FMmdCameraImporterCommands>
 {
 public:
-    FMmdCameraImporterCommands()
-        : TCommands(TEXT("MMDCameraImporter"), NSLOCTEXT("Contexts", "MMDCameraImporter", "MMDCameraImporter Plugin"), NAME_None, FMmdCameraImporterStyle::GetStyleSetName())
-    {
-    }
+	FMmdCameraImporterCommands()
+		: TCommands(TEXT("MMDCameraImporter"), NSLOCTEXT("Contexts", "MMDCameraImporter", "MMDCameraImporter Plugin"), NAME_None, FMmdCameraImporterStyle::GetStyleSetName())
+	{
+	}
 
-    // TCommands<> interface
-    virtual void RegisterCommands() override;
+	// TCommands<> interface
+	virtual void RegisterCommands() override;
 
 public:
-    TSharedPtr<FUICommandInfo> ImportVmd;
+	TSharedPtr<FUICommandInfo> ImportVmd;
 };
