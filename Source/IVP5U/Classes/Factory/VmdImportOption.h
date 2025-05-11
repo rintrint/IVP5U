@@ -44,7 +44,7 @@ private:
 	/** Indicates what kind of asset we want to make from the CSV file */
 	EVMDImportType												SelectedImportType;
 
-#if 0
+	#if 0
 	// Row type
 
 	/** Array of row struct options */
@@ -67,7 +67,7 @@ private:
 
 	/** The selected curve interpolation type */
 	ERichCurveInterpMode							SelectedCurveInterpMode;
-#endif
+	#endif
 public:
 	SLATE_BEGIN_ARGS(SVMDImportOptions)
 		: _WidgetWindow()
@@ -86,13 +86,13 @@ public:
 
 	/** If we should import */
 	bool ShouldImport();
-#if 0
+	#if 0
 	/** Get the row struct we selected */
 	UScriptStruct* GetSelectedRowStruct();
-#endif
+	#endif
 	/** Get the import type we selected */
 	EVMDImportType GetSelectedImportType();
-#if 0
+	#if 0
 	/** Get the interpolation mode we selected */
 	ERichCurveInterpMode GetSelectedCurveIterpMode();
 
@@ -101,12 +101,12 @@ public:
 
 	/** Whether to show table row options */
 	EVisibility GetCurveTypeVis() const;
-#endif
+	#endif
 	FString GetImportTypeText(TSharedPtr<EVMDImportType> Type) const;
 
 	/** Called to create a widget for each struct */
 	TSharedRef<SWidget> MakeImportTypeItemWidget(TSharedPtr<EVMDImportType> Type);
-#if 0
+	#if 0
 	/** Called to create a widget for each struct */
 	TSharedRef<SWidget> MakeRowStructItemWidget(UScriptStruct* Struct);
 
@@ -114,7 +114,7 @@ public:
 
 	/** Called to create a widget for each curve interpolation enum */
 	TSharedRef<SWidget> MakeCurveTypeWidget(CurveInterpModePtr InterpMode);
-#endif
+	#endif
 	/** Called when 'OK' button is pressed */
 	FReply OnImport();
 

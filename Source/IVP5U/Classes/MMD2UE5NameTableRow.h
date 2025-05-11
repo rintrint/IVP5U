@@ -15,8 +15,8 @@
 USTRUCT()
 struct FMMD2UE5NameTableRow : public FTableRowBase
 {
-    GENERATED_USTRUCT_BODY()
+	GENERATED_USTRUCT_BODY()
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MMD")
-    FString MmdOriginalName;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MMD")
+	FString MmdOriginalName;
 };

@@ -8,137 +8,137 @@
 namespace MMD4UE5
 {
 
-    // 宏定义----------------------------------
-    // 数据类型定义---------------------------------
-    // PMD数据头（283byte）
-    struct PMD_HEADER
-    {
-        /*uint8	Data[283];						// 数据
-         */
-        char Magic[3];     // "Pmd"
-        uint8 Version[4];  // 1.0f ( 0x3f800000 )
-        char Name[20];     // 名前
-        char Comment[256]; // 批注
-    };
+	// 宏定义----------------------------------
+	// 数据类型定义---------------------------------
+	// PMD数据头（283byte）
+	struct PMD_HEADER
+	{
+		/*uint8	Data[283];						// 数据
+		 */
+		char Magic[3];	   // "Pmd"
+		uint8 Version[4];  // 1.0f ( 0x3f800000 )
+		char Name[20];	   // 名前
+		char Comment[256]; // 批注
+	};
 
-    // 每个顶点数据的信息（38byte）
-    struct PMD_VERTEX
-    {
-        float Position[3]; // 坐标
-        float Normal[3];   // 法线
-        float Uv[2];       // 纹理坐标
-        uint16 BoneNo[2];  // 骨骼编号
-        uint8 BoneWeight;  // 骨骼在“0”和“0”之间的影响（0-100）骨骼在“1”之间的影响是（100-BoneWeight）
-        uint8 Edge;        // 边标志0：启用边1:禁用边
-    };
+	// 每个顶点数据的信息（38byte）
+	struct PMD_VERTEX
+	{
+		float Position[3]; // 坐标
+		float Normal[3];   // 法线
+		float Uv[2];	   // 纹理坐标
+		uint16 BoneNo[2];  // 骨骼编号
+		uint8 BoneWeight;  // 骨骼在“0”和“0”之间的影响（0-100）骨骼在“1”之间的影响是（100-BoneWeight）
+		uint8 Edge;		   // 边标志0：启用边1:禁用边
+	};
 
-    // 顶点数据
-    struct PMD_VERTEX_DATA
-    {
-        int Count; // 顶点数据数
-                   /*这里有PMD_VERTEX只存在Count的数量 */
-    };
-    // 面列表
-    struct PMD_FACE
-    {
-        uint16 VertexIndx[3]; // 顶点数（面数为VertexCount/3）
-                              /* 这里，uint16的顶点索引仅存在VertexCount的数量 */
-    };
-    // 面列表
-    struct PMD_FACE_DATA
-    {
-        uint32 VertexCount; // 顶点数（面数为 VertexCount / 3 )
-                            /* 这里，uint16的顶点索引仅存在VertexCount的数量 */
-    };
+	// 顶点数据
+	struct PMD_VERTEX_DATA
+	{
+		int Count; // 顶点数据数
+				   /*这里有PMD_VERTEX只存在Count的数量 */
+	};
+	// 面列表
+	struct PMD_FACE
+	{
+		uint16 VertexIndx[3]; // 顶点数（面数为VertexCount/3）
+							  /* 这里，uint16的顶点索引仅存在VertexCount的数量 */
+	};
+	// 面列表
+	struct PMD_FACE_DATA
+	{
+		uint32 VertexCount; // 顶点数（面数为 VertexCount / 3 )
+							/* 这里，uint16的顶点索引仅存在VertexCount的数量 */
+	};
 
-    // 每种材质的信息（70byte）
-    struct PMD_MATERIAL
-    {
-        /*uint8	Data[70];						// 数据
-         */
-        float DiffuseR, DiffuseG, DiffuseB;    // 扩散色
-        float Alpha;                           // α値
-        float Specularity;                     // 镜面反射系数
-        float SpecularR, SpecularG, SpecularB; // 镜面反射颜色
-        float AmbientR, AmbientG, AmbientB;    // 环境色
-        uint8 ToolImage;                       // 用于渲染的纹理索引
-        uint8 Edge;                            // 轮廓、阴影
-        int FaceVertexCount;                   // 使用此材质的面顶点数
-        char TextureFileName[20];              // 纹理文件名
-    };
+	// 每种材质的信息（70byte）
+	struct PMD_MATERIAL
+	{
+		/*uint8	Data[70];						// 数据
+		 */
+		float DiffuseR, DiffuseG, DiffuseB;	   // 扩散色
+		float Alpha;						   // α値
+		float Specularity;					   // 镜面反射系数
+		float SpecularR, SpecularG, SpecularB; // 镜面反射颜色
+		float AmbientR, AmbientG, AmbientB;	   // 环境色
+		uint8 ToolImage;					   // 用于渲染的纹理索引
+		uint8 Edge;							   // 轮廓、阴影
+		int FaceVertexCount;				   // 使用此材质的面顶点数
+		char TextureFileName[20];			   // 纹理文件名
+	};
 
-    // 材质信息
-    struct PMD_MATERIAL_DATA
-    {
-        int Count; // 材质数量
-                   /*这里有PMD_MATERIAL只存在Count的数量*/
-    };
+	// 材质信息
+	struct PMD_MATERIAL_DATA
+	{
+		int Count; // 材质数量
+				   /*这里有PMD_MATERIAL只存在Count的数量*/
+	};
 
-    // 每个骨骼的信息（39byte）
-    struct PMD_BONE
-    {
-        /*uint8	Data[39];						// 数据
-         */
-        char Name[20];     //  0:骨骼名称
-        short Parent;      // 20:父骨骼（如果没有，则为0xffff）
-        short TailPosBone; // 22:切线位置的骨骼（对于链末端为0xffff）
-        uint8 Type;        // 24:骨骼类型（0:旋转1:旋转和移动2:IK3:未知4:IK影响下5:旋转影响下6:IK连接处7:隐藏8:扭转9:旋转运动）
-        short IkParent;    // 25:IK骨骼编号（如果没有影响IK骨骼，则为0xffff）
-        float HeadPos[3];  // 27:头部位置
-    };
+	// 每个骨骼的信息（39byte）
+	struct PMD_BONE
+	{
+		/*uint8	Data[39];						// 数据
+		 */
+		char Name[20];	   //  0:骨骼名称
+		short Parent;	   // 20:父骨骼（如果没有，则为0xffff）
+		short TailPosBone; // 22:切线位置的骨骼（对于链末端为0xffff）
+		uint8 Type;		   // 24:骨骼类型（0:旋转1:旋转和移动2:IK3:未知4:IK影响下5:旋转影响下6:IK连接处7:隐藏8:扭转9:旋转运动）
+		short IkParent;	   // 25:IK骨骼编号（如果没有影响IK骨骼，则为0xffff）
+		float HeadPos[3];  // 27:头部位置
+	};
 
-    // 骨骼信息
-    struct PMD_BONE_DATA
-    {
-        uint16 Count; // 骨骼数
-                      /* 这里有PMD_BONE仅存在Count数 */
-    };
+	// 骨骼信息
+	struct PMD_BONE_DATA
+	{
+		uint16 Count; // 骨骼数
+					  /* 这里有PMD_BONE仅存在Count数 */
+	};
 
-    // IK数据附近的信息（超出ChainBoneIndex的尺寸11byte）
-    struct PMD_IK
-    {
-        /*uint8	Data[11];						// 数据
-         */
-        uint16 Bone;       // IK骨骼
-        uint16 TargetBone; // IK目标骨骼
-        uint8 ChainLength; // IK链长度（子代数）
-        uint16 Iterations; // 重新计算次数
-        // float	ControlWeight ;						// IK影响
-        float RotLimit;                 // 单位限制角[dig]（仅适用于PMD系的Bone为膝盖时仅限X轴）
-        TArray<uint16> ChainBoneIndexs; // IK影响下的骨骼编号
-    };
+	// IK数据附近的信息（超出ChainBoneIndex的尺寸11byte）
+	struct PMD_IK
+	{
+		/*uint8	Data[11];						// 数据
+		 */
+		uint16 Bone;	   // IK骨骼
+		uint16 TargetBone; // IK目标骨骼
+		uint8 ChainLength; // IK链长度（子代数）
+		uint16 Iterations; // 重新计算次数
+		// float	ControlWeight ;						// IK影响
+		float RotLimit;					// 单位限制角[dig]（仅适用于PMD系的Bone为膝盖时仅限X轴）
+		TArray<uint16> ChainBoneIndexs; // IK影响下的骨骼编号
+	};
 
-    // IK信息
-    struct PMD_IK_DATA
-    {
-        uint16 Count; // IK数据数
-        /* 这里有PMD_IK仅存在Count数 */
-    };
+	// IK信息
+	struct PMD_IK_DATA
+	{
+		uint16 Count; // IK数据数
+		/* 这里有PMD_IK仅存在Count数 */
+	};
 
-    // 表情顶点信息
-    struct PMD_SKIN_VERT
-    {
-        int TargetVertexIndex; // 目标顶点索引
-        float Position[3];     // 坐标（PMD_SKIN的SkinType为0时为绝对坐标，除此之外为相对于base的相对坐标）
-    };
+	// 表情顶点信息
+	struct PMD_SKIN_VERT
+	{
+		int TargetVertexIndex; // 目标顶点索引
+		float Position[3];	   // 坐标（PMD_SKIN的SkinType为0时为绝对坐标，除此之外为相对于base的相对坐标）
+	};
 
-    // 一个表情附近的信息（超过顶点的大小25byte）
-    struct PMD_SKIN
-    {
-        /*uint8	Data[25];						//数据
-         */
-        char Name[20];                // 表情名
-        int VertexCount;              // 頂点の数
-        uint8 SkinType;               // 表情の種類( 0:base 1：まゆ、2：目、3：リップ、4：その他 )
-        TArray<PMD_SKIN_VERT> Vertex; // 表情用の頂点データ
-    };
+	// 一个表情附近的信息（超过顶点的大小25byte）
+	struct PMD_SKIN
+	{
+		/*uint8	Data[25];						//数据
+		 */
+		char Name[20];				  // 表情名
+		int VertexCount;			  // 頂点の数
+		uint8 SkinType;				  // 表情の種類( 0:base 1：まゆ、2：目、3：リップ、4：その他 )
+		TArray<PMD_SKIN_VERT> Vertex; // 表情用の頂点データ
+	};
 
-    // 表情の情報
-    struct PMD_SKIN_DATA
-    {
-        uint16 Count; // 表情データの数
-                      /* ここに PMD_SKIN が Count の数だけ存在する */
-    };
+	// 表情の情報
+	struct PMD_SKIN_DATA
+	{
+		uint16 Count; // 表情データの数
+					  /* ここに PMD_SKIN が Count の数だけ存在する */
+	};
 
 #if 0
 	// 物理演算データ一つ辺りの情報( 83byte )
@@ -225,10 +225,10 @@ namespace MMD4UE5
 
 		VECTOR				InitTranslate;			// 平行移動値の初期値
 		FLOAT4				InitRotate;			// 回転値の初期値
-#ifndef DX_NON_BULLET_PHYSICS
+	#ifndef DX_NON_BULLET_PHYSICS
 		int					PhysicsIndex;			// 物理演算用情報の番号
 		int					SetupPhysicsAnim;		// ボーンアニメーションを付けたかどうか
-#endif
+	#endif
 
 		struct VMD_READ_NODE_INFO	*Node;			// ボーンと関連付けられているノード
 		struct VMD_READ_KEY_INFO	*NowKey;		// 現在再生しているキー
@@ -259,41 +259,41 @@ namespace MMD4UE5
 
 	};
 #endif
-    //////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////
 
-    DECLARE_LOG_CATEGORY_EXTERN(LogMMD4UE5_PmdMeshInfo, Log, All)
+	DECLARE_LOG_CATEGORY_EXTERN(LogMMD4UE5_PmdMeshInfo, Log, All)
 
-    // Inport用 meta data 格納クラス
-    class PmdMeshInfo : public MMDImportHelper
-    {
-    public:
-        PmdMeshInfo();
-        ~PmdMeshInfo();
+	// Inport用 meta data 格納クラス
+	class PmdMeshInfo : public MMDImportHelper
+	{
+	public:
+		PmdMeshInfo();
+		~PmdMeshInfo();
 
-        ///////////////////////////////////////
-        bool PMDLoaderBinary(
-            const uint8 *&Buffer,
-            const uint8 *BufferEnd);
-        //////////////////////////////////////////
-        bool ConvertToPmxFormat(
-            PmxMeshInfo *pmxImportPtr);
-        //////////////////////////////////////////
-        PMD_HEADER header;
-        PMD_VERTEX_DATA vertexData;
-        TArray<PMD_VERTEX> vertexList;
-        PMD_FACE_DATA faceData;
-        TArray<PMD_FACE> faceList;
-        PMD_MATERIAL_DATA materialData;
-        TArray<PMD_MATERIAL> materialList;
+		///////////////////////////////////////
+		bool PMDLoaderBinary(
+			const uint8*& Buffer,
+			const uint8* BufferEnd);
+		//////////////////////////////////////////
+		bool ConvertToPmxFormat(
+			PmxMeshInfo* pmxImportPtr);
+		//////////////////////////////////////////
+		PMD_HEADER header;
+		PMD_VERTEX_DATA vertexData;
+		TArray<PMD_VERTEX> vertexList;
+		PMD_FACE_DATA faceData;
+		TArray<PMD_FACE> faceList;
+		PMD_MATERIAL_DATA materialData;
+		TArray<PMD_MATERIAL> materialList;
 
-        PMD_BONE_DATA boneData;
-        TArray<PMD_BONE> boneList;
+		PMD_BONE_DATA boneData;
+		TArray<PMD_BONE> boneList;
 
-        PMD_IK_DATA ikData;
-        TArray<PMD_IK> ikList;
+		PMD_IK_DATA ikData;
+		TArray<PMD_IK> ikList;
 
-        PMD_SKIN_DATA skinData;
-        TArray<PMD_SKIN> skinList;
-    };
+		PMD_SKIN_DATA skinData;
+		TArray<PMD_SKIN> skinList;
+	};
 
-}
+} // namespace MMD4UE5

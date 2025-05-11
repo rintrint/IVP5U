@@ -10,16 +10,16 @@
 UCLASS(HideCategories = Object, MinimalAPI)
 class UMMDExtendFactory : public UFactory
 {
-    GENERATED_UCLASS_BODY()
+	GENERATED_UCLASS_BODY()
 
-    virtual bool DoesSupportClass(UClass *Class) override;
-    virtual UClass *ResolveSupportedClass() override;
+	virtual bool DoesSupportClass(UClass* Class) override;
+	virtual UClass* ResolveSupportedClass() override;
 
-    virtual UObject *FactoryCreateNew(
-        UClass *InClass,
-        UObject *InParent,
-        FName InName,
-        EObjectFlags Flags,
-        UObject *Context,
-        FFeedbackContext *Warn) override;
+	virtual UObject* FactoryCreateNew(
+		UClass* InClass,
+		UObject* InParent,
+		FName InName,
+		EObjectFlags Flags,
+		UObject* Context,
+		FFeedbackContext* Warn) override;
 };
