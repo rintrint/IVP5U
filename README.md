@@ -7,16 +7,49 @@ Support UE5.5
 https://www.bilibili.com/video/BV17p4y1K7MM/  
 https://www.bilibili.com/video/BV1Ju4y197Pz/  
 
+## 注意事项
+Project Settings開啟Support 16-bit Bone Index
+
+设置Movie Pipeline CLI Encoder
+```
+ffmpeg.exe
+Run 'MovieRenderPipeline.DumpCLIEncoderCodecs' in Console to see available codecs.
+av1_nvenc
+libopus
+mp4
+-hide_banner -y -loglevel error -init_hw_device vulkan -thread_queue_size 32768 {VideoInputs} {AudioInputs} -acodec {AudioCodec} -vcodec {VideoCodec} {Quality} -vf "libplacebo=colorspace=bt709:color_primaries=bt709:color_trc=iec61966-2-1:range=tv:format=yuv444p16le" -pix_fmt yuv420p -g 60 -c:a libopus -b:a 512k -ar 48000 -movflags +faststart -flags +cgop -coder cabac {AdditionalLocalArgs} "{OutputPath}"
+-r {FrameRate} -f concat -safe 0 -i "{InputFile}"
+-f concat -safe 0 -i "{InputFile}"
+-qp 60
+-qp 50
+-qp 40
+-qp 30
+```
+
+ffmpeg下载(二选一)  
+https://github.com/BtbN/FFmpeg-Builds/releases 选择ffmpeg-master-latest-win64-gpl-shared.zip
+https://www.gyan.dev/ffmpeg/builds 选择ffmpeg-git-full.7z
+
 ## Reference
 - https://github.com/bm9/IM4U
 - https://github.com/axilesoft/IM-for-UE5
 - https://github.com/NaN-Name-bilbil/IVP5U
 
 ## 插件开发
+### 代码风格
+使用.clang-format文件  
+文件是从 https://github.com/TensorWorks/UE-Clang-Format 下载的  
+并做出以下改动  
+```
+AlignConsecutiveDeclarations: false
+```
+
 ### 导入VMD过程流程图
 IVP5U文件夹
 ```
 FactoryCreateBinary
+    |
+    ├── VMDLoaderBinary (耗時操作！完整解析VMD文件)
     |
     ├── 检查是否为相机动画
     |   |
@@ -24,7 +57,7 @@ FactoryCreateBinary
     |
     └── (如果不是) 导入骨骼和变形动画
         |
-        ├── 获取导入选项 (GetVMDImportOptions)
+        ├── GetVMDImportOptions (显示导入选项对话框，等待用户操作)
         |
         ├── 检查导入选项
         |

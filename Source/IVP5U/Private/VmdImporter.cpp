@@ -36,7 +36,7 @@ namespace MMD4UE4
                 readData.vmdHeader.header[1] == 'o' &&
                 readData.vmdHeader.header[2] == 'c')
             {
-                UE_LOG(LogMMD4UE4_VmdMotionInfo, Warning, TEXT("VMD Import START /Correct Magic[Vocaloid Motion Data 0002]"));
+                UE_LOG(LogMMD4UE4_VmdMotionInfo, Log, TEXT("VMD Import START /Correct Magic[Vocaloid Motion Data 0002]"));
             }
             else
             {
@@ -456,9 +456,12 @@ namespace MMD4UE4
         EVMDKEYFRAMETYPE listType)
     {
         int32 index = -1;
-        // ★TBD:VMD的骨骼名称为15Byte限制，应按前方一致检索
-        // 由于麻烦，以完全一致型检索骨骼名称尾（帧名）
-        if (listType == EVMDKEYFRAMETYPE::EVMD_KEYBONE)
+		// ★TBD:VMD的骨骼名称为15Byte限制，应按前方一致检索
+		// 由于麻烦，以完全一致型检索骨骼名称尾（帧名）
+		// 導入UE5後骨骼名稱有!"#$%&'()+,./:;=@[]^_`{|}~的都會被轉成底線
+		// 空格會被轉成-
+		// 只有-*<>?\會維持原樣
+		if (listType == EVMDKEYFRAMETYPE::EVMD_KEYBONE)
         {
             // 1. 第一次尝试：完全匹配
             for (int i = 0; i < keyBoneList.Num(); i++)
@@ -486,22 +489,22 @@ namespace MMD4UE4
                 }
             }
 
-            // 3. 第三次尝试：将"."替换为"_"后再匹配
-            if (index == -1 && targetName.Contains(TEXT(".")))
-            {
-                FString modifiedName = targetName;
-                modifiedName.ReplaceInline(TEXT("."), TEXT("_"));
+			// 3. 第三次尝试：将"_"替换为"+"后再匹配
+			if (index == -1 && targetName.Contains(TEXT("_")))
+			{
+				FString modifiedName = targetName;
+				modifiedName.ReplaceInline(TEXT("_"), TEXT("+"));
 
-                for (int i = 0; i < keyBoneList.Num(); i++)
-                {
-                    if (keyBoneList[i].TrackName.Equals(modifiedName))
-                    {
-                        index = i;
-                        break;
-                    }
-                }
-            }
-        }
+				for (int i = 0; i < keyBoneList.Num(); i++)
+				{
+					if (keyBoneList[i].TrackName.Equals(modifiedName))
+					{
+						index = i;
+						break;
+					}
+				}
+			}
+		}
         else if (listType == EVMDKEYFRAMETYPE::EVMD_KEYFACE)
         {
             // 1. 第一次尝试：完全匹配
@@ -513,39 +516,7 @@ namespace MMD4UE4
                     break;
                 }
             }
-
-            // 2. 第二次尝试：将"_"替换为"."后再匹配
-            if (index == -1 && targetName.Contains(TEXT("_")))
-            {
-                FString modifiedName = targetName;
-                modifiedName.ReplaceInline(TEXT("_"), TEXT("."));
-
-                for (int i = 0; i < keyFaceList.Num(); i++)
-                {
-                    if (keyFaceList[i].TrackName.Equals(modifiedName))
-                    {
-                        index = i;
-                        break;
-                    }
-                }
-            }
-
-            // 3. 第三次尝试：将"."替换为"_"后再匹配
-            if (index == -1 && targetName.Contains(TEXT(".")))
-            {
-                FString modifiedName = targetName;
-                modifiedName.ReplaceInline(TEXT("."), TEXT("_"));
-
-                for (int i = 0; i < keyFaceList.Num(); i++)
-                {
-                    if (keyFaceList[i].TrackName.Equals(modifiedName))
-                    {
-                        index = i;
-                        break;
-                    }
-                }
-            }
-        }
+		}
         else
         {
             // 操作错误

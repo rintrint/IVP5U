@@ -884,7 +884,7 @@ bool FVmdImporter::ImportVmdCameraTransform(
     UMovieScene *MovieScene = InSequence->GetMovieScene();
 
     // 打印相機幀數
-    UE_LOG(LogTemp, Warning, TEXT("Importing camera transform. KeyFrame count: %d"), CameraKeyFrames.Num());
+    UE_LOG(LogMMDCameraImporter, Log, TEXT("Importing camera transform. KeyFrame count: %d"), CameraKeyFrames.Num());
 
     // 為所有 6 個轉換通道創建數組
     TArray<FMovieSceneDoubleChannel *> LocationXChannels;
@@ -900,21 +900,35 @@ bool FVmdImporter::ImportVmdCameraTransform(
     TArray<FMovieSceneDoubleChannel *> RotationZChannels;
     RotationZChannels.Reserve(ObjectBindings.Num());
 
-    // 打印每一幀的VMD數據
-    for (int32 i = 0; i < CameraKeyFrames.Num(); ++i)
+    // 打印前五幀和後五幀的數據
+    if (CameraKeyFrames.Num() > 0)
     {
-        const FVmdObject::FCameraKeyFrame &Frame = CameraKeyFrames[i];
-        UE_LOG(LogTemp, Warning, TEXT("VMD Frame[%d]: FrameNumber=%u, Distance=%f, ViewAngle=%u, Position=[%f, %f, %f], Rotation=[%f, %f, %f]"),
-               i,
-               Frame.FrameNumber,
-               Frame.Distance,
-               Frame.ViewAngle,
-               Frame.Position[0],
-               Frame.Position[1],
-               Frame.Position[2],
-               Frame.Rotation[0],
-               Frame.Rotation[1],
-               Frame.Rotation[2]);
+        const int32 MaxFrontFrames = 5;
+        const int32 MaxBackFrames = 5;
+
+        for (int32 i = 0; i < CameraKeyFrames.Num(); ++i)
+        {
+            if (i < MaxFrontFrames || i >= CameraKeyFrames.Num() - MaxBackFrames)
+            {
+                const FVmdObject::FCameraKeyFrame &Frame = CameraKeyFrames[i];
+                UE_LOG(LogMMDCameraImporter, Log, TEXT("VMD Frame[%d]: FrameNumber=%u, Distance=%f, ViewAngle=%u, Perspective=%u, Position=[%f, %f, %f], Rotation=[%f, %f, %f]"),
+                       i,
+                       Frame.FrameNumber,
+                       Frame.Distance,
+                       Frame.ViewAngle,
+                       Frame.Perspective,
+                       Frame.Position[0],
+                       Frame.Position[1],
+                       Frame.Position[2],
+                       Frame.Rotation[0],
+                       Frame.Rotation[1],
+                       Frame.Rotation[2]);
+            }
+            else if (i == MaxFrontFrames)
+            {
+                UE_LOG(LogMMDCameraImporter, Log, TEXT("..."));
+            }
+        }
     }
 
     for (FGuid ObjectBinding : ObjectBindings)
@@ -945,9 +959,6 @@ bool FVmdImporter::ImportVmdCameraTransform(
         // 獲取所有轉換通道
         const TArrayView<FMovieSceneDoubleChannel *> Channels = TransformSection->GetChannelProxy().GetChannels<FMovieSceneDoubleChannel>();
 
-        // 打印通道數量和指針地址以驗證它們是否有效
-        UE_LOG(LogTemp, Warning, TEXT("Camera Transform Channels Count: %d"), Channels.Num());
-
         // 檢查我們是否有足夠的通道
         if (Channels.Num() >= 6)
         {
@@ -961,29 +972,8 @@ bool FVmdImporter::ImportVmdCameraTransform(
         }
         else
         {
-            UE_LOG(LogTemp, Error, TEXT("Not enough transform channels! Expected at least 6, got %d"), Channels.Num());
+            UE_LOG(LogMMDCameraImporter, Error, TEXT("Not enough transform channels! Expected at least 6, got %d"), Channels.Num());
             return false;
-        }
-
-        // 打印第一幀的值（如果有的話）
-        if (CameraKeyFrames.Num() > 0)
-        {
-            UE_LOG(LogTemp, Warning, TEXT("First frame - Distance: %f, ViewAngle: %u, Perspective: %u"),
-                   CameraKeyFrames[0].Distance,
-                   CameraKeyFrames[0].ViewAngle,
-                   CameraKeyFrames[0].Perspective);
-
-            // 添加Position值的輸出
-            UE_LOG(LogTemp, Warning, TEXT("First frame - Position: [%f, %f, %f]"),
-                   CameraKeyFrames[0].Position[0],
-                   CameraKeyFrames[0].Position[1],
-                   CameraKeyFrames[0].Position[2]);
-
-            // 添加Rotation值的輸出
-            UE_LOG(LogTemp, Warning, TEXT("First frame - Rotation: [%f, %f, %f]"),
-                   CameraKeyFrames[0].Rotation[0],
-                   CameraKeyFrames[0].Rotation[1],
-                   CameraKeyFrames[0].Rotation[2]);
         }
     }
 
@@ -998,9 +988,9 @@ bool FVmdImporter::ImportVmdCameraTransform(
         TangentAccessIndices.LeaveTangentY = 18;
     }
 
-    // 打印關鍵導入參數
-    UE_LOG(LogTemp, Warning, TEXT("Import parameters - UniformScale: %f, FrameRate: %f, SampleRate: %f"),
-           UniformScale,
+	// 打印關鍵導入參數 (FrameRate實際上是Desired Tick Interval，在Sequence的進階設置裡)
+	UE_LOG(LogMMDCameraImporter, Log, TEXT("Import parameters - UniformScale: %f, FrameRate: %f, SampleRate: %f"),
+           UniformScale * 0.01,
            FrameRate.AsDecimal(),
            SampleRate.AsDecimal());
 
@@ -1008,7 +998,6 @@ bool FVmdImporter::ImportVmdCameraTransform(
     switch (ImportVmdSettings->DistanceAxisMapping)
     {
     case EVMDAxisMapping::VMD_X:
-        UE_LOG(LogTemp, Warning, TEXT("Importing Distance to Camera X location channel"));
         ImportCameraSingleChannel(
             CameraKeyFrames,
             InCameraCuts,
@@ -1024,13 +1013,11 @@ bool FVmdImporter::ImportVmdCameraTransform(
             [UniformScale](const double Value)
             {
                 double scaledValue = Value * UniformScale;
-                UE_LOG(LogTemp, Warning, TEXT("X Channel Value: Original=%f, Scaled=%f"), Value, scaledValue);
                 return scaledValue;
             });
         break;
 
     case EVMDAxisMapping::VMD_Y:
-        UE_LOG(LogTemp, Warning, TEXT("Importing Distance to Camera Y location channel"));
         ImportCameraSingleChannel(
             CameraKeyFrames,
             InCameraCuts,
@@ -1046,13 +1033,11 @@ bool FVmdImporter::ImportVmdCameraTransform(
             [UniformScale](const double Value)
             {
                 double scaledValue = Value * UniformScale;
-                UE_LOG(LogTemp, Warning, TEXT("Y Channel Value: Original=%f, Scaled=%f"), Value, scaledValue);
                 return scaledValue;
             });
         break;
 
     case EVMDAxisMapping::VMD_Z:
-        UE_LOG(LogTemp, Warning, TEXT("Importing Distance to Camera Z location channel"));
         ImportCameraSingleChannel(
             CameraKeyFrames,
             InCameraCuts,
@@ -1068,13 +1053,11 @@ bool FVmdImporter::ImportVmdCameraTransform(
             [UniformScale](const double Value)
             {
                 double scaledValue = Value * UniformScale;
-                UE_LOG(LogTemp, Warning, TEXT("Z Channel Value: Original=%f, Scaled=%f"), Value, scaledValue);
                 return scaledValue;
             });
         break;
 
     case EVMDAxisMapping::VMD_NEG_X:
-        UE_LOG(LogTemp, Warning, TEXT("Importing Distance to Camera -X location channel"));
         ImportCameraSingleChannel(
             CameraKeyFrames,
             InCameraCuts,
@@ -1090,13 +1073,11 @@ bool FVmdImporter::ImportVmdCameraTransform(
             [UniformScale](const double Value)
             {
                 double scaledValue = -Value * UniformScale;
-                UE_LOG(LogTemp, Warning, TEXT("X Channel Value: Original=%f, Scaled=%f"), Value, scaledValue);
                 return scaledValue;
             });
         break;
 
     case EVMDAxisMapping::VMD_NEG_Y:
-        UE_LOG(LogTemp, Warning, TEXT("Importing Distance to Camera -Y location channel"));
         ImportCameraSingleChannel(
             CameraKeyFrames,
             InCameraCuts,
@@ -1112,13 +1093,11 @@ bool FVmdImporter::ImportVmdCameraTransform(
             [UniformScale](const double Value)
             {
                 double scaledValue = -Value * UniformScale;
-                UE_LOG(LogTemp, Warning, TEXT("Y Channel Value: Original=%f, Scaled=%f"), Value, scaledValue);
                 return scaledValue;
             });
         break;
 
     case EVMDAxisMapping::VMD_NEG_Z:
-        UE_LOG(LogTemp, Warning, TEXT("Importing Distance to Camera -Z location channel"));
         ImportCameraSingleChannel(
             CameraKeyFrames,
             InCameraCuts,
@@ -1134,13 +1113,11 @@ bool FVmdImporter::ImportVmdCameraTransform(
             [UniformScale](const double Value)
             {
                 double scaledValue = -Value * UniformScale;
-                UE_LOG(LogTemp, Warning, TEXT("Z Channel Value: Original=%f, Scaled=%f"), Value, scaledValue);
                 return scaledValue;
             });
         break;
 
     default:
-        UE_LOG(LogTemp, Warning, TEXT("Importing Distance to Camera X location channel (default)"));
         ImportCameraSingleChannel(
             CameraKeyFrames,
             InCameraCuts,
@@ -1156,7 +1133,6 @@ bool FVmdImporter::ImportVmdCameraTransform(
             [UniformScale](const double Value)
             {
                 double scaledValue = Value * UniformScale;
-                UE_LOG(LogTemp, Warning, TEXT("X Channel Value: Original=%f, Scaled=%f"), Value, scaledValue);
                 return scaledValue;
             });
         break;
