@@ -214,49 +214,23 @@ namespace MMD4UE4
 				maxFrame = FMath::Max(vmdKeyPtr->Frame, maxFrame);
 				minFrame = FMath::Min(vmdKeyPtr->Frame, minFrame);
 			}
-			// 为便于按照Frame顺序计算，生成对List的索引参照进行排序的数组。但是太浪费的处理。由于VMD的顺序不同。
-			for (int i = 0; i < tempKeyBoneList.Num(); i++)
-			{ // all bone
 
+			// 優化排序：使用內建快速排序代替手動排序
+			for (int i = 0; i < tempKeyBoneList.Num(); i++)
+			{
+				// 首先對關鍵幀按Frame排序
 				if (tempKeyBoneList[i].keyList.Num() > 0)
 				{
-					// init : insert array index = 0
-					tempKeyBoneList[i].sortIndexList.Add(0);
-				}
-				else
-				{
-					continue;
-				}
-				// sort all vmd-key frames
-				for (int k = 1; k < tempKeyBoneList[i].keyList.Num(); k++)
-				{
-					bool isSetList = false;
-					// TBD:2分钟搜索应该轻量地去，但是因为很麻烦，所以先做线性搜索
-					for (int s = 0; s < tempKeyBoneList[i].sortIndexList.Num(); s++)
+					// 使用標準排序
+					tempKeyBoneList[i].keyList.Sort([](const VMD_KEY& A, const VMD_KEY& B) {
+						return A.Frame < B.Frame;
+					});
+
+					// 生成排序索引列表 - 這裡索引就直接是數組索引了
+					tempKeyBoneList[i].sortIndexList.SetNum(tempKeyBoneList[i].keyList.Num());
+					for (int j = 0; j < tempKeyBoneList[i].keyList.Num(); j++)
 					{
-						// 如果这次的值比现在的位置大吗？
-						if (tempKeyBoneList[i].keyList[k].Frame < tempKeyBoneList[i].keyList[tempKeyBoneList[i].sortIndexList[s]].Frame)
-						{
-							/*if (s + 1 == tempKeyBoneList[i].sortIndexList.Num())
-							{
-							//insert array index = k;
-							tempKeyBoneList[i].sortIndexList.Add(k);
-							}
-							else*/
-							{
-								// insert array index = k;
-								tempKeyBoneList[i].sortIndexList.Insert(k, s);
-							}
-							// check list size == now index num
-							// check(tempKeyBoneList[i].sortIndexList.Num() == k+1);
-							isSetList = true;
-							break;
-						}
-					}
-					if (!isSetList)
-					{
-						// add last
-						tempKeyBoneList[i].sortIndexList.Add(k);
+						tempKeyBoneList[i].sortIndexList[j] = j;
 					}
 				}
 			}
@@ -313,48 +287,23 @@ namespace MMD4UE4
 				maxFrame = FMath::Max(vmdFacePtr->Frame, maxFrame);
 				minFrame = FMath::Min(vmdFacePtr->Frame, minFrame);
 			}
-			// 为便于按照Frame顺序计算，生成对List的索引参照进行排序的数组。但是太浪费的处理。由于VMD的顺序不同。
+
+			// 優化排序：使用內建快速排序代替手動排序
 			for (int i = 0; i < tempKeyFaceList.Num(); i++)
-			{ // all bone
+			{
+				// 首先對關鍵幀按Frame排序
 				if (tempKeyFaceList[i].keyList.Num() > 0)
 				{
-					// init : insert array index = 0
-					tempKeyFaceList[i].sortIndexList.Add(0);
-				}
-				else
-				{
-					continue;
-				}
-				// sort all vmd-key frames
-				for (int k = 1; k < tempKeyFaceList[i].keyList.Num(); k++)
-				{
-					bool isSetList = false;
-					// TBD:2分钟搜索应该轻量地去，但是因为很麻烦，所以先做线性搜索
-					for (int s = 0; s < tempKeyFaceList[i].sortIndexList.Num(); s++)
+					// 使用標準排序
+					tempKeyFaceList[i].keyList.Sort([](const VMD_FACE_KEY& A, const VMD_FACE_KEY& B) {
+						return A.Frame < B.Frame;
+					});
+
+					// 生成排序索引列表 - 這裡索引就直接是數組索引了
+					tempKeyFaceList[i].sortIndexList.SetNum(tempKeyFaceList[i].keyList.Num());
+					for (int j = 0; j < tempKeyFaceList[i].keyList.Num(); j++)
 					{
-						// もし現在の位置よりも今回の値が大きいか？
-						if (tempKeyFaceList[i].keyList[k].Frame < tempKeyFaceList[i].keyList[tempKeyFaceList[i].sortIndexList[s]].Frame)
-						{
-							/*if (s + 1 == tempKeyBoneList[i].sortIndexList.Num())
-							{
-							//insert array index = k;
-							tempKeyBoneList[i].sortIndexList.Add(k);
-							}
-							else*/
-							{
-								// insert array index = k;
-								tempKeyFaceList[i].sortIndexList.Insert(k, s);
-							}
-							// check list size == now index num
-							// check(tempKeyBoneList[i].sortIndexList.Num() == k+1);
-							isSetList = true;
-							break;
-						}
-					}
-					if (!isSetList)
-					{
-						// add last
-						tempKeyFaceList[i].sortIndexList.Add(k);
+						tempKeyFaceList[i].sortIndexList[j] = j;
 					}
 				}
 			}
@@ -392,48 +341,23 @@ namespace MMD4UE4
 				maxFrame = FMath::Max(vmdCamKeyPtr->Frame, maxFrame);
 				minFrame = FMath::Min(vmdCamKeyPtr->Frame, minFrame);
 			}
-			// 为便于按照Frame顺序计算，生成对List的索引参照进行排序的数组。但是太浪费的处理。由于VMD的顺序不同。
+
+			// 優化排序：使用內建快速排序代替手動排序
 			for (int i = 0; i < tempKeyCamList.Num(); i++)
-			{ // all bone
+			{
+				// 首先對關鍵幀按Frame排序
 				if (tempKeyCamList[i].keyList.Num() > 0)
 				{
-					// init : insert array index = 0
-					tempKeyCamList[i].sortIndexList.Add(0);
-				}
-				else
-				{
-					continue;
-				}
-				// sort all vmd-key frames
-				for (int k = 1; k < tempKeyCamList[i].keyList.Num(); k++)
-				{
-					bool isSetList = false;
-					// TBD:2分探索で軽量に行くべきだが面倒くさいのでとりあえず、線形探索にする
-					for (int s = 0; s < tempKeyCamList[i].sortIndexList.Num(); s++)
+					// 使用標準排序
+					tempKeyCamList[i].keyList.Sort([](const VMD_CAMERA& A, const VMD_CAMERA& B) {
+						return A.Frame < B.Frame;
+					});
+
+					// 生成排序索引列表 - 這裡索引就直接是數組索引了
+					tempKeyCamList[i].sortIndexList.SetNum(tempKeyCamList[i].keyList.Num());
+					for (int j = 0; j < tempKeyCamList[i].keyList.Num(); j++)
 					{
-						// もし現在の位置よりも今回の値が大きいか？
-						if (tempKeyCamList[i].keyList[k].Frame < tempKeyCamList[i].keyList[tempKeyCamList[i].sortIndexList[s]].Frame)
-						{
-							/*if (s + 1 == tempKeyBoneList[i].sortIndexList.Num())
-							{
-							//insert array index = k;
-							tempKeyBoneList[i].sortIndexList.Add(k);
-							}
-							else*/
-							{
-								// insert array index = k;
-								tempKeyCamList[i].sortIndexList.Insert(k, s);
-							}
-							// check list size == now index num
-							// check(tempKeyBoneList[i].sortIndexList.Num() == k+1);
-							isSetList = true;
-							break;
-						}
-					}
-					if (!isSetList)
-					{
-						// add last
-						tempKeyCamList[i].sortIndexList.Add(k);
+						tempKeyCamList[i].sortIndexList[j] = j;
 					}
 				}
 			}
