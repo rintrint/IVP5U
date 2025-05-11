@@ -31,6 +31,6 @@
 *.out
 *.app
 
-# UE4/UE5 Generated Folders
+# UE5 Generated Folders
 Binaries/
 Intermediate/

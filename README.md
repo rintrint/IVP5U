@@ -125,7 +125,7 @@ ImportVmdCamera
 - Skeleton Asset（必需：与动画相关联）
 - SkeletalMesh Asset（可选：Animation关联到MorphTarget。NULL时，MorphTargetSkip）
 - 动画资源（执行仅将Morph添加到现有资源（非空值）的过程。在空值下创建包含Bone和Morph的新资源）
-- DataTable（MMD2UE4Name）Asset（任意：在NULL以外读取时，用MMD = UE4替换Bone和MorphName，执行导入。需要事先以CSV形式导入或新建）
+- DataTable（MMD2UE5Name）Asset（任意：在NULL以外读取时，用MMD = UE5替换Bone和MorphName，执行导入。需要事先以CSV形式导入或新建）
 - MmdExtendAsset（可选：在NULL以外从VMD生成AnimSeq资产时，从Extend参照IK信息进行计算时使用。必须事先导入模型或手动生成资产）
 
 注意：新Asset生成因IK等未对应而不推荐。仅支持追加Morph。
@@ -136,7 +136,7 @@ ImportVmdCamera
 
 对于模型运动，仅捕获具有相同骨骼名称的数据。
 如果包含名称与模型侧骨骼名称不同的相同骨骼，则
-预先创建转换表（MMD2UE4NameTableRow），
+预先创建转换表（MMD2UE5NameTableRow），
 可通过在InportOption画面中指定进行导入。
 
 #### 导入选项参数检查警告

@@ -13,7 +13,7 @@
 
 #include "VmdImporter.h"
 
-#include "MMD2UE4NameTableRow.h"
+#include "MMD2UE5NameTableRow.h"
 #include "MMDExtendAsset.h"
 
 #include "VmdFactory.generated.h"
@@ -22,7 +22,7 @@
 class UInterpGroupInst;
 static TMap<FName, FName> NameMap;
 
-DECLARE_LOG_CATEGORY_EXTERN(LogMMD4UE4_VMDFactory, Log, All)
+DECLARE_LOG_CATEGORY_EXTERN(LogMMD4UE5_VMDFactory, Log, All)
 
 UCLASS()
 class IVP5U_API UVmdFactory : public UFactory
@@ -54,7 +54,7 @@ class IVP5U_API UVmdFactory : public UFactory
         UIKRigDefinition *IKRig,
         UDataTable *ReNameTable,
         UMMDExtendAsset *mmdExtend,
-        MMD4UE4::VmdMotionInfo *vmdMotionInfo);
+        MMD4UE5::VmdMotionInfo *vmdMotionInfo);
     //////////////
     class UVmdImportUI *ImportUI;
 
@@ -67,7 +67,7 @@ class IVP5U_API UVmdFactory : public UFactory
         USkeletalMesh *SkeletalMesh,
         UAnimSequence *exsistAnimSequ,
         UDataTable *ReNameTable,
-        MMD4UE4::VmdMotionInfo *vmdMotionInfo);
+        MMD4UE5::VmdMotionInfo *vmdMotionInfo);
 
     /*将Morphtarget FloatCurve从VMD文件数据导入AnimSeq*/
     bool ImportMorphCurveToAnimSequence(
@@ -75,7 +75,7 @@ class IVP5U_API UVmdFactory : public UFactory
         USkeleton *Skeleton,
         USkeletalMesh *SkeletalMesh,
         UDataTable *ReNameTable,
-        MMD4UE4::VmdMotionInfo *vmdMotionInfo);
+        MMD4UE5::VmdMotionInfo *vmdMotionInfo);
 
     /*从VMD文件的数据将运动数据导入AnimSeq*/
     bool ImportVMDBoneToAnimSequence(
@@ -84,13 +84,13 @@ class IVP5U_API UVmdFactory : public UFactory
         UDataTable *ReNameTable,
         UIKRigDefinition *IKRig,
         UMMDExtendAsset *mmdExtend,
-        MMD4UE4::VmdMotionInfo *vmdMotionInfo);
+        MMD4UE5::VmdMotionInfo *vmdMotionInfo);
 
     /*从MMD侧的名称检索并取得TableRow的UE侧名称*/
     bool FindTableRowMMD2UEName(
         UDataTable *ReNameTable,
         FName mmdName,
-        FName *ue4Name);
+        FName *ue5Name);
 
     /*从Bone名称中搜索并获取与RefSkelton匹配的BoneIndex*/
     int32 FindRefBoneInfoIndexFromBoneName(

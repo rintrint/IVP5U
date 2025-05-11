@@ -82,13 +82,13 @@ PMXImportOptions *GetImportOptions(
         {
             ImportUI->MmdExtendAsset = NULL;
         }
-        if (ImportOptions->MMD2UE4NameTableRow)
+        if (ImportOptions->MMD2UE5NameTableRow)
         {
-            ImportUI->MMD2UE4NameTableRow = ImportOptions->MMD2UE4NameTableRow;
+            ImportUI->MMD2UE5NameTableRow = ImportOptions->MMD2UE5NameTableRow;
         }
         else
         {
-            ImportUI->MMD2UE4NameTableRow = NULL;
+            ImportUI->MMD2UE5NameTableRow = NULL;
         }
         if (ImportOptions->AnimSequenceAsset)
         {
@@ -262,7 +262,7 @@ void ApplyImportUIToImportOptions(
 #endif
     // add self
     InOutImportOptions.AnimSequenceAsset = ImportUI->AnimSequenceAsset;
-    InOutImportOptions.MMD2UE4NameTableRow = ImportUI->MMD2UE4NameTableRow;
+    InOutImportOptions.MMD2UE5NameTableRow = ImportUI->MMD2UE5NameTableRow;
     InOutImportOptions.MmdExtendAsset = ImportUI->MmdExtendAsset;
 }
 
@@ -355,7 +355,7 @@ PMXImportOptions *FPmxImporter::GetImportOptions() const
 ///////////////////////////////////////////////////////////////////////////
 
 UPmxImportUI::UPmxImportUI(const FObjectInitializer &ObjectInitializer)
-    : Super(ObjectInitializer) //, MMD2UE4NameTableRow(MMD2UE4NameTableRowDmmy)
+    : Super(ObjectInitializer) //, MMD2UE5NameTableRow(MMD2UE5NameTableRowDmmy)
 {
     bCombineMeshes = true;
 

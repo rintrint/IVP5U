@@ -21,10 +21,10 @@ struct FMMD_IKLINK
 {
     GENERATED_USTRUCT_BODY()
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MMD", meta = (ToolTip = "ue4 link bone index"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MMD", meta = (ToolTip = "UE5 link bone index"))
     int32 BoneIndex; // Link bone index ( for skeleton bone index ,use ik func)
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MMD", meta = (ToolTip = "ue4 link bone name"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MMD", meta = (ToolTip = "UE5 link bone name"))
     FName BoneName; // Link Bone Name
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MMD", meta = (ToolTip = "If enabled, rotation limite, 0:OFF, 1:ON "))
@@ -56,16 +56,16 @@ struct FMMD_IKInfo
 
     int IKBoneIndexVMDKey; // IK target bone index vmd key index
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MMD", meta = (ToolTip = "ue4 IK bone index"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MMD", meta = (ToolTip = "UE5 IK bone index"))
     int32 IKBoneIndex; // IK target bone index ( use ik func. ref skeleton.)
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MMD", meta = (ToolTip = "ue4 IK bone name"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MMD", meta = (ToolTip = "UE5 IK bone name"))
     FName IKBoneName;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MMD", meta = (ToolTip = "ue4 target bone index"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MMD", meta = (ToolTip = "UE5 target bone index"))
     int32 TargetBoneIndex; // IK target bone index ( use ik func. ref skeleton.)
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MMD", meta = (ToolTip = "ue4 target bone name"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MMD", meta = (ToolTip = "UE5 target bone name"))
     FName TargetBoneName; // IK Target Bone Name
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MMD", meta = (ToolTip = "CCD-IK loop count"))

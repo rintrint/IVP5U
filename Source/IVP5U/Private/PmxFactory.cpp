@@ -50,7 +50,7 @@
 
 #define LOCTEXT_NAMESPACE "PMXImpoter"
 
-DEFINE_LOG_CATEGORY(LogMMD4UE4_PMXFactory)
+DEFINE_LOG_CATEGORY(LogMMD4UE5_PMXFactory)
 
 /////////////////////////////////////////////////////////
 // 3 "ProcessImportMesh..." functions outputing Unreal data from a filled FSkeletalMeshBinaryImport
@@ -58,7 +58,7 @@ DEFINE_LOG_CATEGORY(LogMMD4UE4_PMXFactory)
 // Fully taken from SkeletalMeshImport.cpp
 
 using namespace SkeletalMeshImportUtils;
-using namespace MMD4UE4;
+using namespace MMD4UE5;
 /////////////////////////////////////////////////////////
 
 UPmxFactory::UPmxFactory(const FObjectInitializer &ObjectInitializer)
@@ -104,7 +104,7 @@ UClass *UPmxFactory::ResolveSupportedClass()
 ////////////////////////////////////////////////
 // IVP5U Develop Temp Define
 //////////////////////////////////////////////
-// #define DEBUG_MMD_UE4_ORIGINAL_CODE	(1)
+// #define DEBUG_MMD_UE5_ORIGINAL_CODE	(1)
 #define DEBUG_MMD_PLUGIN_SKELTON (1)
 // #define DEBUG_MMD_PLUGIN_STATICMESH	(1)
 // #define DEBUG_MMD_PLUGIN_ANIMATION	(1)
@@ -143,7 +143,7 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
                     EPMXImportType ForcedImportType = PMXIT_SkeletalMesh;
                     // For multiple files, use the same settings
                     bDetectImportTypeOnImport = false;
-                    importAssetTypeMMD = E_MMD_TO_UE4_SKELTON;
+                    importAssetTypeMMD = E_MMD_TO_UE5_SKELTON;
                     bool bIsPmxFormat = true;
                     if (file.Find(TEXT(".pmx")) != INDEX_NONE)
                     {
@@ -151,7 +151,7 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
                         bIsPmxFormat = true;
                     }
                     // Load MMD Model From binary File
-                    MMD4UE4::PmxMeshInfo pmxMeshInfoPtr;
+                    MMD4UE5::PmxMeshInfo pmxMeshInfoPtr;
                     // pmxMaterialImportHelper.InitializeBaseValue(InParent);
                     bool pmxImportResult = false;
                     if (bIsPmxFormat)
@@ -162,10 +162,10 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
                     else
                     {
                         // pmd ver
-                        MMD4UE4::PmdMeshInfo PmdMeshInfo;
+                        MMD4UE5::PmdMeshInfo PmdMeshInfo;
                         if (PmdMeshInfo.PMDLoaderBinary(DataPtr, NULL))
                         {
-                            // Up convert From PMD to PMX format gfor ue4
+                            // Up convert From PMD to PMX format gfor UE5
                             pmxImportResult = PmdMeshInfo.ConvertToPmxFormat(&pmxMeshInfoPtr);
                         }
                     }
@@ -212,7 +212,7 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
                             // For animation and static mesh we assume there is at lease one interesting node by default
                             int32 InterestingNodeCount = 1;
 
-                            if (importAssetTypeMMD == E_MMD_TO_UE4_SKELTON)
+                            if (importAssetTypeMMD == E_MMD_TO_UE5_SKELTON)
                             {
 #ifdef DEBUG_MMD_PLUGIN_SKELTON
 
@@ -220,7 +220,7 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 
 #endif
                             }
-                            else if (importAssetTypeMMD == E_MMD_TO_UE4_STATICMESH)
+                            else if (importAssetTypeMMD == E_MMD_TO_UE5_STATICMESH)
                             {
                             }
 
@@ -240,7 +240,7 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
                                 int32 ImportedMeshCount = 0;
                                 UStaticMesh *NewStaticMesh = NULL;
 
-                                if (importAssetTypeMMD == E_MMD_TO_UE4_SKELTON) // skeletal mesh
+                                if (importAssetTypeMMD == E_MMD_TO_UE5_SKELTON) // skeletal mesh
                                 {
 #ifdef DEBUG_MMD_PLUGIN_SKELTON
                                     int32 TotalNumNodes = 0;
@@ -249,7 +249,7 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
                                     for (int32 i = 0; i < 1; i++)
                                     {
                                         int32 LODIndex = 0;
-#ifdef DEBUG_MMD_UE4_ORIGINAL_CODE
+#ifdef DEBUG_MMD_UE5_ORIGINAL_CODE
 
 #else
                                         // for MMD?
@@ -329,7 +329,7 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
                             else
                             {
 
-                                if (importAssetTypeMMD == E_MMD_TO_UE4_SKELTON)
+                                if (importAssetTypeMMD == E_MMD_TO_UE5_SKELTON)
                                 {
                                     AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_InvalidBone", "Failed to find any bone hierarchy. Try disabling the \"Import As Skeletal\" option to import as a rigid mesh. ")), "FFbxErrors::SkeletalMesh_InvalidBone");
                                 }
@@ -400,7 +400,7 @@ UObject *UPmxFactory::FactoryCreateBinary(
 {
 
     // MMD Default
-    importAssetTypeMMD = E_MMD_TO_UE4_SKELTON;
+    importAssetTypeMMD = E_MMD_TO_UE5_SKELTON;
 
     if (bOperationCanceled)
     {
@@ -429,7 +429,7 @@ UObject *UPmxFactory::FactoryCreateBinary(
         bIsPmxFormat = true;
     }
     // Load MMD Model From binary File
-    MMD4UE4::PmxMeshInfo pmxMeshInfoPtr;
+    MMD4UE5::PmxMeshInfo pmxMeshInfoPtr;
     pmxMaterialImportHelper.InitializeBaseValue(InParent);
     bool pmxImportResult = false;
     if (bIsPmxFormat)
@@ -440,10 +440,10 @@ UObject *UPmxFactory::FactoryCreateBinary(
     else
     {
         // pmd ver
-        MMD4UE4::PmdMeshInfo PmdMeshInfo;
+        MMD4UE5::PmdMeshInfo PmdMeshInfo;
         if (PmdMeshInfo.PMDLoaderBinary(Buffer, BufferEnd))
         {
-            // Up convert From PMD to PMX format gfor ue4
+            // Up convert From PMD to PMX format gfor UE5
             pmxImportResult = PmdMeshInfo.ConvertToPmxFormat(&pmxMeshInfoPtr);
         }
     }
@@ -512,7 +512,7 @@ UObject *UPmxFactory::FactoryCreateBinary(
             // For animation and static mesh we assume there is at lease one interesting node by default
             int32 InterestingNodeCount = 1;
 
-            if (importAssetTypeMMD == E_MMD_TO_UE4_SKELTON)
+            if (importAssetTypeMMD == E_MMD_TO_UE5_SKELTON)
             {
 #ifdef DEBUG_MMD_PLUGIN_SKELTON
 
@@ -520,7 +520,7 @@ UObject *UPmxFactory::FactoryCreateBinary(
 
 #endif
             }
-            else if (importAssetTypeMMD == E_MMD_TO_UE4_STATICMESH)
+            else if (importAssetTypeMMD == E_MMD_TO_UE5_STATICMESH)
             {
             }
 
@@ -537,10 +537,10 @@ UObject *UPmxFactory::FactoryCreateBinary(
 
                 int32 ImportedMeshCount = 0;
                 UStaticMesh *NewStaticMesh = NULL;
-                if (importAssetTypeMMD == E_MMD_TO_UE4_STATICMESH) // static mesh
+                if (importAssetTypeMMD == E_MMD_TO_UE5_STATICMESH) // static mesh
                 {
                 }
-                else if (importAssetTypeMMD == E_MMD_TO_UE4_SKELTON) // skeletal mesh
+                else if (importAssetTypeMMD == E_MMD_TO_UE5_SKELTON) // skeletal mesh
                 {
 #ifdef DEBUG_MMD_PLUGIN_SKELTON
                     int32 TotalNumNodes = 0;
@@ -549,7 +549,7 @@ UObject *UPmxFactory::FactoryCreateBinary(
                     for (int32 i = 0; i < 1 /*SkelMeshArray.Num()*/; i++)
                     {
                         int32 LODIndex = 0;
-#ifdef DEBUG_MMD_UE4_ORIGINAL_CODE
+#ifdef DEBUG_MMD_UE5_ORIGINAL_CODE
 
 #else
                         // for MMD?
@@ -629,8 +629,8 @@ UObject *UPmxFactory::FactoryCreateBinary(
             }
             else
             {
-#if 1 // DEBUG_MMD_UE4_ORIGINAL_CODE
-                if (importAssetTypeMMD == E_MMD_TO_UE4_SKELTON)
+#if 1 // DEBUG_MMD_UE5_ORIGINAL_CODE
+                if (importAssetTypeMMD == E_MMD_TO_UE5_SKELTON)
                 {
                     AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_InvalidBone", "Failed to find any bone hierarchy. Try disabling the \"Import As Skeletal\" option to import as a rigid mesh. ")), "FFbxErrors::SkeletalMesh_InvalidBone");
                 }
@@ -669,7 +669,7 @@ UObject *UPmxFactory::FactoryCreateBinary(
 //////////////////////////////////////////////////////////////////////
 USkeletalMesh *UPmxFactory::ImportSkeletalMesh(
     UObject *InParent,
-    MMD4UE4::PmxMeshInfo *pmxMeshInfoPtr,
+    MMD4UE5::PmxMeshInfo *pmxMeshInfoPtr,
     const FName &Name,
     EObjectFlags Flags,
     // UFbxSkeletalMeshImportData* TemplateImportData,
@@ -686,8 +686,8 @@ USkeletalMesh *UPmxFactory::ImportSkeletalMesh(
 
     if (true /*!FbxShapeArray*/)
     {
-        // UObject* ExistingObject = StaticFindObjectFast(UObject::StaticClass(), InParent, *Name.ToString(), false, false, RF_PendingKill);//~UE4.10
-        UObject *ExistingObject = StaticFindObjectFast(UObject::StaticClass(), InParent, *Name.ToString(), false, false, EObjectFlags::RF_Standalone, EInternalObjectFlags::LoaderImport); // UE4.11~
+        // UObject* ExistingObject = StaticFindObjectFast(UObject::StaticClass(), InParent, *Name.ToString(), false, false, RF_PendingKill);// ~UE 4.10
+        UObject *ExistingObject = StaticFindObjectFast(UObject::StaticClass(), InParent, *Name.ToString(), false, false, EObjectFlags::RF_Standalone, EInternalObjectFlags::LoaderImport); // UE 4.11~
         USkeletalMesh *ExistingSkelMesh = Cast<USkeletalMesh>(ExistingObject);
 
         if (ExistingSkelMesh)
@@ -743,7 +743,7 @@ USkeletalMesh *UPmxFactory::ImportSkeletalMesh(
         // but I can move to transient package, and GC will automatically collect it
         SkeletalMesh->ClearFlags(RF_Standalone);
         SkeletalMesh->Rename(NULL, GetTransientPackage());
-        UE_LOG(LogMMD4UE4_PMXFactory, Warning, TEXT("!!!ImportBone_out"));
+        UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("!!!ImportBone_out"));
         return NULL;
     }
 
@@ -759,7 +759,7 @@ USkeletalMesh *UPmxFactory::ImportSkeletalMesh(
         // but I can move to transient package, and GC will automatically collect it
         SkeletalMesh->ClearFlags(RF_Standalone);
         SkeletalMesh->Rename(NULL, GetTransientPackage());
-        UE_LOG(LogMMD4UE4_PMXFactory, Warning, TEXT("!!!FillSkelMeshImporterFromFbx_out"));
+        UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("!!!FillSkelMeshImporterFromFbx_out"));
         return NULL;
     }
     else
@@ -782,7 +782,7 @@ USkeletalMesh *UPmxFactory::ImportSkeletalMesh(
         SkeletalMesh->Rename(NULL, GetTransientPackage());
         return NULL;
     }
-    UE_LOG(LogMMD4UE4_PMXFactory, Warning, TEXT("Bones digested - %i  Depth of hierarchy - %i"), SkeletalMesh->GetRefSkeleton().GetNum(), SkeletalDepth);
+    UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("Bones digested - %i  Depth of hierarchy - %i"), SkeletalMesh->GetRefSkeleton().GetNum(), SkeletalDepth);
 
     // process bone influences from import data
     SkeletalMeshImportUtils::ProcessImportMeshInfluences(*SkelMeshImportDataPtr, L"MMDMeshName");
@@ -1119,11 +1119,11 @@ USkeletalMesh *UPmxFactory::ImportSkeletalMesh(
 UMMDExtendAsset *UPmxFactory::CreateMMDExtendFromMMDModel(
     UObject *InParent,
     USkeletalMesh *SkeletalMesh, // issue #2: fix param use skeleton mesh
-    MMD4UE4::PmxMeshInfo *PmxMeshInfo)
+    MMD4UE5::PmxMeshInfo *PmxMeshInfo)
 {
     UMMDExtendAsset *NewMMDExtendAsset = NULL;
     check(SkeletalMesh->GetSkeleton());
-    // Add UE4.9
+    // Add UE 4.9
     if (SkeletalMesh->GetSkeleton() == NULL)
     {
         return NULL;
@@ -1179,7 +1179,7 @@ UMMDExtendAsset *UPmxFactory::CreateMMDExtendFromMMDModel(
             // check IK bone
             if (PmxMeshInfo->boneList[boneIdx].Flag_IK)
             {
-                MMD4UE4::PMX_IK *tempPmxIKPtr = &PmxMeshInfo->boneList[boneIdx].IKInfo;
+                MMD4UE5::PMX_IK *tempPmxIKPtr = &PmxMeshInfo->boneList[boneIdx].IKInfo;
                 FMMD_IKInfo addMMDIkInfo;
 
                 addMMDIkInfo.LoopNum = tempPmxIKPtr->LoopNum;

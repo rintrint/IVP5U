@@ -3,7 +3,7 @@
 
 #include "Engine.h"
 
-namespace MMD4UE4
+namespace MMD4UE5
 {
     // ToDo:MMD（PMX、PMD、VMD）的共同函数重构
     // 现状，PMX系、PMD/VMD系分别安装。
@@ -22,11 +22,11 @@ namespace MMD4UE4
     {
     public:
         //////////////////////////////////////
-        // from MMD Asix To UE4 Asix
+        // from MMD Asix To UE5 Asix
         // param  : vec , in vector
         // return : convert vec ,out
         //////////////////////////////////////
-        FVector3f ConvertVectorAsixToUE4FromMMD(
+        FVector3f ConvertVectorAsixToUE5FromMMD(
             FVector3f vec);
         //////////////////////////////////////
         // from PMX Binary Buffer To String @ TextBuf

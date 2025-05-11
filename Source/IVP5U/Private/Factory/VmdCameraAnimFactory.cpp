@@ -193,7 +193,7 @@
 // 	// 最上位関数：ただし、InMatineeActorを事前に生成していること
 // 	bool UVmdFactory::ImportMatineeSequence(
 // 		AMatineeActor* InMatineeActor,
-// 		MMD4UE4::VmdMotionInfo* vmdMotionInfo
+// 		MMD4UE5::VmdMotionInfo* vmdMotionInfo
 // 		)
 // 	{
 // 		if (vmdMotionInfo == NULL || InMatineeActor == NULL) return false;
@@ -221,7 +221,7 @@
 // 		UInterpData* MatineeData = InMatineeActor->MatineeData;
 // 		float InterpLength = -1.0f;
 //
-// 		MMD4UE4::VmdCameraTrackList *CamNode;
+// 		MMD4UE5::VmdCameraTrackList *CamNode;
 // 		//FbxNode* RootNode = Scene->GetRootNode();
 // 		int32 NodeCount = 1;// RootNode->GetChildCount();
 // 		for (int32 NodeIndex = 0; NodeIndex < NodeCount; ++NodeIndex)
@@ -353,7 +353,7 @@
 // 	void UVmdFactory::ImportCamera(
 // 		ACameraActor* Actor,
 // 		UInterpGroupInst* MatineeGroup,
-// 		MMD4UE4::VmdCameraTrackList* Camera)
+// 		MMD4UE5::VmdCameraTrackList* Camera)
 // 		//FbxCamera* Camera)
 // 	{
 // #ifdef ORIGINAL_FBX_MATINEE_IMPORT
@@ -412,7 +412,7 @@
 // 		const float FbxValue,
 // 		//FbxProperty InProperty,
 // 		bool bImportFOV,
-// 		MMD4UE4::VmdCameraTrackList * Camera
+// 		MMD4UE5::VmdCameraTrackList * Camera
 // 		)
 // 		//FbxCamera* Camera)
 // 	{
@@ -559,7 +559,7 @@
 // 	*/
 // 	float UVmdFactory::ImportMatineeActor(
 // 		//FbxNode* Node,
-// 		MMD4UE4::VmdCameraTrackList* CameraNode,
+// 		MMD4UE5::VmdCameraTrackList* CameraNode,
 // 		UInterpGroupInst* MatineeGroup
 // 		)
 // 	{
@@ -1211,7 +1211,7 @@
 //
 // 	//この関数が必要か不明。MatineeAnimatedがどの部分に該当するかについて調査が必要。
 // 	void UVmdFactory::ImportMatineeAnimated(
-// 		MMD4UE4::VmdCameraTrackList * VmdCurve,
+// 		MMD4UE5::VmdCameraTrackList * VmdCurve,
 // 		//FbxAnimCurve* FbxCurve,
 // 		FInterpCurveVector& Curve,
 // 		int32 CurveIndex,
@@ -1270,7 +1270,7 @@
 // 			for (int32 KeyIndex = Curve.Points.Num(); KeyIndex < KeyCount; ++KeyIndex)
 // 			{
 // 				//FbxAnimCurveKey CurKey = FbxCurve->KeyGet(KeyIndex);
-// 				MMD4UE4::VMD_CAMERA* CurKeyPtr = & VmdCurve->keyList[VmdCurve->sortIndexList[KeyIndex]];
+// 				MMD4UE5::VMD_CAMERA* CurKeyPtr = & VmdCurve->keyList[VmdCurve->sortIndexList[KeyIndex]];
 //
 // 				// Create the curve keys
 // 				FInterpCurvePoint<FVector> Key;
@@ -1287,7 +1287,7 @@
 // 			for (int32 KeyIndex = 0; KeyIndex < KeyCount; ++KeyIndex)
 // 			{
 // 				//FbxAnimCurveKey CurKey = FbxCurve->KeyGet(KeyIndex);
-// 				MMD4UE4::VMD_CAMERA* CurKeyPtr = & VmdCurve->keyList[VmdCurve->sortIndexList[KeyIndex]];
+// 				MMD4UE5::VMD_CAMERA* CurKeyPtr = & VmdCurve->keyList[VmdCurve->sortIndexList[KeyIndex]];
 // 				FInterpCurvePoint<FVector>& UnrealKey = Curve.Points[KeyIndex];
 //
 // 				// Prepare the FBX values to import into the track key.

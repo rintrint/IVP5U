@@ -96,15 +96,15 @@ class UVmdImportUI : public UObject
     // UPROPERTY(EditAnywhere, Category = AnimationList, meta = (ImportType = "Animation"))
     TArray<class UMMDSkeletalMeshImportData *> TestArrayList;
 
-    /** MMD2UE4NameTableRow to use for imported asset. When importing a Anim, leaving this as "None" will create a new skeleton. When importing and animation this MUST be specified to import the asset. */
+    /** MMD2UE5NameTableRow to use for imported asset. When importing a Anim, leaving this as "None" will create a new skeleton. When importing and animation this MUST be specified to import the asset. */
     UPROPERTY(EditAnywhere, Category = Animation, meta = (OBJRestrict = "false"))
-    UDataTable *MMD2UE4NameTableRow;
+    UDataTable *MMD2UE5NameTableRow;
 
     /** mmd extend assset to use for calc ik . */
     // UPROPERTY(EditAnywhere, Category = Animation, meta = (OBJRestrict = "false"))
     class UMMDExtendAsset *MmdExtendAsset;
 
-    // struct FTableRowBase MMD2UE4NameTableRowDmmy;
+    // struct FTableRowBase MMD2UE5NameTableRowDmmy;
 
     // 暫定版::上記クラスだと上手く表示できていないため必要な項目のみ抽出
     /** True to import I-Aggree , I Read README for Model. */

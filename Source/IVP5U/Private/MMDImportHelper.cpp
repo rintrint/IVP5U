@@ -4,9 +4,9 @@
 #include "IVP5UPrivatePCH.h"
 // #include "EncodeHelper.h"
 #include "SjisToUnicode.h"
-namespace MMD4UE4
+namespace MMD4UE5
 {
-    FVector3f MMDImportHelper::ConvertVectorAsixToUE4FromMMD(
+    FVector3f MMDImportHelper::ConvertVectorAsixToUE5FromMMD(
         FVector3f vec)
     {
         FVector3f temp;
@@ -45,7 +45,7 @@ namespace MMD4UE4
         {
             // this plugin  unsuported encodetype ( utf-8 etc.)
             // Error ...
-            // UE_LOG(LogMMD4UE4_PmxMeshInfo, Error, TEXT("PMX Encode Type : not UTF-16 LE , unload"));
+            // UE_LOG(LogMMD4UE5_PmxMeshInfo, Error, TEXT("PMX Encode Type : not UTF-16 LE , unload"));
         }
         return NewString;
     }

@@ -16,7 +16,7 @@
 #include "MMDExtendAsset.h"
 #include "PmxFactory.generated.h"
 
-DECLARE_LOG_CATEGORY_EXTERN(LogMMD4UE4_PMXFactory, Log, All)
+DECLARE_LOG_CATEGORY_EXTERN(LogMMD4UE5_PMXFactory, Log, All)
 
 /////////////////////////////////////////////////////////////
 
@@ -45,17 +45,17 @@ class IVP5U_API UPmxFactory : public UFactory // public UFbxFactory
 
     enum E_LOAD_ASSETS_TYPE_MMD
     {
-        E_MMD_TO_UE4_UNKOWN,
-        E_MMD_TO_UE4_SKELTON,
-        E_MMD_TO_UE4_STATICMESH,
-        E_MMD_TO_UE4_ANIMATION
+        E_MMD_TO_UE5_UNKOWN,
+        E_MMD_TO_UE5_SKELTON,
+        E_MMD_TO_UE5_STATICMESH,
+        E_MMD_TO_UE5_ANIMATION
     };
     E_LOAD_ASSETS_TYPE_MMD importAssetTypeMMD;
 
     //////////////////////////////////////////////////////////////////////
     USkeletalMesh *ImportSkeletalMesh(
         UObject *InParent,
-        MMD4UE4::PmxMeshInfo *pmxMeshInfoPtr,
+        MMD4UE5::PmxMeshInfo *pmxMeshInfoPtr,
         const FName &Name,
         EObjectFlags Flags,
         // UFbxSkeletalMeshImportData* TemplateImportData,
@@ -66,7 +66,7 @@ class IVP5U_API UPmxFactory : public UFactory // public UFbxFactory
     //////////
     bool ImportBone(
         // TArray<FbxNode*>& NodeArray,
-        MMD4UE4::PmxMeshInfo *PmxMeshInfo,
+        MMD4UE5::PmxMeshInfo *PmxMeshInfo,
         FSkeletalMeshImportData &ImportData,
         // UFbxSkeletalMeshImportData* TemplateData,
         // TArray<FbxNode*> &SortedLinks,
@@ -76,7 +76,7 @@ class IVP5U_API UPmxFactory : public UFactory // public UFbxFactory
     ////////////
     bool FillSkelMeshImporterFromFbx(
         FSkeletalMeshImportData &ImportData,
-        MMD4UE4::PmxMeshInfo *&PmxMeshInfo,
+        MMD4UE5::PmxMeshInfo *&PmxMeshInfo,
         UObject *InParent
         // FbxMesh*& Mesh,
         // FbxSkin* Skin,
@@ -102,7 +102,7 @@ class IVP5U_API UPmxFactory : public UFactory // public UFbxFactory
 
     void ImportMorphTargetsInternal(
         // TArray<FbxNode*>& SkelMeshNodeArray,
-        MMD4UE4::PmxMeshInfo &PmxMeshInfo,
+        MMD4UE5::PmxMeshInfo &PmxMeshInfo,
         USkeletalMesh *BaseSkelMesh,
         UObject *InParent,
         const FString &InFilename,
@@ -111,7 +111,7 @@ class IVP5U_API UPmxFactory : public UFactory // public UFbxFactory
     // Import Morph target
     void ImportFbxMorphTarget(
         // TArray<FbxNode*> &SkelMeshNodeArray,
-        MMD4UE4::PmxMeshInfo &PmxMeshInfo,
+        MMD4UE5::PmxMeshInfo &PmxMeshInfo,
         USkeletalMesh *BaseSkelMesh,
         UObject *InParent,
         const FString &Filename,
@@ -124,7 +124,7 @@ class IVP5U_API UPmxFactory : public UFactory // public UFbxFactory
     UMMDExtendAsset *CreateMMDExtendFromMMDModel(
         UObject *InParent,
         USkeletalMesh *SkeletalMesh, // issue #2: fix param use skeleton mesh
-        MMD4UE4::PmxMeshInfo *PmxMeshInfo);
+        MMD4UE5::PmxMeshInfo *PmxMeshInfo);
 
 public:
     UFUNCTION(BlueprintCallable, Category = "IVP5U")

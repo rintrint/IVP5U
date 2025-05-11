@@ -4,10 +4,10 @@
 #include "IVP5UPrivatePCH.h"
 #include "MMDImportHelper.h"
 
-namespace MMD4UE4
+namespace MMD4UE5
 {
 
-    DEFINE_LOG_CATEGORY(LogMMD4UE4_PmdMeshInfo)
+    DEFINE_LOG_CATEGORY(LogMMD4UE5_PmdMeshInfo)
 
     PmdMeshInfo::PmdMeshInfo()
     {
@@ -31,11 +31,11 @@ namespace MMD4UE4
         // PMDファイルかどうかを確認
         if (header.Magic[0] == 'P' && header.Magic[1] == 'm' && header.Magic[2] == 'd')
         {
-            UE_LOG(LogMMD4UE4_PmdMeshInfo, Warning, TEXT("PMX Import START /Correct Magic[PMX]"));
+            UE_LOG(LogMMD4UE5_PmdMeshInfo, Warning, TEXT("PMX Import START /Correct Magic[PMX]"));
         }
         else
         {
-            UE_LOG(LogMMD4UE4_PmdMeshInfo, Error, TEXT("PMX Import FALSE/Return /UnCorrect Magic[PMX]"));
+            UE_LOG(LogMMD4UE5_PmdMeshInfo, Error, TEXT("PMX Import FALSE/Return /UnCorrect Magic[PMX]"));
             return false;
         }
         // バージョン１以外は読み込めない
@@ -174,7 +174,7 @@ namespace MMD4UE4
         // 拡張仕様(物理：剛体)
         // 拡張仕様(物理：Joint)
         //////////////////////////////////////////////
-        UE_LOG(LogMMD4UE4_PmdMeshInfo, Warning, TEXT("PMX Importer Class Complete"));
+        UE_LOG(LogMMD4UE5_PmdMeshInfo, Warning, TEXT("PMX Importer Class Complete"));
         return true;
     }
 
@@ -189,7 +189,7 @@ namespace MMD4UE4
 
         pmxMeshInfoPtr->modelNameJP = ConvertMMDSJISToFString((uint8 *)&(header.Name), sizeof(header.Name));
 
-        pmxMeshInfoPtr->modelNameJP = pmxMeshInfoPtr->modelNameJP.Replace(TEXT("."), TEXT("_")); // [.] is broken filepath for ue4
+        pmxMeshInfoPtr->modelNameJP = pmxMeshInfoPtr->modelNameJP.Replace(TEXT("."), TEXT("_")); // [.] is broken filepath for UE5
 
         pmxMeshInfoPtr->modelCommentJP = ConvertMMDSJISToFString((uint8 *)&(header.Comment), sizeof(header.Comment));
 
@@ -207,16 +207,16 @@ namespace MMD4UE4
                 // 位置(x,y,z)
                 memcopySize = sizeof(pmxVertexPtr.Position);
                 FMemory::Memcpy(&pmxVertexPtr.Position, pmdVertexPtr.Position, memcopySize);
-                pmxVertexPtr.Position = ConvertVectorAsixToUE4FromMMD(pmxVertexPtr.Position) * modelScale;
+                pmxVertexPtr.Position = ConvertVectorAsixToUE5FromMMD(pmxVertexPtr.Position) * modelScale;
                 // 法線(x,y,z)
                 memcopySize = sizeof(pmxVertexPtr.Normal);
                 FMemory::Memcpy(&pmxVertexPtr.Normal, pmdVertexPtr.Normal, memcopySize);
-                pmxVertexPtr.Normal = ConvertVectorAsixToUE4FromMMD(pmxVertexPtr.Normal);
+                pmxVertexPtr.Normal = ConvertVectorAsixToUE5FromMMD(pmxVertexPtr.Normal);
                 // UV(u,v)
                 memcopySize = sizeof(pmxVertexPtr.UV);
                 FMemory::Memcpy(&pmxVertexPtr.UV, pmdVertexPtr.Uv, memcopySize);
                 /*
-                float tempUV = pmxVertexPtr.UV.X;//UE4座標系反転
+                float tempUV = pmxVertexPtr.UV.X;//UE5座標系反転
                 pmxVertexPtr.UV.X = 1 - pmxVertexPtr.UV.Y;
                 pmxVertexPtr.UV.Y = 1 - tempUV;
                 */
@@ -254,11 +254,11 @@ namespace MMD4UE4
                 }
                 // エッジ倍率  材質のエッジサイズに対しての倍率値
             }
-            UE_LOG(LogMMD4UE4_PmdMeshInfo, Warning,
+            UE_LOG(LogMMD4UE5_PmdMeshInfo, Warning,
                    TEXT("PMX convert [Vertex:: statics bone type, bdef1 = %u] Complete"), statics_bdef1);
-            UE_LOG(LogMMD4UE4_PmdMeshInfo, Warning,
+            UE_LOG(LogMMD4UE5_PmdMeshInfo, Warning,
                    TEXT("PMX convert [Vertex:: statics bone type, bdef2 = %u] Complete"), statics_bdef2);
-            UE_LOG(LogMMD4UE4_PmxMeshInfo, Warning, TEXT("PMX convert [VertexList] Complete"));
+            UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX convert [VertexList] Complete"));
         }
         {
             /*
@@ -284,7 +284,7 @@ namespace MMD4UE4
                     pmxFaseListPtr.VertexIndex[SubNum] = pmdFaceListPtr.VertexIndx[SubNum];
                 }
             }
-            UE_LOG(LogMMD4UE4_PmxMeshInfo, Warning, TEXT("PMX convert [faceList] Complete"));
+            UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX convert [faceList] Complete"));
         }
         /*
         {
@@ -304,7 +304,7 @@ namespace MMD4UE4
             {
                 textureList[i].TexturePath = PMXTexBufferToFString(&Buffer, pmxEncodeType);
             }
-            UE_LOG(LogMMD4UE4_PmxMeshInfo, Warning, TEXT("PMX Import [textureList] Complete"));
+            UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX Import [textureList] Complete"));
         }
         */
         {
@@ -384,13 +384,13 @@ namespace MMD4UE4
                     {
                         // 加算でない場合
                         pmxMaterialPtr.SphereMode = 1;
-                        UE_LOG(LogMMD4UE4_PmxMeshInfo, Warning,
+                        UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning,
                                TEXT("PMX convert [materialList] multi texture[%s] / sphere[%s]"), *tempTex.TexturePath, *tempShaPathStr);
                     }
                     else
                     {
                         pmxMaterialPtr.SphereMode = 2;
-                        UE_LOG(LogMMD4UE4_PmxMeshInfo, Warning,
+                        UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning,
                                TEXT("PMX convert [materialList] add texture[%s] / sphere[%s]"), *tempTex.TexturePath, *tempShaPathStr);
                     }
                 }
@@ -401,13 +401,13 @@ namespace MMD4UE4
                     {
                         // 加算でない場合
                         pmxMaterialPtr.SphereMode = 1;
-                        UE_LOG(LogMMD4UE4_PmxMeshInfo, Warning,
+                        UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning,
                                TEXT("PMX convert [materialList] multi texture[%s] / sphere[%s]"), *tempTex.TexturePath, *tempShaPathStr);
                     }
                     else
                     {
                         pmxMaterialPtr.SphereMode = 2;
-                        UE_LOG(LogMMD4UE4_PmxMeshInfo, Warning,
+                        UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning,
                                TEXT("PMX convert [materialList] add texture[%s] / sphere[%s]"), *tempTex.TexturePath, *tempShaPathStr);
                     }
                 }
@@ -434,7 +434,7 @@ namespace MMD4UE4
                         // スフィアなし
                         tempShaPathStr = "";
                     }
-                    UE_LOG(LogMMD4UE4_PmxMeshInfo, Warning,
+                    UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning,
                            TEXT("PMX convert [materialList] texture[%s] mono sphere[%s]"), *tempTex.TexturePath, *tempShaPathStr);
                     // tempTex.TexturePath = tempTexPathStr;
                 }
@@ -492,10 +492,10 @@ namespace MMD4UE4
                 // 材质对应的面（顶点）数（一定是3的倍数）
                 pmxMaterialPtr.MaterialFaceNum = pmdMaterialPtr.FaceVertexCount;
             }
-            UE_LOG(LogMMD4UE4_PmxMeshInfo, Warning, TEXT("PMX convert [materialList] Complete"));
+            UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX convert [materialList] Complete"));
         }
         {
-            // 为UE4添加所有父Bone
+            // 为UE5添加所有父Bone
             // 确保存储骨骼数据的存储区域
             pmxMeshInfoPtr->boneList.AddZeroed(1);
 
@@ -526,7 +526,7 @@ namespace MMD4UE4
                 //
                 memcopySize = sizeof(pmxBonePtr.Position);
                 FMemory::Memcpy(&pmxBonePtr.Position, pmdBonePtr.HeadPos, memcopySize);
-                pmxBonePtr.Position = ConvertVectorAsixToUE4FromMMD(pmxBonePtr.Position) * modelScale;
+                pmxBonePtr.Position = ConvertVectorAsixToUE5FromMMD(pmxBonePtr.Position) * modelScale;
 
                 pmxBonePtr.ParentBoneIndex = pmdBonePtr.Parent + offsetBoneIndx;
 
@@ -600,7 +600,7 @@ namespace MMD4UE4
 					//
 					memcopySize = sizeof(pmxBonePtr.OffsetPosition);
 					FMemory::Memcpy(&pmxBonePtr.OffsetPosition, Buffer, memcopySize);
-					pmxBonePtr.OffsetPosition = ConvertVectorAsixToUE4FromMMD(pmxBonePtr.OffsetPosition) *modelScale;
+					pmxBonePtr.OffsetPosition = ConvertVectorAsixToUE5FromMMD(pmxBonePtr.OffsetPosition) *modelScale;
 					Buffer += memcopySize;
 				}
 				else
@@ -712,7 +712,7 @@ namespace MMD4UE4
                 }
 #endif
             }
-            UE_LOG(LogMMD4UE4_PmxMeshInfo, Warning, TEXT("PMX convert [BoneList] Complete"));
+            UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX convert [BoneList] Complete"));
         }
         {
             // IK
@@ -787,7 +787,7 @@ namespace MMD4UE4
                             tempVec.X = targetPmdMorphPtr->Vertex[j].Position[0];
                             tempVec.Y = targetPmdMorphPtr->Vertex[j].Position[1];
                             tempVec.Z = targetPmdMorphPtr->Vertex[j].Position[2];
-                            tempVec = ConvertVectorAsixToUE4FromMMD(tempVec) * modelScale;
+                            tempVec = ConvertVectorAsixToUE5FromMMD(tempVec) * modelScale;
 
                             pmxMeshInfoPtr->morphList[i].Vertex[j].Offset[0] = tempVec.X;
                             pmxMeshInfoPtr->morphList[i].Vertex[j].Offset[1] = tempVec.Y;
@@ -800,7 +800,7 @@ namespace MMD4UE4
                     }
                 }
             }
-            UE_LOG(LogMMD4UE4_PmxMeshInfo, Warning, TEXT("PMX convert [MorphList] Complete"));
+            UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX convert [MorphList] Complete"));
         }
         return true;
     }

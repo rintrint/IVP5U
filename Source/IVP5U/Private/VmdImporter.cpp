@@ -5,10 +5,10 @@
 
 #include "Animation/AnimSequenceBase.h"
 
-namespace MMD4UE4
+namespace MMD4UE5
 {
 
-	DEFINE_LOG_CATEGORY(LogMMD4UE4_VmdMotionInfo)
+	DEFINE_LOG_CATEGORY(LogMMD4UE5_VmdMotionInfo)
 
 	VmdMotionInfo::VmdMotionInfo()
 	{
@@ -34,11 +34,11 @@ namespace MMD4UE4
 			// 确定是否为VMD文件的临时版本
 			if (readData.vmdHeader.header[0] == 'V' && readData.vmdHeader.header[1] == 'o' && readData.vmdHeader.header[2] == 'c')
 			{
-				UE_LOG(LogMMD4UE4_VmdMotionInfo, Log, TEXT("VMD Import START /Correct Magic[Vocaloid Motion Data 0002]"));
+				UE_LOG(LogMMD4UE5_VmdMotionInfo, Log, TEXT("VMD Import START /Correct Magic[Vocaloid Motion Data 0002]"));
 			}
 			else
 			{
-				// UE_LOG(LogMMD4UE4_PmdMeshInfo, Error, TEXT("PMX Import FALSE/Return /UnCorrect Magic[PMX]"));
+				// UE_LOG(LogMMD4UE5_PmdMeshInfo, Error, TEXT("PMX Import FALSE/Return /UnCorrect Magic[PMX]"));
 				return false;
 			}
 			Buffer += memcopySize;
@@ -443,4 +443,4 @@ namespace MMD4UE4
 
 		return index;
 	}
-} // namespace MMD4UE4
+} // namespace MMD4UE5

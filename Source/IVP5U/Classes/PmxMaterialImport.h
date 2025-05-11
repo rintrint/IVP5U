@@ -106,7 +106,7 @@ public:
     void CreateUnrealMaterial(
         FString ParentObjName,
         // UObject * InParent,
-        MMD4UE4::PMX_MATERIAL &PmxMaterial,
+        MMD4UE5::PMX_MATERIAL &PmxMaterial,
         bool bCreateMaterialInstMode,
         bool bMaterialUnlit,
         TArray<UMaterialInterface *> &OutMaterials,
@@ -115,13 +115,13 @@ public:
     //
     //-------------------------------------------------------------------------
     void FixupMaterial(
-        MMD4UE4::PMX_MATERIAL &PmxMaterial,
+        MMD4UE5::PMX_MATERIAL &PmxMaterial,
         UMaterial *UnrealMaterial);
     //-------------------------------------------------------------------------
     //
     //-------------------------------------------------------------------------
     bool CreateAndLinkExpressionForMaterialProperty(
-        MMD4UE4::PMX_MATERIAL &PmxMaterial,
+        MMD4UE5::PMX_MATERIAL &PmxMaterial,
         UMaterial *UnrealMaterial,
         const char *MaterialProperty,
         FExpressionInput &MaterialInput,
@@ -133,7 +133,7 @@ public:
     //
     //-------------------------------------------------------------------------
     bool CreateAndLinkExpressionForMaterialProperty_ForMmdAutoluminus(
-        MMD4UE4::PMX_MATERIAL &PmxMaterial,
+        MMD4UE5::PMX_MATERIAL &PmxMaterial,
         UMaterial *UnrealMaterial,
         // const char* MaterialProperty,
         FExpressionInput &MaterialInput,
@@ -164,7 +164,7 @@ public:
     //-------------------------------------------------------------------------
     UMaterialInterface *CreateMaterialInst_Masked(
         FString ParentObjName,
-        MMD4UE4::PMX_MATERIAL &PmxMaterial,
+        MMD4UE5::PMX_MATERIAL &PmxMaterial,
         FString MaterialFullName,
         TArray<UTexture *> &textureAssetList);
     //-------------------------------------------------------------------------
@@ -172,7 +172,7 @@ public:
     //-------------------------------------------------------------------------
     UMaterialInterface *CreateMaterialInst_Masked_Unlit(
         FString ParentObjName,
-        MMD4UE4::PMX_MATERIAL &PmxMaterial,
+        MMD4UE5::PMX_MATERIAL &PmxMaterial,
         FString MaterialFullName,
         TArray<UTexture *> &textureAssetList);
     //-------------------------------------------------------------------------
@@ -180,7 +180,7 @@ public:
     //-------------------------------------------------------------------------
     UMaterialInterface *CreateMaterialInst_Luminous(
         FString ParentObjName,
-        MMD4UE4::PMX_MATERIAL &PmxMaterial,
+        MMD4UE5::PMX_MATERIAL &PmxMaterial,
         FString MaterialFullName,
         TArray<UTexture *> &textureAssetList);
     //-------------------------------------------------------------------------
@@ -188,7 +188,7 @@ public:
     //-------------------------------------------------------------------------
     UMaterialInterface *CreateMaterialInst_Luminous_Unlit(
         FString ParentObjName,
-        MMD4UE4::PMX_MATERIAL &PmxMaterial,
+        MMD4UE5::PMX_MATERIAL &PmxMaterial,
         FString MaterialFullName,
         TArray<UTexture *> &textureAssetList);
 };

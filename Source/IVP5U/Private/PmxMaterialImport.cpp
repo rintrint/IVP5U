@@ -293,7 +293,7 @@ UTexture *UPmxMaterialImport::ImportTexture(
 //
 //-------------------------------------------------------------------------
 bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty(
-    MMD4UE4::PMX_MATERIAL &PmxMaterial,
+    MMD4UE5::PMX_MATERIAL &PmxMaterial,
     UMaterial *UnrealMaterial,
     const char *MaterialProperty,
     FExpressionInput &MaterialInput,
@@ -456,7 +456,7 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty(
 //
 //-------------------------------------------------------------------------
 void UPmxMaterialImport::FixupMaterial(
-    MMD4UE4::PMX_MATERIAL &PmxMaterial,
+    MMD4UE5::PMX_MATERIAL &PmxMaterial,
     UMaterial *UnrealMaterial)
 {
 #if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION > 0
@@ -678,7 +678,7 @@ void UPmxMaterialImport::FixupMaterial(
 void UPmxMaterialImport::CreateUnrealMaterial(
     FString ParentObjName,
     // UObject * InParent,
-    MMD4UE4::PMX_MATERIAL &PmxMaterial,
+    MMD4UE5::PMX_MATERIAL &PmxMaterial,
     bool bCreateMaterialInstMode,
     bool bMaterialUnlit,
     TArray<UMaterialInterface *> &OutMaterials,
@@ -901,7 +901,7 @@ void UPmxMaterialImport::CreateUnrealMaterial(
 //
 //-------------------------------------------------------------------------
 bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty_ForMmdAutoluminus(
-    MMD4UE4::PMX_MATERIAL &PmxMaterial,
+    MMD4UE5::PMX_MATERIAL &PmxMaterial,
     UMaterial *UnrealMaterial,
     // const char* MaterialProperty,
     FExpressionInput &MaterialInput,
@@ -1282,7 +1282,7 @@ UMaterialInterface *UPmxMaterialImport::CreateMaterialInst(
 //-------------------------------------------------------------------------
 UMaterialInterface *UPmxMaterialImport::CreateMaterialInst_Masked(
     FString ParentObjName,
-    MMD4UE4::PMX_MATERIAL &PmxMaterial,
+    MMD4UE5::PMX_MATERIAL &PmxMaterial,
     FString MaterialFullName,
     TArray<UTexture *> &textureAssetList)
 {
@@ -1424,7 +1424,7 @@ UMaterialInterface *UPmxMaterialImport::CreateMaterialInst_Masked(
 //-------------------------------------------------------------------------
 UMaterialInterface *UPmxMaterialImport::CreateMaterialInst_Masked_Unlit(
     FString ParentObjName,
-    MMD4UE4::PMX_MATERIAL &PmxMaterial,
+    MMD4UE5::PMX_MATERIAL &PmxMaterial,
     FString MaterialFullName,
     TArray<UTexture *> &textureAssetList)
 {
@@ -1531,7 +1531,7 @@ UMaterialInterface *UPmxMaterialImport::CreateMaterialInst_Masked_Unlit(
 //-------------------------------------------------------------------------
 UMaterialInterface *UPmxMaterialImport::CreateMaterialInst_Luminous(
     FString ParentObjName,
-    MMD4UE4::PMX_MATERIAL &PmxMaterial,
+    MMD4UE5::PMX_MATERIAL &PmxMaterial,
     FString MaterialFullName,
     TArray<UTexture *> &textureAssetList)
 {
@@ -1648,7 +1648,7 @@ UMaterialInterface *UPmxMaterialImport::CreateMaterialInst_Luminous(
 //-------------------------------------------------------------------------
 UMaterialInterface *UPmxMaterialImport::CreateMaterialInst_Luminous_Unlit(
     FString ParentObjName,
-    MMD4UE4::PMX_MATERIAL &PmxMaterial,
+    MMD4UE5::PMX_MATERIAL &PmxMaterial,
     FString MaterialFullName,
     TArray<UTexture *> &textureAssetList)
 {

@@ -13,7 +13,7 @@
 
 // #define uint8 (unsigned char)
 
-namespace MMD4UE4
+namespace MMD4UE5
 {
 
     struct VMD_HEADER
@@ -182,7 +182,7 @@ namespace MMD4UE4
         TArray<int32> sortIndexList;
     };
 
-    DECLARE_LOG_CATEGORY_EXTERN(LogMMD4UE4_VmdMotionInfo, Log, All)
+    DECLARE_LOG_CATEGORY_EXTERN(LogMMD4UE5_VmdMotionInfo, Log, All)
     // Inport用 meta data 存储类
     class VmdMotionInfo : public MMDImportHelper
     {
@@ -257,7 +257,7 @@ struct VMDImportOptions
     FString AnimationName;
 
     UAnimSequence *AnimSequenceAsset;
-    UDataTable *MMD2UE4NameTableRow;
+    UDataTable *MMD2UE5NameTableRow;
     UMMDExtendAsset *MmdExtendAsset;
 };
 

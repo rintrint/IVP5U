@@ -10,12 +10,12 @@
 #include <glm/vec4.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-namespace MMD4UE4
+namespace MMD4UE5
 {
 
 #define LOCTEXT_NAMESPACE "PMXLoader"
 
-    DEFINE_LOG_CATEGORY(LogMMD4UE4_PmxMeshInfo)
+    DEFINE_LOG_CATEGORY(LogMMD4UE5_PmxMeshInfo)
 
     PmxMeshInfo::PmxMeshInfo()
     {
@@ -39,11 +39,11 @@ namespace MMD4UE4
         FMemory::Memcpy(this->magic, Buffer, sizeof(this->magic));
         if (this->magic[0] == 'P' && this->magic[1] == 'M' && this->magic[2] == 'X')
         {
-            UE_LOG(LogMMD4UE4_PmxMeshInfo, Warning, TEXT("PMX Import START /Correct Magic[PMX]"));
+            UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX Import START /Correct Magic[PMX]"));
         }
         else
         {
-            UE_LOG(LogMMD4UE4_PmxMeshInfo, Error, TEXT("PMX Import FALSE/Return /UnCorrect Magic[PMX]"));
+            UE_LOG(LogMMD4UE5_PmxMeshInfo, Error, TEXT("PMX Import FALSE/Return /UnCorrect Magic[PMX]"));
             return false;
         }
         Buffer += sizeof(this->magic);
@@ -77,7 +77,7 @@ namespace MMD4UE4
         }
         else
         {
-            UE_LOG(LogMMD4UE4_PmxMeshInfo, Error, TEXT("PMX Import FALSE/Return /UnCorrect EncodeType"));
+            UE_LOG(LogMMD4UE5_PmxMeshInfo, Error, TEXT("PMX Import FALSE/Return /UnCorrect EncodeType"));
             return false;
         }
         this->modelNameJP = PMXTexBufferToFString(&Buffer, pmxEncodeType);
@@ -85,7 +85,7 @@ namespace MMD4UE4
         this->modelCommentJP = PMXTexBufferToFString(&Buffer, pmxEncodeType);
         this->modelCommentEng = PMXTexBufferToFString(&Buffer, pmxEncodeType);
 
-        modelNameJP = modelNameJP.Replace(TEXT("."), TEXT("_")); // [.] is broken filepath for ue4
+        modelNameJP = modelNameJP.Replace(TEXT("."), TEXT("_")); // [.] is broken filepath for UE5
         ////////////////////////////////////////////
         {
             // 統計
@@ -107,19 +107,19 @@ namespace MMD4UE4
                 // 位置(x,y,z)
                 memcopySize = sizeof(pmxVertexPtr.Position);
                 FMemory::Memcpy(&pmxVertexPtr.Position, Buffer, memcopySize);
-                pmxVertexPtr.Position = ConvertVectorAsixToUE4FromMMD(pmxVertexPtr.Position) * modelScale;
+                pmxVertexPtr.Position = ConvertVectorAsixToUE5FromMMD(pmxVertexPtr.Position) * modelScale;
                 Buffer += memcopySize;
                 // 法線(x,y,z)
                 memcopySize = sizeof(pmxVertexPtr.Normal);
                 FMemory::Memcpy(&pmxVertexPtr.Normal, Buffer, memcopySize);
-                pmxVertexPtr.Normal = ConvertVectorAsixToUE4FromMMD(pmxVertexPtr.Normal);
+                pmxVertexPtr.Normal = ConvertVectorAsixToUE5FromMMD(pmxVertexPtr.Normal);
                 Buffer += memcopySize;
                 // UV(u,v)
                 memcopySize = sizeof(pmxVertexPtr.UV);
                 FMemory::Memcpy(&pmxVertexPtr.UV, Buffer, memcopySize);
                 Buffer += memcopySize;
                 /*
-                float tempUV = pmxVertexPtr.UV.X;//UE4座標系反転
+                float tempUV = pmxVertexPtr.UV.X;//UE5座標系反転
                 pmxVertexPtr.UV.X = 1 - pmxVertexPtr.UV.Y;
                 pmxVertexPtr.UV.Y = 1 - tempUV;
                 */
@@ -217,23 +217,23 @@ namespace MMD4UE4
                 }
                 else
                 {
-                    UE_LOG(LogMMD4UE4_PmxMeshInfo, Error, TEXT("PMX Import FALSE/Return /UnCorrect EncodeType"));
+                    UE_LOG(LogMMD4UE5_PmxMeshInfo, Error, TEXT("PMX Import FALSE/Return /UnCorrect EncodeType"));
                 }
                 // 边缘倍率材质相对于边缘尺寸的倍率值
                 memcopySize = sizeof(pmxVertexPtr.ToonEdgeScale);
                 FMemory::Memcpy(&pmxVertexPtr.ToonEdgeScale, Buffer, memcopySize);
                 Buffer += memcopySize;
             }
-            UE_LOG(LogMMD4UE4_PmxMeshInfo, Warning,
+            UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning,
                    TEXT("PMX Import [Vertex:: statics bone type, bdef1 = %u] Complete"), statics_bdef1);
-            UE_LOG(LogMMD4UE4_PmxMeshInfo, Warning,
+            UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning,
                    TEXT("PMX Import [Vertex:: statics bone type, bdef2 = %u] Complete"), statics_bdef2);
-            UE_LOG(LogMMD4UE4_PmxMeshInfo, Warning,
+            UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning,
                    TEXT("PMX Import [Vertex:: statics bone type, bdef3 = %u] Complete"), statics_bdef4);
-            UE_LOG(LogMMD4UE4_PmxMeshInfo, Warning,
+            UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning,
                    TEXT("PMX Import [Vertex:: statics bone type, sdef = %u] Complete"), statics_sdef);
         }
-        UE_LOG(LogMMD4UE4_PmxMeshInfo, Warning, TEXT("PMX Import [Vertex] Complete"));
+        UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX Import [Vertex] Complete"));
         ////////////////////////////////////////////
         {
             /*
@@ -260,7 +260,7 @@ namespace MMD4UE4
                 }
             }
         }
-        UE_LOG(LogMMD4UE4_PmxMeshInfo, Warning, TEXT("PMX Import [FaceList] Complete"));
+        UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX Import [FaceList] Complete"));
         ////////////////////////////////////////////
         {
 
@@ -279,7 +279,7 @@ namespace MMD4UE4
             {
                 textureList[i].TexturePath = PMXTexBufferToFString(&Buffer, pmxEncodeType);
             }
-            UE_LOG(LogMMD4UE4_PmxMeshInfo, Warning, TEXT("PMX Import [textureList] Complete"));
+            UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX Import [textureList] Complete"));
         }
         {
             // 获取材质数量
@@ -372,7 +372,7 @@ namespace MMD4UE4
                 FMemory::Memcpy(&materialList[i].MaterialFaceNum, Buffer, memcopySize);
                 Buffer += memcopySize;
             }
-            UE_LOG(LogMMD4UE4_PmxMeshInfo, Warning, TEXT("PMX Import [materialList] Complete"));
+            UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX Import [materialList] Complete"));
         }
         ////////////////////////////////////////////
 
@@ -412,7 +412,7 @@ namespace MMD4UE4
                 //
                 memcopySize = sizeof(boneList[i].Position);
                 FMemory::Memcpy(&boneList[i].Position, Buffer, memcopySize);
-                boneList[i].Position = ConvertVectorAsixToUE4FromMMD(boneList[i].Position) * modelScale;
+                boneList[i].Position = ConvertVectorAsixToUE5FromMMD(boneList[i].Position) * modelScale;
                 Buffer += memcopySize;
 
                 boneList[i].ParentBoneIndex = MMDExtendBufferSizeToInt32(&Buffer, this->baseHeader.BoneIndexSize) + offsetBoneIndex;
@@ -445,7 +445,7 @@ namespace MMD4UE4
                     //
                     memcopySize = sizeof(boneList[i].OffsetPosition);
                     FMemory::Memcpy(&boneList[i].OffsetPosition, Buffer, memcopySize);
-                    boneList[i].OffsetPosition = ConvertVectorAsixToUE4FromMMD(boneList[i].OffsetPosition) * modelScale;
+                    boneList[i].OffsetPosition = ConvertVectorAsixToUE5FromMMD(boneList[i].OffsetPosition) * modelScale;
                     Buffer += memcopySize;
                 }
                 else
@@ -537,7 +537,7 @@ namespace MMD4UE4
                                 boneList[i].IKInfo.Link[j].RotLockMin[0],
                                 boneList[i].IKInfo.Link[j].RotLockMin[1],
                                 boneList[i].IKInfo.Link[j].RotLockMin[2]);
-                            tempVecRot = ConvertVectorAsixToUE4FromMMD(tempVecRot);
+                            tempVecRot = ConvertVectorAsixToUE5FromMMD(tempVecRot);
                             // fix to Dig From rad(pmx) for vmd ik
                             boneList[i].IKInfo.Link[j].RotLockMin[0] = FMath::RadiansToDegrees(tempVecRot.X);
                             boneList[i].IKInfo.Link[j].RotLockMin[1] = FMath::RadiansToDegrees(tempVecRot.Y);
@@ -550,7 +550,7 @@ namespace MMD4UE4
                                 boneList[i].IKInfo.Link[j].RotLockMax[0],
                                 boneList[i].IKInfo.Link[j].RotLockMax[1],
                                 boneList[i].IKInfo.Link[j].RotLockMax[2]);
-                            tempVecRot = ConvertVectorAsixToUE4FromMMD(tempVecRot);
+                            tempVecRot = ConvertVectorAsixToUE5FromMMD(tempVecRot);
                             // 已修复vmd-ik从rad（pmx）挖掘的问题
                             boneList[i].IKInfo.Link[j].RotLockMax[0] = FMath::RadiansToDegrees(tempVecRot.X);
                             boneList[i].IKInfo.Link[j].RotLockMax[1] = FMath::RadiansToDegrees(tempVecRot.Y);
@@ -559,7 +559,7 @@ namespace MMD4UE4
                     }
                 }
             }
-            UE_LOG(LogMMD4UE4_PmxMeshInfo, Warning, TEXT("PMX Import [BoneList] Complete"));
+            UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX Import [BoneList] Complete"));
         }
         {
             int32 i, j;
@@ -621,7 +621,7 @@ namespace MMD4UE4
                         //
                         memcopySize = sizeof(morphList[i].Vertex[j].Offset);
                         FMemory::Memcpy(&morphList[i].Vertex[j].Offset, Buffer, memcopySize);
-                        morphList[i].Vertex[j].Offset = ConvertVectorAsixToUE4FromMMD(morphList[i].Vertex[j].Offset) * modelScale;
+                        morphList[i].Vertex[j].Offset = ConvertVectorAsixToUE5FromMMD(morphList[i].Vertex[j].Offset) * modelScale;
                         Buffer += memcopySize;
                     }
                     break;
@@ -636,7 +636,7 @@ namespace MMD4UE4
                         //
                         memcopySize = sizeof(morphList[i].Bone[j].Offset);
                         FMemory::Memcpy(&morphList[i].Bone[j].Offset, Buffer, memcopySize);
-                        morphList[i].Bone[j].Offset = ConvertVectorAsixToUE4FromMMD(morphList[i].Bone[j].Offset) * modelScale;
+                        morphList[i].Bone[j].Offset = ConvertVectorAsixToUE5FromMMD(morphList[i].Bone[j].Offset) * modelScale;
                         Buffer += memcopySize;
                         //
                         memcopySize = sizeof(morphList[i].Bone[j].Quat);
@@ -719,7 +719,7 @@ namespace MMD4UE4
                     break;
                 }
             }
-            UE_LOG(LogMMD4UE4_PmxMeshInfo, Warning, TEXT("PMX Import [MorphList] Complete"));
+            UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX Import [MorphList] Complete"));
         }
 
         { // Displayframe
@@ -773,7 +773,7 @@ namespace MMD4UE4
 
                 // UE_LOG print this->baseHeader.BoneIndexSize
                 rb.BoneIndex = MMDExtendBufferSizeToInt32(&Buffer, this->baseHeader.BoneIndexSize) + offsetBoneIndex;
-                // UE_LOG(LogMMD4UE4_PmxMeshInfo, Warning, TEXT("PMX Import [RigidBody] BoneIndexSize %d"), rb.BoneIndex);
+                // UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX Import [RigidBody] BoneIndexSize %d"), rb.BoneIndex);
 
                 auto bone = boneList[rb.BoneIndex];
                 rb.fnName = FName(bone.Name);
@@ -783,8 +783,8 @@ namespace MMD4UE4
                 readBuffer(rb.Size);
                 rb.Size *= modelScale;
                 readBuffer(rb.Position);
-                rb.Position = ConvertVectorAsixToUE4FromMMD(rb.Position) * modelScale - bone.Position;
-                readBuffer(rb.Rotation); // rb.Rotation = ConvertVectorAsixToUE4FromMMD(rb.Rotation);
+                rb.Position = ConvertVectorAsixToUE5FromMMD(rb.Position) * modelScale - bone.Position;
+                readBuffer(rb.Rotation); // rb.Rotation = ConvertVectorAsixToUE5FromMMD(rb.Rotation);
                 auto rx = glm::rotate(glm::mat4(1), rb.Rotation.X, glm::vec3(1, 0, 0));
                 auto ry = glm::rotate(glm::mat4(1), rb.Rotation.Y, glm::vec3(0, 1, 0));
                 auto rz = glm::rotate(glm::mat4(1), rb.Rotation.Z, glm::vec3(0, 0, 1));
@@ -804,7 +804,7 @@ namespace MMD4UE4
         if (false == FixSortParentBoneIndex())
         {
             /*BoneIndexSort NG*/
-            UE_LOG(LogMMD4UE4_PmxMeshInfo, Error, TEXT("PMX Importer Class FAULT: Bone Index NG?"));
+            UE_LOG(LogMMD4UE5_PmxMeshInfo, Error, TEXT("PMX Importer Class FAULT: Bone Index NG?"));
 
             // 读取模型后的警告文显示：注释栏
             const FText MessageDbg = FText(LOCTEXT("PMX_FormatNG_Dbg_sg", "[Restriction]:IVP5U Plugin / Bone Index Sort NG.\n\
@@ -816,12 +816,12 @@ namespace MMD4UE4
 					是？“是否”？"));
             if (EAppReturnType::Yes == FMessageDialog::Open(EAppMsgType::YesNo, MessageDbg))
             {
-                UE_LOG(LogMMD4UE4_PmxMeshInfo, Error, TEXT("PMX Importer Class STOP"));
+                UE_LOG(LogMMD4UE5_PmxMeshInfo, Error, TEXT("PMX Importer Class STOP"));
                 return false;
             }
         }
         //////////////////////////////////////////////
-        UE_LOG(LogMMD4UE4_PmxMeshInfo, Warning, TEXT("PMX Importer Class Complete: PMXLoaderBinary"));
+        UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX Importer Class Complete: PMXLoaderBinary"));
 
         Buf = Buffer;
         return true;
@@ -831,7 +831,7 @@ namespace MMD4UE4
     {
         bool bRet = true;
         //////////////////////////////////////////////
-        UE_LOG(LogMMD4UE4_PmxMeshInfo, Warning, TEXT("PMX Importer Class Start: FixSortParentBoneIndex"));
+        UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX Importer Class Start: FixSortParentBoneIndex"));
 
         /////
         int32 i; // , j;
@@ -855,17 +855,17 @@ namespace MMD4UE4
             {
                 // NG
                 fixedHierarchyBone[i].fixFlag_Parent = true;
-                UE_LOG(LogMMD4UE4_PmxMeshInfo, Warning,
+                UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning,
                        TEXT("PMX Importer : FixSortParentBoneIndex : parent ng. P:%u > S:%u"), boneList[i].ParentBoneIndex, i);
                 bRet = false;
             }
         }
         if (bRet == false)
         {
-            UE_LOG(LogMMD4UE4_PmxMeshInfo, Error, TEXT("PMX Importer Class Error: FixSortParentBoneIndex NG?"));
+            UE_LOG(LogMMD4UE5_PmxMeshInfo, Error, TEXT("PMX Importer Class Error: FixSortParentBoneIndex NG?"));
         }
         //////////////////////////////////////////////
-        UE_LOG(LogMMD4UE4_PmxMeshInfo, Warning, TEXT("PMX Importer Class Complete: FixSortParentBoneIndex"));
+        UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX Importer Class Complete: FixSortParentBoneIndex"));
         return bRet;
     }
 

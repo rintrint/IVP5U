@@ -5,7 +5,7 @@
 #include "PmxImporter.h"
 #include "MMDImportHelper.h"
 
-namespace MMD4UE4
+namespace MMD4UE5
 {
 
     // 宏定义----------------------------------
@@ -261,7 +261,7 @@ namespace MMD4UE4
 #endif
     //////////////////////////////////////////////////////////////
 
-    DECLARE_LOG_CATEGORY_EXTERN(LogMMD4UE4_PmdMeshInfo, Log, All)
+    DECLARE_LOG_CATEGORY_EXTERN(LogMMD4UE5_PmdMeshInfo, Log, All)
 
     // Inport用 meta data 格納クラス
     class PmdMeshInfo : public MMDImportHelper

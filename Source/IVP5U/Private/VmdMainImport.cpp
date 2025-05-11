@@ -76,13 +76,13 @@ VMDImportOptions *GetVMDImportOptions(
         {
             ImportUI->MmdExtendAsset = NULL;
         }
-        if (ImportOptions->MMD2UE4NameTableRow)
+        if (ImportOptions->MMD2UE5NameTableRow)
         {
-            ImportUI->MMD2UE4NameTableRow = ImportOptions->MMD2UE4NameTableRow;
+            ImportUI->MMD2UE5NameTableRow = ImportOptions->MMD2UE5NameTableRow;
         }
         else
         {
-            ImportUI->MMD2UE4NameTableRow = NULL;
+            ImportUI->MMD2UE5NameTableRow = NULL;
         }
         if (ImportOptions->AnimSequenceAsset)
         {
@@ -182,7 +182,7 @@ void ApplyVMDImportUIToImportOptions(
 #endif
     // add self
     InOutImportOptions.AnimSequenceAsset = ImportUI->AnimSequenceAsset;
-    InOutImportOptions.MMD2UE4NameTableRow = ImportUI->MMD2UE4NameTableRow;
+    InOutImportOptions.MMD2UE5NameTableRow = ImportUI->MMD2UE5NameTableRow;
     InOutImportOptions.MmdExtendAsset = ImportUI->MmdExtendAsset;
 }
 
@@ -254,7 +254,7 @@ VMDImportOptions *FVmdImporter::GetImportOptions() const
 ///////////////////////////////////////////////////////////////////////////
 
 UVmdImportUI::UVmdImportUI(const FObjectInitializer &ObjectInitializer)
-    : Super(ObjectInitializer) //, MMD2UE4NameTableRow(MMD2UE4NameTableRowDmmy)
+    : Super(ObjectInitializer) //, MMD2UE5NameTableRow(MMD2UE5NameTableRowDmmy)
 {
 #if 0
 	StaticMeshImportData = CreateDefaultSubobject<UMMDStaticMeshImportData>(TEXT("StaticMeshImportData"));

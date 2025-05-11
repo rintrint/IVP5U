@@ -247,7 +247,7 @@ void FMorphMeshRawSource::CalculateMorphTargetLODModel(const FMorphMeshRawSource
 
 bool UPmxFactory::ImportBone(
     // TArray<FbxNode*>& NodeArray,
-    MMD4UE4::PmxMeshInfo *PmxMeshInfo,
+    MMD4UE5::PmxMeshInfo *PmxMeshInfo,
     FSkeletalMeshImportData &ImportData,
     // UFbxSkeletalMeshImportData* TemplateData,
     // TArray<FbxNode*> &SortedLinks,
@@ -369,7 +369,7 @@ bool UPmxFactory::ImportBone(
         FTransform3f ft2 = ft.Inverse();
         FVector3f fv2 = ft2.TransformPosition(TransTemp);
         if (BoneName.Contains(L"L"))
-            UE_LOG(LogMMD4UE4_PMXFactory, Warning, TEXT("%s,%d  fv0:%f,%f,%f   fv1:%f,%f,%f   fv2:%f,%f,%f"), *BoneName, hasParent, TransTemp.X, TransTemp.Y, TransTemp.Z, fv1.X, fv1.Y, fv1.Z, fv2.X, fv2.Y, fv2.Z);
+            UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("%s,%d  fv0:%f,%f,%f   fv1:%f,%f,%f   fv2:%f,%f,%f"), *BoneName, hasParent, TransTemp.X, TransTemp.Y, TransTemp.Z, fv1.X, fv1.Y, fv1.Z, fv2.X, fv2.Y, fv2.Z);
         JointMatrix.Transform.SetTranslation(TransTemp);
         JointMatrix.Transform.SetRotation(ftr); // (FQuat(0, 0, 0, 1.0));
         JointMatrix.Transform.SetScale3D(FVector3f(1));
@@ -384,7 +384,7 @@ bool UPmxFactory::ImportBone(
 
 bool UPmxFactory::FillSkelMeshImporterFromFbx(
     FSkeletalMeshImportData &ImportData,
-    MMD4UE4::PmxMeshInfo *&PmxMeshInfo,
+    MMD4UE5::PmxMeshInfo *&PmxMeshInfo,
     UObject *InParent
     // FbxMesh*& Mesh,
     // FbxSkin* Skin,
@@ -634,7 +634,7 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
                     ImportData.Influences.Last().Weight = PmxMeshInfo->vertexList[ControlPointIndex].BoneWeight[multiBone];
                     ImportData.Influences.Last().VertexIndex = ExistPointNum + ControlPointIndex;
                 }
-                // UE_LOG(LogMMD4UE4_PMXFactory, Log, TEXT("BDEF2"), "");
+                // UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("BDEF2"), "");
             }
             break;
             case 2: // 2:BDEF4
@@ -692,7 +692,7 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
                 ImportData.Influences.Last().BoneIndex = PmxMeshInfo->vertexList[ControlPointIndex].BoneIndex[0];
                 ImportData.Influences.Last().Weight = PmxMeshInfo->vertexList[ControlPointIndex].BoneWeight[0];
                 ImportData.Influences.Last().VertexIndex = ExistPointNum + ControlPointIndex;
-                UE_LOG(LogMMD4UE4_PMXFactory, Error,
+                UE_LOG(LogMMD4UE5_PMXFactory, Error,
                        TEXT("Unkown Weight Type :: type = %d , vertex index = %d "),
                        PmxMeshInfo->vertexList[ControlPointIndex].WeightType, ControlPointIndex);
             }
@@ -847,7 +847,7 @@ private:
 
 void UPmxFactory::ImportMorphTargetsInternal(
     // TArray<FbxNode*>& SkelMeshNodeArray,
-    MMD4UE4::PmxMeshInfo &PmxMeshInfo,
+    MMD4UE5::PmxMeshInfo &PmxMeshInfo,
     USkeletalMesh *BaseSkelMesh,
     UObject *InParent,
     const FString &InFilename,
@@ -855,16 +855,16 @@ void UPmxFactory::ImportMorphTargetsInternal(
 {
     /*FbxString ShapeNodeName;
     TMap<FString, TArray<FbxShape*>> ShapeNameToShapeArray;*/
-    TMap<FString, MMD4UE4::PMX_MORPH> ShapeNameToShapeArray;
+    TMap<FString, MMD4UE5::PMX_MORPH> ShapeNameToShapeArray;
 
     for (int32 NodeIndex = 0; NodeIndex < PmxMeshInfo.morphList.Num(); NodeIndex++)
     {
-        MMD4UE4::PMX_MORPH *pmxMorphPtr = &(PmxMeshInfo.morphList[NodeIndex]);
+        MMD4UE5::PMX_MORPH *pmxMorphPtr = &(PmxMeshInfo.morphList[NodeIndex]);
         if (pmxMorphPtr->Type == 1 && pmxMorphPtr->Vertex.Num() > 0)
         { // 頂点Morph
 
             FString ShapeName = pmxMorphPtr->Name;
-            MMD4UE4::PMX_MORPH &ShapeArray = ShapeNameToShapeArray.FindOrAdd(ShapeName);
+            MMD4UE5::PMX_MORPH &ShapeArray = ShapeNameToShapeArray.FindOrAdd(ShapeName);
             ShapeArray = *pmxMorphPtr;
         }
     }
@@ -872,7 +872,7 @@ void UPmxFactory::ImportMorphTargetsInternal(
     for (auto Iter = ShapeNameToShapeArray.CreateIterator(); Iter && !bImportOperationCanceled; ++Iter)
     {
         FString ShapeName = Iter.Key();
-        MMD4UE4::PMX_MORPH &ShapeArray = Iter.Value();
+        MMD4UE5::PMX_MORPH &ShapeArray = Iter.Value();
         FSkeletalMeshImportData ShapeImportData;
         BaseImportData.CopyDataNeedByMorphTargetImport(ShapeImportData);
 
@@ -893,7 +893,7 @@ void UPmxFactory::ImportMorphTargetsInternal(
         for (int i = 0; i < ShapeArray.Vertex.Num(); i++)
         {
 
-            MMD4UE4::PMX_MORPH_VERTEX tempMorphVertex = ShapeArray.Vertex[i];
+            MMD4UE5::PMX_MORPH_VERTEX tempMorphVertex = ShapeArray.Vertex[i];
             ModifiedPoints.Add(tempMorphVertex.Index);
             ShapeImportData.Points[tempMorphVertex.Index] += tempMorphVertex.Offset;
             CompressPoints.Add(ShapeImportData.Points[tempMorphVertex.Index]);
@@ -930,7 +930,7 @@ void UPmxFactory::ImportMorphTargetsInternal(
 // Import hh target
 void UPmxFactory::ImportFbxMorphTarget(
     // TArray<FbxNode*> &SkelMeshNodeArray,
-    MMD4UE4::PmxMeshInfo &PmxMeshInfo,
+    MMD4UE5::PmxMeshInfo &PmxMeshInfo,
     USkeletalMesh *BaseSkelMesh,
     UObject *InParent,
     const FString &Filename,
@@ -962,16 +962,16 @@ void UPmxFactory::AddTokenizedErrorMessage(
     switch (ErrorMsg->GetSeverity())
     {
     case EMessageSeverity::Error:
-        UE_LOG(LogMMD4UE4_PMXFactory, Error, TEXT("%d_%s"), __LINE__, *(ErrorMsg->ToText().ToString()));
+        UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("%d_%s"), __LINE__, *(ErrorMsg->ToText().ToString()));
         break;
     // case EMessageSeverity::CriticalError:
-    // 	UE_LOG(LogMMD4UE4_PMXFactory, Error, TEXT("%d_%s"), __LINE__, *(ErrorMsg->ToText().ToString()));
+    // 	UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("%d_%s"), __LINE__, *(ErrorMsg->ToText().ToString()));
     // 	break;
     case EMessageSeverity::Warning:
-        UE_LOG(LogMMD4UE4_PMXFactory, Warning, TEXT("%d_%s"), __LINE__, *(ErrorMsg->ToText().ToString()));
+        UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("%d_%s"), __LINE__, *(ErrorMsg->ToText().ToString()));
         break;
     default:
-        UE_LOG(LogMMD4UE4_PMXFactory, Warning, TEXT("%d_%s"), __LINE__, *(ErrorMsg->ToText().ToString()));
+        UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("%d_%s"), __LINE__, *(ErrorMsg->ToText().ToString()));
         break;
     }
 }

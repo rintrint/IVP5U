@@ -15,7 +15,7 @@
 
 // #define uint8 (unsigned char)
 
-namespace MMD4UE4
+namespace MMD4UE5
 {
 
     // 宏定义 -----------------------------------
@@ -273,7 +273,7 @@ namespace MMD4UE4
     };
     //////////////////////////////////////////////////////////////
 
-    DECLARE_LOG_CATEGORY_EXTERN(LogMMD4UE4_PmxMeshInfo, Log, All)
+    DECLARE_LOG_CATEGORY_EXTERN(LogMMD4UE5_PmxMeshInfo, Log, All)
 
     ////////////////////////////////////////////////////////////////////
     // Inport用 meta data 格納クラス
@@ -402,7 +402,7 @@ struct PMXImportOptions
     AnimationLengthImportType = FBXALIT_ExportedTime;
     }*/
     UAnimSequence *AnimSequenceAsset;
-    UDataTable *MMD2UE4NameTableRow;
+    UDataTable *MMD2UE5NameTableRow;
     UMMDExtendAsset *MmdExtendAsset;
 };
 
