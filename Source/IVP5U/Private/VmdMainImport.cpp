@@ -30,146 +30,146 @@ Main implementation of FFbxImporter : import FBX data to Unreal
 
 // TSharedPtr<PmxMeshInfo> PmxMeshInfo::StaticInstance;
 
-VMDImportOptions *GetVMDImportOptions(
-    class FVmdImporter *VmdImporter,
-    UVmdImportUI *ImportUI,
-    bool bShowOptionDialog,
-    const FString &FullPath,
-    bool &bOutOperationCanceled,
-    bool &bOutImportAll,
-    bool bIsObjFormat,
-    bool bForceImportType,
-    EVMDImportType ImportType)
+VMDImportOptions* GetVMDImportOptions(
+	class FVmdImporter* VmdImporter,
+	UVmdImportUI* ImportUI,
+	bool bShowOptionDialog,
+	const FString& FullPath,
+	bool& bOutOperationCanceled,
+	bool& bOutImportAll,
+	bool bIsObjFormat,
+	bool bForceImportType,
+	EVMDImportType ImportType)
 {
-    bOutOperationCanceled = false;
+	bOutOperationCanceled = false;
 
-    if (bShowOptionDialog)
-    {
-        bOutImportAll = false;
+	if (bShowOptionDialog)
+	{
+		bOutImportAll = false;
 
-        VMDImportOptions *ImportOptions = VmdImporter->GetImportOptions();
-        // if Skeleton was set by outside, please make sure copy back to UI
-        if (ImportOptions->SkeletonForAnimation)
-        {
-            ImportUI->Skeleton = ImportOptions->SkeletonForAnimation;
-        }
-        else
-        {
-            ImportUI->Skeleton = NULL;
-        }
+		VMDImportOptions* ImportOptions = VmdImporter->GetImportOptions();
+		// if Skeleton was set by outside, please make sure copy back to UI
+		if (ImportOptions->SkeletonForAnimation)
+		{
+			ImportUI->Skeleton = ImportOptions->SkeletonForAnimation;
+		}
+		else
+		{
+			ImportUI->Skeleton = NULL;
+		}
 
-        if (ImportOptions->SkeletalMeshForAnimation)
-        {
-            ImportUI->SkeletonMesh = ImportOptions->SkeletalMeshForAnimation;
-        }
-        else
-        {
-            ImportUI->SkeletonMesh = NULL;
-        }
+		if (ImportOptions->SkeletalMeshForAnimation)
+		{
+			ImportUI->SkeletonMesh = ImportOptions->SkeletalMeshForAnimation;
+		}
+		else
+		{
+			ImportUI->SkeletonMesh = NULL;
+		}
 
-        // last select asset ref
-        if (ImportOptions->MmdExtendAsset)
-        {
-            ImportUI->MmdExtendAsset = ImportOptions->MmdExtendAsset;
-        }
-        else
-        {
-            ImportUI->MmdExtendAsset = NULL;
-        }
-        if (ImportOptions->MMD2UE5NameTableRow)
-        {
-            ImportUI->MMD2UE5NameTableRow = ImportOptions->MMD2UE5NameTableRow;
-        }
-        else
-        {
-            ImportUI->MMD2UE5NameTableRow = NULL;
-        }
-        if (ImportOptions->AnimSequenceAsset)
-        {
-            ImportUI->AnimSequenceAsset = ImportOptions->AnimSequenceAsset;
-        }
-        else
-        {
-            ImportUI->AnimSequenceAsset = NULL;
-        }
+		// last select asset ref
+		if (ImportOptions->MmdExtendAsset)
+		{
+			ImportUI->MmdExtendAsset = ImportOptions->MmdExtendAsset;
+		}
+		else
+		{
+			ImportUI->MmdExtendAsset = NULL;
+		}
+		if (ImportOptions->MMD2UE5NameTableRow)
+		{
+			ImportUI->MMD2UE5NameTableRow = ImportOptions->MMD2UE5NameTableRow;
+		}
+		else
+		{
+			ImportUI->MMD2UE5NameTableRow = NULL;
+		}
+		if (ImportOptions->AnimSequenceAsset)
+		{
+			ImportUI->AnimSequenceAsset = ImportOptions->AnimSequenceAsset;
+		}
+		else
+		{
+			ImportUI->AnimSequenceAsset = NULL;
+		}
 
-        // ImportUI->bImportAsSkeletal = ImportUI->MeshTypeToImport == VMDIT_Animation;
-        ImportUI->bIsObjImport = bIsObjFormat;
+		// ImportUI->bImportAsSkeletal = ImportUI->MeshTypeToImport == VMDIT_Animation;
+		ImportUI->bIsObjImport = bIsObjFormat;
 
-        TSharedPtr<SWindow> ParentWindow;
+		TSharedPtr<SWindow> ParentWindow;
 
-        if (FModuleManager::Get().IsModuleLoaded("MainFrame"))
-        {
-            IMainFrameModule &MainFrame = FModuleManager::LoadModuleChecked<IMainFrameModule>("MainFrame");
-            ParentWindow = MainFrame.GetParentWindow();
-        }
+		if (FModuleManager::Get().IsModuleLoaded("MainFrame"))
+		{
+			IMainFrameModule& MainFrame = FModuleManager::LoadModuleChecked<IMainFrameModule>("MainFrame");
+			ParentWindow = MainFrame.GetParentWindow();
+		}
 
-        TSharedRef<SWindow> Window = SNew(SWindow)
-                                         .Title(NSLOCTEXT("IVP5U", "VMDImportOpionsTitle", "VMD Import Options"))
-                                         .SizingRule(ESizingRule::Autosized);
+		TSharedRef<SWindow> Window = SNew(SWindow)
+										 .Title(NSLOCTEXT("IVP5U", "VMDImportOpionsTitle", "VMD Import Options"))
+										 .SizingRule(ESizingRule::Autosized);
 
-        TSharedPtr<SVmdOptionWindow> VmdOptionWindow;
-        Window->SetContent(
-            SAssignNew(VmdOptionWindow, SVmdOptionWindow)
-                .ImportUI(ImportUI)
-                .WidgetWindow(Window)
-                .FullPath(FText::FromString(FullPath))
-                .ForcedImportType(bForceImportType ? MakeShared<TOptional<EVMDImportType>>(ImportType) : MakeShared<TOptional<EVMDImportType>>())
-                .IsObjFormat(bIsObjFormat));
+		TSharedPtr<SVmdOptionWindow> VmdOptionWindow;
+		Window->SetContent(
+			SAssignNew(VmdOptionWindow, SVmdOptionWindow)
+				.ImportUI(ImportUI)
+				.WidgetWindow(Window)
+				.FullPath(FText::FromString(FullPath))
+				.ForcedImportType(bForceImportType ? MakeShared<TOptional<EVMDImportType>>(ImportType) : MakeShared<TOptional<EVMDImportType>>())
+				.IsObjFormat(bIsObjFormat));
 
-        // @todo: we can make this slow as showing progress bar later
-        FSlateApplication::Get().AddModalWindow(Window, ParentWindow, false);
+		// @todo: we can make this slow as showing progress bar later
+		FSlateApplication::Get().AddModalWindow(Window, ParentWindow, false);
 
-        ImportUI->SaveConfig();
+		ImportUI->SaveConfig();
 
-        if (ImportUI->StaticMeshImportData)
-        {
-            ImportUI->StaticMeshImportData->SaveConfig();
-        }
+		if (ImportUI->StaticMeshImportData)
+		{
+			ImportUI->StaticMeshImportData->SaveConfig();
+		}
 
-        if (ImportUI->SkeletalMeshImportData)
-        {
-            ImportUI->SkeletalMeshImportData->SaveConfig();
-        }
+		if (ImportUI->SkeletalMeshImportData)
+		{
+			ImportUI->SkeletalMeshImportData->SaveConfig();
+		}
 
-        if (VmdOptionWindow->ShouldImport())
-        {
-            bOutImportAll = VmdOptionWindow->ShouldImportAll();
+		if (VmdOptionWindow->ShouldImport())
+		{
+			bOutImportAll = VmdOptionWindow->ShouldImportAll();
 
-            // open dialog
-            // see if it's canceled
-            ApplyVMDImportUIToImportOptions(ImportUI, *ImportOptions);
+			// open dialog
+			// see if it's canceled
+			ApplyVMDImportUIToImportOptions(ImportUI, *ImportOptions);
 
-            return ImportOptions;
-        }
-        else
-        {
-            bOutOperationCanceled = true;
-        }
-    }
-    else if (GIsAutomationTesting)
-    {
-        // Automation tests set ImportUI settings directly.  Just copy them over
-        VMDImportOptions *ImportOptions = VmdImporter->GetImportOptions();
-        ApplyVMDImportUIToImportOptions(ImportUI, *ImportOptions);
-        return ImportOptions;
-    }
-    else
-    {
-        return VmdImporter->GetImportOptions();
-    }
-    return NULL;
+			return ImportOptions;
+		}
+		else
+		{
+			bOutOperationCanceled = true;
+		}
+	}
+	else if (GIsAutomationTesting)
+	{
+		// Automation tests set ImportUI settings directly.  Just copy them over
+		VMDImportOptions* ImportOptions = VmdImporter->GetImportOptions();
+		ApplyVMDImportUIToImportOptions(ImportUI, *ImportOptions);
+		return ImportOptions;
+	}
+	else
+	{
+		return VmdImporter->GetImportOptions();
+	}
+	return NULL;
 }
 
 void ApplyVMDImportUIToImportOptions(
-    UVmdImportUI *ImportUI,
-    VMDImportOptions &InOutImportOptions)
+	UVmdImportUI* ImportUI,
+	VMDImportOptions& InOutImportOptions)
 {
 
-    check(ImportUI);
+	check(ImportUI);
 
-    InOutImportOptions.SkeletonForAnimation = ImportUI->Skeleton;
-    InOutImportOptions.SkeletalMeshForAnimation = ImportUI->SkeletonMesh;
+	InOutImportOptions.SkeletonForAnimation = ImportUI->Skeleton;
+	InOutImportOptions.SkeletalMeshForAnimation = ImportUI->SkeletonMesh;
 
 #if 0
 	// animation options
@@ -180,21 +180,21 @@ void ApplyVMDImportUIToImportOptions(
 	InOutImportOptions.bPreserveLocalTransform = ImportUI->bPreserveLocalTransform;
 	InOutImportOptions.bImportCustomAttribute = ImportUI->AnimSequenceImportData->bImportCustomAttribute;
 #endif
-    // add self
-    InOutImportOptions.AnimSequenceAsset = ImportUI->AnimSequenceAsset;
-    InOutImportOptions.MMD2UE5NameTableRow = ImportUI->MMD2UE5NameTableRow;
-    InOutImportOptions.MmdExtendAsset = ImportUI->MmdExtendAsset;
+	// add self
+	InOutImportOptions.AnimSequenceAsset = ImportUI->AnimSequenceAsset;
+	InOutImportOptions.MMD2UE5NameTableRow = ImportUI->MMD2UE5NameTableRow;
+	InOutImportOptions.MmdExtendAsset = ImportUI->MmdExtendAsset;
 }
 
 TSharedPtr<FVmdImporter> FVmdImporter::StaticInstance;
 ////////////////////////////////////////////
 FVmdImporter::FVmdImporter()
-    : /* Scene(NULL)
-     , */
-      ImportOptions(NULL)
+	: /* Scene(NULL)
+	 , */
+	ImportOptions(NULL)
 {
-    ImportOptions = new VMDImportOptions();
-    FMemory::Memzero(*ImportOptions);
+	ImportOptions = new VMDImportOptions();
+	FMemory::Memzero(*ImportOptions);
 }
 
 //-------------------------------------------------------------------------
@@ -202,24 +202,24 @@ FVmdImporter::FVmdImporter()
 //-------------------------------------------------------------------------
 FVmdImporter::~FVmdImporter()
 {
-    CleanUp();
+	CleanUp();
 }
 
 //-------------------------------------------------------------------------
 //
 //-------------------------------------------------------------------------
-FVmdImporter *FVmdImporter::GetInstance()
+FVmdImporter* FVmdImporter::GetInstance()
 {
-    if (!StaticInstance.IsValid())
-    {
-        StaticInstance = MakeShareable(new FVmdImporter());
-    }
-    return StaticInstance.Get();
+	if (!StaticInstance.IsValid())
+	{
+		StaticInstance = MakeShareable(new FVmdImporter());
+	}
+	return StaticInstance.Get();
 }
 
 void FVmdImporter::DeleteInstance()
 {
-    StaticInstance.Reset();
+	StaticInstance.Reset();
 }
 
 //-------------------------------------------------------------------------
@@ -234,8 +234,8 @@ void FVmdImporter::CleanUp()
 	delete GeometryConverter;
 	GeometryConverter = NULL;
 #endif
-    delete ImportOptions;
-    ImportOptions = NULL;
+	delete ImportOptions;
+	ImportOptions = NULL;
 #if 0
 	if (SdkManager)
 	{
@@ -246,15 +246,15 @@ void FVmdImporter::CleanUp()
 #endif
 }
 
-VMDImportOptions *FVmdImporter::GetImportOptions() const
+VMDImportOptions* FVmdImporter::GetImportOptions() const
 {
-    return ImportOptions;
+	return ImportOptions;
 }
 
 ///////////////////////////////////////////////////////////////////////////
 
-UVmdImportUI::UVmdImportUI(const FObjectInitializer &ObjectInitializer)
-    : Super(ObjectInitializer) //, MMD2UE5NameTableRow(MMD2UE5NameTableRowDmmy)
+UVmdImportUI::UVmdImportUI(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer) //, MMD2UE5NameTableRow(MMD2UE5NameTableRowDmmy)
 {
 #if 0
 	StaticMeshImportData = CreateDefaultSubobject<UMMDStaticMeshImportData>(TEXT("StaticMeshImportData"));
@@ -265,29 +265,29 @@ UVmdImportUI::UVmdImportUI(const FObjectInitializer &ObjectInitializer)
 #endif
 }
 
-bool UVmdImportUI::CanEditChange(const FProperty *InProperty) const
+bool UVmdImportUI::CanEditChange(const FProperty* InProperty) const
 {
-    bool bIsMutable = Super::CanEditChange(InProperty);
-    if (bIsMutable && InProperty != NULL)
-    {
-        FName PropName = InProperty->GetFName();
+	bool bIsMutable = Super::CanEditChange(InProperty);
+	if (bIsMutable && InProperty != NULL)
+	{
+		FName PropName = InProperty->GetFName();
 
-        if (PropName == TEXT("StartFrame") || PropName == TEXT("EndFrame"))
-        {
-            // bIsMutable = AnimSequenceImportData->AnimationLength == FBXALIT_SetRange && bImportAnimations;
-        }
-        else if (PropName == TEXT("bImportCustomAttribute") || PropName == TEXT("AnimationLength"))
-        {
-            bIsMutable = bImportAnimations;
-        }
+		if (PropName == TEXT("StartFrame") || PropName == TEXT("EndFrame"))
+		{
+			// bIsMutable = AnimSequenceImportData->AnimationLength == FBXALIT_SetRange && bImportAnimations;
+		}
+		else if (PropName == TEXT("bImportCustomAttribute") || PropName == TEXT("AnimationLength"))
+		{
+			bIsMutable = bImportAnimations;
+		}
 
-        if (bIsObjImport == false && InProperty->GetBoolMetaData(TEXT("OBJRestrict")))
-        {
-            bIsMutable = false;
-        }
-    }
+		if (bIsObjImport == false && InProperty->GetBoolMetaData(TEXT("OBJRestrict")))
+		{
+			bIsMutable = false;
+		}
+	}
 
-    return bIsMutable;
+	return bIsMutable;
 }
 
 #undef LOCTEXT_NAMESPACE

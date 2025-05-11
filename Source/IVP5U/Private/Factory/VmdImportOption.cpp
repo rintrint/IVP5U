@@ -44,7 +44,7 @@ void SVMDImportOptions::Construct(const FArguments& InArgs)
 							.Text(this, &SVMDImportOptions::GetSelectedItemText)
 						]
 					]
-#if 0
+	#if 0
 				// Data row struct
 				+ SVerticalBox::Slot()
 					.AutoHeight()
@@ -85,7 +85,7 @@ void SVMDImportOptions::Construct(const FArguments& InArgs)
 							.Text(this, &SVMDImportOptions::GetSelectedCurveTypeText)
 						]
 					]
-#endif
+	#endif
 				// Ok/Cancel
 				+ SVerticalBox::Slot()
 					.AutoHeight()
@@ -108,7 +108,7 @@ void SVMDImportOptions::Construct(const FArguments& InArgs)
 					]
 			]
 		];
-#if 0
+	#if 0
 	// set-up selection
 	ImportTypeCombo->SetSelectedItem(DataTableTypePtr);
 
@@ -118,10 +118,10 @@ void SVMDImportOptions::Construct(const FArguments& InArgs)
 		CurveInterpModes.Add(MakeShareable(new ERichCurveInterpMode(ERichCurveInterpMode::RCIM_Linear)));
 		CurveInterpModes.Add(MakeShareable(new ERichCurveInterpMode(ERichCurveInterpMode::RCIM_Cubic)));
 	}
-#endif
+	#endif
 	// NB: Both combo boxes default to first item in their options lists as initially selected item
 }
-#if 0
+	#if 0
 /** If we should import */
 bool SVMDImportOptions::ShouldImport()
 {
@@ -157,7 +157,7 @@ EVisibility SVMDImportOptions::GetCurveTypeVis() const
 {
 	return (ImportTypeCombo.IsValid() && *ImportTypeCombo->GetSelectedItem() == ECSV_CurveTable) ? EVisibility::Visible : EVisibility::Collapsed;
 }
-#endif
+	#endif
 FString SVMDImportOptions::GetImportTypeText(TSharedPtr<EVMDImportType> Type) const
 {
 	FString EnumString;
@@ -178,7 +178,7 @@ TSharedRef<SWidget> SVMDImportOptions::MakeImportTypeItemWidget(TSharedPtr<EVMDI
 	return	SNew(STextBlock)
 		.Text(FText::FromString(GetImportTypeText(Type)));
 }
-#if 0
+	#if 0
 /** Called to create a widget for each struct */
 TSharedRef<SWidget> SVMDImportOptions::MakeRowStructItemWidget(UScriptStruct* Struct)
 {
@@ -214,7 +214,7 @@ TSharedRef<SWidget> SVMDImportOptions::MakeCurveTypeWidget(CurveInterpModePtr In
 	FString Label = GetCurveTypeText(InterpMode);
 	return SNew(STextBlock).Text(FText::FromString(Label));
 }
-#endif
+	#endif
 /** Called when 'OK' button is pressed */
 FReply SVMDImportOptions::OnImport()
 {
@@ -252,7 +252,7 @@ FText SVMDImportOptions::GetSelectedItemText() const
 		? FText::FromString(GetImportTypeText(SelectedType))
 		: FText::GetEmpty();
 }
-#if 0
+	#if 0
 FText SVMDImportOptions::GetSelectedRowOptionText() const
 {
 	UScriptStruct* SelectedScript = RowStructCombo->GetSelectedItem();
@@ -268,6 +268,6 @@ FText SVMDImportOptions::GetSelectedCurveTypeText() const
 		? FText::FromString(GetCurveTypeText(CurveModePtr))
 		: FText::GetEmpty();
 }
-#endif
+	#endif
 
 #endif

@@ -29,18 +29,18 @@ namespace UnrealBuildTool.Rules
 			
 			
 			PublicIncludePaths.AddRange(
-                new string[] {
+				new string[] {
 					// ... add public include paths required here ...
 				}
 				);
 
 			PrivateIncludePaths.AddRange(
-                new string[] {
-                    "IVP5U/Private",
+				new string[] {
+					"IVP5U/Private",
 					ThirdPartyPath+"/glm"
 					// ... add other private include paths required here ...
 				}
-                );
+				);
 
 			PublicDependencyModuleNames.AddRange(
 				new string[]
@@ -59,9 +59,9 @@ namespace UnrealBuildTool.Rules
 					"MessageLog",
 					"MainFrame",
 					"PropertyEditor",
-                    "RHI",
-                    "RenderCore",
-                    "ContentBrowser",
+					"RHI",
+					"RenderCore",
+					"ContentBrowser",
 					"PhysicsUtilities","SkeletalMeshUtilitiesCommon",
 					"IKRig",
 					"IKRigEditor"
@@ -80,8 +80,8 @@ namespace UnrealBuildTool.Rules
 
 			DynamicallyLoadedModuleNames.AddRange(
 				new string[]
-                {
-                    "AssetRegistry",
+				{
+					"AssetRegistry",
 					// ... add any modules that your module loads dynamically here ...
 				}
 				);

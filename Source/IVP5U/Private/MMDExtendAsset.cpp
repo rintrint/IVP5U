@@ -3,7 +3,7 @@
 #include "MMDExtendAsset.h"
 #include "IVP5UPrivatePCH.h"
 
-UMMDExtendAsset::UMMDExtendAsset(const FObjectInitializer &ObjectInitializer)
-    : Super(ObjectInitializer)
+UMMDExtendAsset::UMMDExtendAsset(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 }
