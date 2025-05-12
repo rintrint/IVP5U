@@ -50,9 +50,10 @@ namespace MMD4UE5
 				FMemory::Memcpy(&readData.vmdKeyCount, Buffer, memcopySize);
 				Buffer += memcopySize;
 
-				// memcopySize = sizeof(VMD_KEY);//111
-				readData.vmdKeyList.AddZeroed(readData.vmdKeyCount);
+				// 优化：一次性分配所有内存
+				readData.vmdKeyList.SetNumZeroed(readData.vmdKeyCount);
 
+				// 优化：批量读取数据
 				for (int32 i = 0; i < readData.vmdKeyCount; ++i)
 				{
 					VMD_KEY* vmdKeyPtr = &readData.vmdKeyList[i];
@@ -61,15 +62,12 @@ namespace MMD4UE5
 					memcopySize = sizeof(vmdKeyPtr->Name);
 					FMemory::Memcpy(&vmdKeyPtr->Name[0], Buffer, memcopySize);
 					Buffer += memcopySize;
-					// posandQurt
-					memcopySize = sizeof(int32) + sizeof(float) * (4 + 3);
+
+					// posandQurt + bezier (一次性读取更多数据)
+					memcopySize = sizeof(int32) + sizeof(float) * (4 + 3) + sizeof(vmdKeyPtr->Bezier);
 					FMemory::Memcpy(&vmdKeyPtr->Frame, Buffer, memcopySize);
 					Buffer += memcopySize;
-					// bezier
-					memcopySize = sizeof(vmdKeyPtr->Bezier);
-					FMemory::Memcpy(&vmdKeyPtr->Bezier, Buffer, memcopySize);
-					Buffer += memcopySize;
-					//
+
 					// dummy bezier
 					Buffer += 48 * sizeof(uint8);
 				}
@@ -81,8 +79,10 @@ namespace MMD4UE5
 				FMemory::Memcpy(&readData.vmdFaceCount, Buffer, memcopySize);
 				Buffer += memcopySize;
 
-				// memcopySize = sizeof(VMD_FACE_KEY);//111
-				readData.vmdFaceList.AddZeroed(readData.vmdFaceCount);
+				// 优化：一次性分配所有内存
+				readData.vmdFaceList.SetNumZeroed(readData.vmdFaceCount);
+
+				// 优化：批量读取数据
 				for (int32 i = 0; i < readData.vmdFaceCount; ++i)
 				{
 					VMD_FACE_KEY* vmdFacePtr = &readData.vmdFaceList[i];
@@ -91,7 +91,8 @@ namespace MMD4UE5
 					memcopySize = sizeof(vmdFacePtr->Name);
 					FMemory::Memcpy(&vmdFacePtr->Name[0], Buffer, memcopySize);
 					Buffer += memcopySize;
-					// frame and value
+
+					// frame and value (一次性读取)
 					memcopySize = sizeof(int32) + sizeof(float);
 					FMemory::Memcpy(&vmdFacePtr->Frame, Buffer, memcopySize);
 					Buffer += memcopySize;
@@ -106,26 +107,26 @@ namespace MMD4UE5
 
 				if (readData.vmdCameraCount > 0)
 				{
-					// memcopySize = sizeof(VMD_CAMERA);//61
-					readData.vmdCameraList.AddZeroed(readData.vmdCameraCount);
+					// 优化：一次性分配所有内存
+					readData.vmdCameraList.SetNumZeroed(readData.vmdCameraCount);
+
+					// 优化：批量读取数据
 					for (int32 i = 0; i < readData.vmdCameraCount; ++i)
 					{
 						VMD_CAMERA* vmdCameraPtr = &readData.vmdCameraList[i];
 
-						// Freme No
-						memcopySize = sizeof(uint32) * (1) // FrameNo
-							+ sizeof(float) * (1 + 3 + 3); // Length + Location + Rotate
+						// 批量读取 Frame + Length + Location + Rotate
+						memcopySize = sizeof(uint32) * (1) + sizeof(float) * (1 + 3 + 3);
 						FMemory::Memcpy(&vmdCameraPtr->Frame, Buffer, memcopySize);
 						Buffer += memcopySize;
 
-						// Interpolation[6][4]
+						// 批量读取 Interpolation
 						memcopySize = sizeof(uint8) * (6 * 4);
 						FMemory::Memcpy(&vmdCameraPtr->Interpolation[0][0][0], Buffer, memcopySize);
 						Buffer += memcopySize;
 
-						// ViewingAngle + Perspective
-						memcopySize = sizeof(uint32) * (1) // ViewingAngle
-							+ sizeof(uint8) * (1);		   // Perspective
+						// 批量读取 ViewingAngle + Perspective
+						memcopySize = sizeof(uint32) * (1) + sizeof(uint8) * (1);
 						FMemory::Memcpy(&vmdCameraPtr->ViewingAngle, Buffer, memcopySize);
 						Buffer += memcopySize;
 					}
@@ -157,20 +158,21 @@ namespace MMD4UE5
 		///////////////////////////////
 
 		int arrayIndx = -1;
-		int arrayIndxPre;
 		FString trackName;
 
-		TArray<FString> tempTrackNameList;
+		// 优化：使用哈希映射跟踪骨骼和表情名称，避免线性搜索
+		TMap<FString, int32> boneTrackNameMap;
+		TMap<FString, int32> faceTrackNameMap;
+
 		//////////////////////////////////
 		{
 			// Keys
 			TArray<VmdKeyTrackList> tempKeyBoneList;
 			VmdKeyTrackList* vmdKeyTrackPtr = NULL;
-			// VMD_KEY * vmdKeyPtr = NULL;
 
 			// VMD Key
-			tempTrackNameList.Empty();
-			arrayIndx = -1;
+			boneTrackNameMap.Empty(readData->vmdKeyCount / 10); // 预估轨道数量
+
 			for (int32 i = 0; i < readData->vmdKeyCount; i++)
 			{
 				// get ptr
@@ -180,57 +182,49 @@ namespace MMD4UE5
 					(uint8*)&(vmdKeyPtr->Name),
 					sizeof(vmdKeyPtr->Name));
 
-				arrayIndxPre = tempTrackNameList.Num();
-				arrayIndx = tempTrackNameList.AddUnique(trackName);
-				if (tempTrackNameList.Num() > arrayIndxPre)
+				// 优化：使用哈希映射查找轨道索引
+				int32* foundIndex = boneTrackNameMap.Find(trackName);
+				if (foundIndex == nullptr)
 				{
-					// New Track
+					// 新轨道
 					arrayIndx = tempKeyBoneList.Add(VmdKeyTrackList());
 					vmdKeyTrackPtr = &(tempKeyBoneList[arrayIndx]);
 					vmdKeyTrackPtr->TrackName = trackName;
+					boneTrackNameMap.Add(trackName, arrayIndx);
 				}
 				else
 				{
+					// 已存在的轨道
+					arrayIndx = *foundIndex;
 					vmdKeyTrackPtr = &(tempKeyBoneList[arrayIndx]);
-					/*
-					//exist
-					for (int k = 0; k < tempKeyBoneList.Num(); k++)
-					{
-					vmdKeyTrackPtr = &(tempKeyBoneList[k]);
-					if (vmdKeyTrackPtr->TrackName.Equals(trackName))
-					{
-					break;
-					}
-					vmdKeyTrackPtr = NULL;
-					}*/
 				}
+
 				check(vmdKeyTrackPtr);
 				///
 				arrayIndx = vmdKeyTrackPtr->keyList.Add(*vmdKeyPtr);
 				//
 				vmdKeyTrackPtr->maxFrameCount = FMath::Max(vmdKeyPtr->Frame, vmdKeyTrackPtr->maxFrameCount);
 				vmdKeyTrackPtr->minFrameCount = FMath::Min(vmdKeyPtr->Frame, vmdKeyTrackPtr->minFrameCount);
-				///
-				maxFrame = FMath::Max(vmdKeyPtr->Frame, maxFrame);
-				minFrame = FMath::Min(vmdKeyPtr->Frame, minFrame);
 			}
 
-			// 優化排序：使用內建快速排序代替手動排序
+			// 优化排序：使用内建快速排序代替手动排序
 			for (int i = 0; i < tempKeyBoneList.Num(); i++)
 			{
-				// 首先對關鍵幀按Frame排序
+				// 首先对关键帧按Frame排序
 				if (tempKeyBoneList[i].keyList.Num() > 0)
 				{
-					// 使用標準排序
+					// 使用标准排序
 					tempKeyBoneList[i].keyList.Sort([](const VMD_KEY& A, const VMD_KEY& B) {
 						return A.Frame < B.Frame;
 					});
 
-					// 生成排序索引列表 - 這裡索引就直接是數組索引了
-					tempKeyBoneList[i].sortIndexList.SetNum(tempKeyBoneList[i].keyList.Num());
-					for (int j = 0; j < tempKeyBoneList[i].keyList.Num(); j++)
+					// 优化：直接预分配内存并填充排序索引
+					const int32 keyCount = tempKeyBoneList[i].keyList.Num();
+					tempKeyBoneList[i].sortIndexList.Empty(keyCount);
+					tempKeyBoneList[i].sortIndexList.Reserve(keyCount);
+					for (int32 j = 0; j < keyCount; j++)
 					{
-						tempKeyBoneList[i].sortIndexList[j] = j;
+						tempKeyBoneList[i].sortIndexList.Add(j);
 					}
 				}
 			}
@@ -240,11 +234,10 @@ namespace MMD4UE5
 			// Skins
 			TArray<VmdFaceTrackList> tempKeyFaceList;
 			VmdFaceTrackList* vmdFaceTrackPtr = NULL;
-			// VMD_FACE_KEY * vmdFacePtr = NULL;
-			// 坡口
-			// Facc
-			tempTrackNameList.Empty();
-			arrayIndx = -1;
+
+			// 优化：使用哈希映射跟踪表情名称
+			faceTrackNameMap.Empty(readData->vmdFaceCount / 5); // 预估轨道数量
+
 			for (int32 i = 0; i < readData->vmdFaceCount; i++)
 			{
 				// get ptr
@@ -253,57 +246,50 @@ namespace MMD4UE5
 				trackName = ConvertMMDSJISToFString(
 					(uint8*)&(vmdFacePtr->Name),
 					sizeof(vmdFacePtr->Name));
-				arrayIndxPre = tempTrackNameList.Num();
-				arrayIndx = tempTrackNameList.AddUnique(trackName);
-				if (tempTrackNameList.Num() > arrayIndxPre)
+
+				// 优化：使用哈希映射查找轨道索引
+				int32* foundIndex = faceTrackNameMap.Find(trackName);
+				if (foundIndex == nullptr)
 				{
-					// New Track
+					// 新轨道
 					arrayIndx = tempKeyFaceList.Add(VmdFaceTrackList());
 					vmdFaceTrackPtr = &(tempKeyFaceList[arrayIndx]);
 					vmdFaceTrackPtr->TrackName = trackName;
+					faceTrackNameMap.Add(trackName, arrayIndx);
 				}
 				else
 				{
+					// 已存在的轨道
+					arrayIndx = *foundIndex;
 					vmdFaceTrackPtr = &(tempKeyFaceList[arrayIndx]);
-					/*
-					//exist
-					for (int k = 0; k < tempKeyBoneList.Num(); k++)
-					{
-					vmdKeyTrackPtr = &(tempKeyBoneList[k]);
-					if (vmdKeyTrackPtr->TrackName.Equals(trackName))
-					{
-					break;
-					}
-					vmdKeyTrackPtr = NULL;
-					}*/
 				}
+
 				check(vmdFaceTrackPtr);
 				///
 				arrayIndx = vmdFaceTrackPtr->keyList.Add(*vmdFacePtr);
 				//
 				vmdFaceTrackPtr->maxFrameCount = FMath::Max(vmdFacePtr->Frame, vmdFaceTrackPtr->maxFrameCount);
 				vmdFaceTrackPtr->minFrameCount = FMath::Min(vmdFacePtr->Frame, vmdFaceTrackPtr->minFrameCount);
-				///
-				maxFrame = FMath::Max(vmdFacePtr->Frame, maxFrame);
-				minFrame = FMath::Min(vmdFacePtr->Frame, minFrame);
 			}
 
-			// 優化排序：使用內建快速排序代替手動排序
+			// 优化排序：使用内建快速排序代替手动排序
 			for (int i = 0; i < tempKeyFaceList.Num(); i++)
 			{
-				// 首先對關鍵幀按Frame排序
+				// 首先对关键帧按Frame排序
 				if (tempKeyFaceList[i].keyList.Num() > 0)
 				{
-					// 使用標準排序
+					// 使用标准排序
 					tempKeyFaceList[i].keyList.Sort([](const VMD_FACE_KEY& A, const VMD_FACE_KEY& B) {
 						return A.Frame < B.Frame;
 					});
 
-					// 生成排序索引列表 - 這裡索引就直接是數組索引了
-					tempKeyFaceList[i].sortIndexList.SetNum(tempKeyFaceList[i].keyList.Num());
-					for (int j = 0; j < tempKeyFaceList[i].keyList.Num(); j++)
+					// 优化：直接预分配内存并填充排序索引
+					const int32 keyCount = tempKeyFaceList[i].keyList.Num();
+					tempKeyFaceList[i].sortIndexList.Empty(keyCount);
+					tempKeyFaceList[i].sortIndexList.Reserve(keyCount);
+					for (int32 j = 0; j < keyCount; j++)
 					{
-						tempKeyFaceList[i].sortIndexList[j] = j;
+						tempKeyFaceList[i].sortIndexList.Add(j);
 					}
 				}
 			}
@@ -316,131 +302,167 @@ namespace MMD4UE5
 			VmdCameraTrackList* vmdCamKeyTrackPtr = NULL;
 			VMD_CAMERA* vmdCamKeyPtr = NULL;
 
-			// Camera Key
-			tempTrackNameList.Empty();
-			arrayIndx = -1;
+			// Camera Key - 相机轨道只有一个，无需使用映射
 			tempKeyCamList.Empty();
-			tempKeyCamList.Add(VmdCameraTrackList()); // VMDにcamはひとつしかない為
-			trackName = "MMDCamera000";				  // 固定値
+			tempKeyCamList.Add(VmdCameraTrackList()); // VMD中相机只有一个
+			trackName = "MMDCamera000";				  // 固定值
 			// New Track
-			vmdCamKeyTrackPtr = &(tempKeyCamList[0]); // VMDにcamはひとつしかない為
+			vmdCamKeyTrackPtr = &(tempKeyCamList[0]); // VMD中相机只有一个
 			vmdCamKeyTrackPtr->TrackName = trackName;
+
+			// 优化：预分配内存
+			vmdCamKeyTrackPtr->keyList.Reserve(readData->vmdCameraCount);
+
 			for (int32 i = 0; i < readData->vmdCameraCount; i++)
 			{
 				// get ptr
 				vmdCamKeyPtr = &(readData->vmdCameraList[i]);
 				//
-
 				check(vmdCamKeyTrackPtr);
 				///
 				arrayIndx = vmdCamKeyTrackPtr->keyList.Add(*vmdCamKeyPtr);
 				//
 				vmdCamKeyTrackPtr->maxFrameCount = FMath::Max(vmdCamKeyPtr->Frame, vmdCamKeyTrackPtr->maxFrameCount);
 				vmdCamKeyTrackPtr->minFrameCount = FMath::Min(vmdCamKeyPtr->Frame, vmdCamKeyTrackPtr->minFrameCount);
-				///
-				maxFrame = FMath::Max(vmdCamKeyPtr->Frame, maxFrame);
-				minFrame = FMath::Min(vmdCamKeyPtr->Frame, minFrame);
 			}
 
-			// 優化排序：使用內建快速排序代替手動排序
+			// 优化排序：使用内建快速排序代替手动排序
 			for (int i = 0; i < tempKeyCamList.Num(); i++)
 			{
-				// 首先對關鍵幀按Frame排序
+				// 首先对关键帧按Frame排序
 				if (tempKeyCamList[i].keyList.Num() > 0)
 				{
-					// 使用標準排序
+					// 使用标准排序
 					tempKeyCamList[i].keyList.Sort([](const VMD_CAMERA& A, const VMD_CAMERA& B) {
 						return A.Frame < B.Frame;
 					});
 
-					// 生成排序索引列表 - 這裡索引就直接是數組索引了
-					tempKeyCamList[i].sortIndexList.SetNum(tempKeyCamList[i].keyList.Num());
-					for (int j = 0; j < tempKeyCamList[i].keyList.Num(); j++)
+					// 优化：直接预分配内存并填充排序索引
+					const int32 keyCount = tempKeyCamList[i].keyList.Num();
+					tempKeyCamList[i].sortIndexList.Empty(keyCount);
+					tempKeyCamList[i].sortIndexList.Reserve(keyCount);
+					for (int32 j = 0; j < keyCount; j++)
 					{
-						tempKeyCamList[i].sortIndexList[j] = j;
+						tempKeyCamList[i].sortIndexList.Add(j);
 					}
 				}
 			}
 			keyCameraList = tempKeyCamList;
 		}
-		//////////////////////////////
-		// end phase
-		maxFrame++; // min 1frame ?
+
+		// 优化：一次性计算全局最小/最大帧
+		UpdateMinMaxFrames();
+
+		// 构建名称映射以加速查找
+		BuildNameMaps();
+
 		return true;
 	}
 
-	// 如果在指定列表中有相应的Frame名称，则返回该索引值。异常值=-1。
+	// 优化：一次性计算全局最小/最大帧
+	void VmdMotionInfo::UpdateMinMaxFrames()
+	{
+		maxFrame = 0;
+		minFrame = TNumericLimits<uint32>::Max();
+
+		// 检查骨骼帧
+		for (const auto& track : keyBoneList)
+		{
+			maxFrame = FMath::Max(maxFrame, track.maxFrameCount);
+			if (track.minFrameCount < TNumericLimits<uint32>::Max())
+			{
+				minFrame = FMath::Min(minFrame, track.minFrameCount);
+			}
+		}
+
+		// 检查表情帧
+		for (const auto& track : keyFaceList)
+		{
+			maxFrame = FMath::Max(maxFrame, track.maxFrameCount);
+			if (track.minFrameCount < TNumericLimits<uint32>::Max())
+			{
+				minFrame = FMath::Min(minFrame, track.minFrameCount);
+			}
+		}
+
+		// 检查相机帧
+		for (const auto& track : keyCameraList)
+		{
+			maxFrame = FMath::Max(maxFrame, track.maxFrameCount);
+			if (track.minFrameCount < TNumericLimits<uint32>::Max())
+			{
+				minFrame = FMath::Min(minFrame, track.minFrameCount);
+			}
+		}
+
+		maxFrame++; // min 1frame ?
+	}
+
+	// 优化：构建名称映射以加速查找
+	void VmdMotionInfo::BuildNameMaps()
+	{
+		// 构建骨骼名称映射
+		BoneNameToIndexMap.Empty(keyBoneList.Num());
+		for (int i = 0; i < keyBoneList.Num(); i++)
+		{
+			BoneNameToIndexMap.Add(keyBoneList[i].TrackName, i);
+		}
+
+		// 构建表情名称映射
+		FaceNameToIndexMap.Empty(keyFaceList.Num());
+		for (int i = 0; i < keyFaceList.Num(); i++)
+		{
+			FaceNameToIndexMap.Add(keyFaceList[i].TrackName, i);
+		}
+	}
+
+	// 优化：使用哈希映射加速名称查找
 	int32 VmdMotionInfo::FindKeyTrackName(
 		FString targetName,
 		EVMDKEYFRAMETYPE listType)
 	{
-		int32 index = -1;
-		// ★TBD:VMD的骨骼名称为15Byte限制，应按前方一致检索
-		// 由于麻烦，以完全一致型检索骨骼名称尾（帧名）
-		// 導入UE5後骨骼名稱有!"#$%&'()+,./:;=@[]^_`{|}~的都會被轉成底線
-		// 空格會被轉成-
-		// 只有-*<>?\會維持原樣
 		if (listType == EVMDKEYFRAMETYPE::EVMD_KEYBONE)
 		{
-			// 1. 第一次尝试：完全匹配
-			for (int i = 0; i < keyBoneList.Num(); i++)
+			// 1. 直接查找
+			int32* FoundIndex = BoneNameToIndexMap.Find(targetName);
+			if (FoundIndex)
 			{
-				if (keyBoneList[i].TrackName.Equals(targetName))
-				{
-					index = i;
-					break;
-				}
+				return *FoundIndex;
 			}
 
-			// 2. 第二次尝试：将"_"替换为"."后再匹配
-			if (index == -1 && targetName.Contains(TEXT("_")))
+			// 2. 尝试替换 "_" 为 "."
+			if (targetName.Contains(TEXT("_")))
 			{
 				FString modifiedName = targetName;
 				modifiedName.ReplaceInline(TEXT("_"), TEXT("."));
 
-				for (int i = 0; i < keyBoneList.Num(); i++)
+				FoundIndex = BoneNameToIndexMap.Find(modifiedName);
+				if (FoundIndex)
 				{
-					if (keyBoneList[i].TrackName.Equals(modifiedName))
-					{
-						index = i;
-						break;
-					}
+					return *FoundIndex;
 				}
-			}
 
-			// 3. 第三次尝试：将"_"替换为"+"后再匹配
-			if (index == -1 && targetName.Contains(TEXT("_")))
-			{
-				FString modifiedName = targetName;
+				// 3. 尝试替换 "_" 为 "+"
+				modifiedName = targetName;
 				modifiedName.ReplaceInline(TEXT("_"), TEXT("+"));
 
-				for (int i = 0; i < keyBoneList.Num(); i++)
+				FoundIndex = BoneNameToIndexMap.Find(modifiedName);
+				if (FoundIndex)
 				{
-					if (keyBoneList[i].TrackName.Equals(modifiedName))
-					{
-						index = i;
-						break;
-					}
+					return *FoundIndex;
 				}
 			}
 		}
 		else if (listType == EVMDKEYFRAMETYPE::EVMD_KEYFACE)
 		{
-			// 1. 第一次尝试：完全匹配
-			for (int i = 0; i < keyFaceList.Num(); i++)
+			// 直接查找
+			int32* FoundIndex = FaceNameToIndexMap.Find(targetName);
+			if (FoundIndex)
 			{
-				if (keyFaceList[i].TrackName.Equals(targetName))
-				{
-					index = i;
-					break;
-				}
+				return *FoundIndex;
 			}
 		}
-		else
-		{
-			// 操作错误
-		}
 
-		return index;
+		return -1;
 	}
 } // namespace MMD4UE5

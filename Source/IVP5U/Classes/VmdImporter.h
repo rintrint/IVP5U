@@ -227,6 +227,16 @@ namespace MMD4UE5
 		TArray<VmdFaceTrackList> keyFaceList;
 		// camera
 		TArray<VmdCameraTrackList> keyCameraList;
+
+		// 优化：添加哈希映射用于加速名称查找
+		TMap<FString, int32> BoneNameToIndexMap;
+		TMap<FString, int32> FaceNameToIndexMap;
+
+		// 优化：一次性计算全局最小/最大帧
+		void UpdateMinMaxFrames();
+
+		// 优化：构建名称映射以加速查找
+		void BuildNameMaps();
 	};
 
 } // namespace MMD4UE5
