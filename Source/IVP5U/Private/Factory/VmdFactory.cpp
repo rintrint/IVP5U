@@ -723,12 +723,6 @@ bool UVmdFactory::ImportMorphCurveToAnimSequence(
 		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("====== VMD表情检查完成 ======"));
 	}
 
-	// 获取控制器
-	auto& adc = DestSeq->GetController();
-
-	// 非常重要: 开始批次处理，确保所有修改都在一个括号内
-	adc.OpenBracket(LOCTEXT("ImportMorphAnimation", "Importing VMD Morph Animation"));
-
 	// 预先计算序列长度
 	const float SequenceLength = DestSeq->GetPlayLength();
 
@@ -826,6 +820,12 @@ bool UVmdFactory::ImportMorphCurveToAnimSequence(
 			keyFrames.Add(FRichCurveKey(timeCurve, faceKeyPtr->Factor));
 		}
 	}
+
+	// 获取控制器
+	auto& adc = DestSeq->GetController();
+
+	// 非常重要: 开始批次处理，确保所有修改都在一个括号内
+	adc.OpenBracket(LOCTEXT("ImportMorphAnimation", "Importing VMD Morph Animation"));
 
 	// 第二阶段：批次添加所有曲线
 	for (const FAnimationCurveIdentifier& CurveId : CurvesToAdd)
