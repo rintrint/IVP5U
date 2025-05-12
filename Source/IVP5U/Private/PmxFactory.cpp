@@ -137,7 +137,7 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 				{
 
 					const uint8* DataPtr = File_Result.GetData();
-					// UE_LOG(LogTemp,Warning,TEXT("!!!%s"),*file);
+					// UE_LOG(LogMMD4UE5_PMXFactory,Warning,TEXT("!!!%s"),*file);
 					UObject* NewObject = NULL;
 					FPmxImporter* PmxImporter = FPmxImporter::GetInstance();
 					EPMXImportType ForcedImportType = PMXIT_SkeletalMesh;
@@ -232,7 +232,7 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 							UFactory::CurrentFilename = file;
 							FString Filename(UFactory::CurrentFilename);
 
-							UE_LOG(LogTemp, Warning, TEXT("!!!PMX Import :%s"), *Filename);
+							UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("!!!PMX Import :%s"), *Filename);
 							if (InterestingNodeCount > 0)
 							{
 								int32 NodeIndex = 0;
@@ -274,7 +274,7 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 										// import morph target
 										if (NewMesh && ImportUI->SkeletalMeshImportData->bImportMorphTargets)
 										{
-											UE_LOG(LogTemp, Warning, TEXT("!!!PMX Import :bImportMorphTargets"));
+											UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("!!!PMX Import :bImportMorphTargets"));
 											// Disable material importing when importing morph targets
 											uint32 bImportMaterials = ImportOptions->bImportMaterials;
 											ImportOptions->bImportMaterials = 0;
@@ -354,27 +354,27 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 					}
 					else
 					{
-						UE_LOG(LogTemp, Error, TEXT("!!!PMX Import error:: PMXLoaderBinary."));
+						UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("!!!PMX Import error:: PMXLoaderBinary."));
 					}
 				}
 				else
 				{
-					UE_LOG(LogTemp, Error, TEXT("!!!PMX Import error:: LoadFileToArray."));
+					UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("!!!PMX Import error:: LoadFileToArray."));
 				}
 			}
 			else
 			{
-				UE_LOG(LogTemp, Error, TEXT("!!!PMX Import error:: FIle is not exist."));
+				UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("!!!PMX Import error:: FIle is not exist."));
 			}
 		}
 		else
 		{
-			UE_LOG(LogTemp, Error, TEXT("!!!PMX Import error::filepath type error."));
+			UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("!!!PMX Import error::filepath type error."));
 		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("!!!PMX Import error::filepath error.%d,%s"), indexs, *filepath);
+		UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("!!!PMX Import error::filepath error.%d,%s"), indexs, *filepath);
 	}
 
 	return false;
@@ -485,7 +485,7 @@ UObject* UPmxFactory::FactoryCreateBinary(
 	ImportUI->bImportTextures = true;
 	ImportUI->bUnlitMaterials = true;
 	ImportUI->SkeletalMeshImportData->bImportMorphTargets = true;
-	UE_LOG(LogTemp, Warning, TEXT("!!!PMX Import :%s"), *(InParent->GetPathName()));
+	UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("!!!PMX Import :%s"), *(InParent->GetPathName()));
 
 	PMXImportOptions* ImportOptions = GetImportOptions(
 		PmxImporter,
@@ -562,7 +562,7 @@ UObject* UPmxFactory::FactoryCreateBinary(
 
 							// UEnum* CompileModeEnum = GetStaticEnum <EObjectFlags>();
 
-							UE_LOG(LogTemp, Warning, TEXT("!!!PMX Import :%s"), *OutputName.ToString());
+							UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("!!!PMX Import :%s"), *OutputName.ToString());
 
 							NewMesh = ImportSkeletalMesh(
 								InParent,
@@ -658,7 +658,7 @@ UObject* UPmxFactory::FactoryCreateBinary(
 												"Failed to import '{0}'. Failed to create asset '{1}'\nMMD停止模型导入。\nIVP5U Plugin"),
 			FText::FromString(*Name.ToString()), FText::FromString(*Name.ToString()));
 		FMessageDialog::Open(EAppMsgType::Ok, Message);
-		// UE_LOG(LogAssetTools, Warning, TEXT("%s"), *Message.ToString());
+		// UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("%s"), *Message.ToString());
 	}
 
 	GEditor->GetEditorSubsystem<UImportSubsystem>()->OnAssetPostImport.Broadcast(this, NewObject);
