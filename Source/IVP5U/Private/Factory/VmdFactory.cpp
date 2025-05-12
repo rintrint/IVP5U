@@ -375,7 +375,13 @@ UObject* UVmdFactory::FactoryCreateBinary(
 	}
 	return LastCreatedAnim;
 };
-
+/*******************
+ * 创建并初始化动画序列
+ * 按照两个阶段处理VMD动画数据：
+ * 1. 准备阶段：使用PrepareVMDBoneAnimData和PrepareMorphCurveData提取并转换数据
+ * 2. 应用阶段：使用AnimDataController批量应用所有骨骼和变形数据
+ * 这种分离可提高性能避免多次调用OpenBracket/CloseBracket
+ **********************/
 UAnimSequence* UVmdFactory::ImportAnimations(
 	USkeleton* Skeleton,
 	USkeletalMesh* SkeletalMesh,
@@ -461,61 +467,112 @@ UAnimSequence* UVmdFactory::ImportAnimations(
 	if (LastCreatedAnim)
 	{
 		bool importSuccessFlag = true;
+		double StartTime = 0.0;
 
-		// 导入VMD骨骼动画
-		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("开始导入VMD骨骼动画"));
-		double StartTime = FPlatformTime::Seconds();
-		if (!ImportVMDBoneToAnimSequence(LastCreatedAnim, Skeleton, ReNameTable, IKRig, mmdExtend, vmdMotionInfo))
-		{
-			UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("ImportVMDBoneToAnimSequence失败"));
-			importSuccessFlag = false;
-		}
-		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("完成导入VMD骨骼动画，耗时: %.3f秒"), FPlatformTime::Seconds() - StartTime);
-
-		// 导入变形动画
-		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("开始导入VMD变形动画"));
+		// 准备骨骼动画数据
+		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("开始准备VMD骨骼动画数据"));
 		StartTime = FPlatformTime::Seconds();
-		if (!ImportMorphCurveToAnimSequence(LastCreatedAnim, Skeleton, SkeletalMesh, ReNameTable, vmdMotionInfo))
+		TArray<FName> BoneNames;
+		TArray<FRawAnimSequenceTrack> RawTracks;
+		if (!PrepareVMDBoneAnimData(LastCreatedAnim, Skeleton, ReNameTable, IKRig, mmdExtend, vmdMotionInfo, BoneNames, RawTracks))
 		{
-			UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("ImportMorphCurveToAnimSequence失败"));
+			UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("PrepareVMDBoneAnimData失败"));
 			importSuccessFlag = false;
 		}
-		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("完成导入VMD变形动画，耗时: %.3f秒"), FPlatformTime::Seconds() - StartTime);
+		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("完成准备VMD骨骼动画数据，耗时: %.3f秒"), FPlatformTime::Seconds() - StartTime);
+
+		// 准备变形动画数据
+		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("开始准备VMD变形动画数据"));
+		StartTime = FPlatformTime::Seconds();
+		TArray<FAnimationCurveIdentifier> CurvesToAdd;
+		TMap<FAnimationCurveIdentifier, TArray<FRichCurveKey>> CurveKeysMap;
+		if (!PrepareMorphCurveData(LastCreatedAnim, Skeleton, SkeletalMesh, ReNameTable, vmdMotionInfo, CurvesToAdd, CurveKeysMap))
+		{
+			UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("PrepareMorphCurveData失败"));
+			importSuccessFlag = false;
+		}
+		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("完成准备VMD变形动画数据，耗时: %.3f秒"), FPlatformTime::Seconds() - StartTime);
+
+		// 执行AnimDataController操作
+		{
+			UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("开始执行AnimDataController操作"));
+			StartTime = FPlatformTime::Seconds();
+
+			auto& adc = LastCreatedAnim->GetController();
+
+			// 开启括号
+			adc.OpenBracket(LOCTEXT("ImportAsSkeletalMesh", "Importing VMD Animation"));
+
+			// 添加骨骼轨道
+			for (int32 BoneIndex = 0; BoneIndex < BoneNames.Num(); ++BoneIndex)
+			{
+				FName BoneName = BoneNames[BoneIndex];
+				FRawAnimSequenceTrack& RawTrack = RawTracks[BoneIndex];
+
+				// 实际上到这一步所有骨骼都会有2个关键帧了，所以即便是VMD内只有1帧或是静止不动的骨骼，都会添加骨骼动画曲线
+				// 腳本目前是給所有Skeleton所有骨骼都添加骨骼动画曲线
+				if (RawTrack.PosKeys.Num() > 1)
+				{
+					if (adc.AddBoneCurve(BoneName))
+					{
+						if (BoneName == L"腰")
+						{
+							for (int32 ix = 0; ix < RawTrack.PosKeys.Num(); ix++)
+							{
+								RawTrack.PosKeys[ix].X = 0.0f;
+								RawTrack.PosKeys[ix].Y = 0.0f;
+								RawTrack.RotKeys[ix] = FQuat4f(0.0f, 0.0f, 0.0f, 1.0f);
+							}
+						}
+
+						adc.SetBoneTrackKeys(BoneName, RawTrack.PosKeys, RawTrack.RotKeys, RawTrack.ScaleKeys);
+					}
+					else
+					{
+						UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("骨骼[%d]:[%s]添加軌道失敗"),
+							BoneIndex, *BoneName.ToString());
+					}
+				}
+			}
+
+			// 添加变形曲线
+			for (const FAnimationCurveIdentifier& CurveId : CurvesToAdd)
+			{
+				adc.AddCurve(CurveId);
+			}
+
+			for (auto& Pair : CurveKeysMap)
+			{
+				adc.SetCurveKeys(Pair.Key, Pair.Value);
+			}
+
+			// 更新曲线名称并通知填充
+			adc.UpdateCurveNamesFromSkeleton(Skeleton, ERawCurveTrackTypes::RCT_Float);
+			adc.NotifyPopulated();
+
+			// 关闭括号
+			adc.CloseBracket();
+
+			UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("完成执行AnimDataController操作，耗时: %.3f秒"), FPlatformTime::Seconds() - StartTime);
+		}
 
 		// 导入成功时更新预览网格
 		if ((importSuccessFlag) && (SkeletalMesh))
 		{
 			LastCreatedAnim->SetPreviewMesh(SkeletalMesh);
 		}
-	}
 
-	// Complete animation asset processing
-	if (LastCreatedAnim)
-	{
-		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("完成动画资产处理"));
-
-		// Use the animation controller directly
-		auto& adc = LastCreatedAnim->GetController();
-
-		// Open bracket to mark beginning of a large operation
-		adc.OpenBracket(LOCTEXT("ImportAsSkeletalMesh", "Importing VMD Animation"));
-
-		// Update curve names from skeleton
-		adc.UpdateCurveNamesFromSkeleton(Skeleton, ERawCurveTrackTypes::RCT_Float);
-		adc.NotifyPopulated();
-		adc.CloseBracket();
-
-		// Mark package as dirty
+		// 标记包为脏
 		MarkPackageDirty();
 		SkeletalMesh->MarkPackageDirty();
 
-		// Ensure initialization is correct
+		// 确保初始化正确
 		LastCreatedAnim->Modify();
 		LastCreatedAnim->PostEditChange();
 		LastCreatedAnim->SetPreviewMesh(SkeletalMesh);
 		LastCreatedAnim->MarkPackageDirty();
 
-		// Set skeleton preview mesh
+		// 设置骨架预览网格
 		Skeleton->SetPreviewMesh(SkeletalMesh);
 		Skeleton->PostEditChange();
 	}
@@ -571,75 +628,93 @@ UAnimSequence* UVmdFactory::AddtionalMorphCurveImportToAnimations(
 	Skeleton = exsistAnimSequ->GetSkeleton();
 
 	///////////////////////////////////
-	// Create RawCurve -> Track Curve Key
+	// 准备变形曲线数据，然后执行AnimDataController操作
 	//////////////////////
 	if (exsistAnimSequ)
 	{
 		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("准备导入变形曲线"));
-		/////////////////////////////////
-		if (!ImportMorphCurveToAnimSequence(
+
+		// 准备变形曲线数据
+		TArray<FAnimationCurveIdentifier> CurvesToAdd;
+		TMap<FAnimationCurveIdentifier, TArray<FRichCurveKey>> CurveKeysMap;
+
+		if (!PrepareMorphCurveData(
 				exsistAnimSequ,
 				Skeleton,
 				SkeletalMesh,
 				ReNameTable,
-				vmdMotionInfo))
+				vmdMotionInfo,
+				CurvesToAdd,
+				CurveKeysMap))
 		{
-			UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("ImportMorphCurveToAnimSequence失败"));
+			UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("PrepareMorphCurveData失败"));
+			return exsistAnimSequ;
+		}
+
+		// 执行AnimDataController操作
+		{
+			auto& adc = exsistAnimSequ->GetController();
+			// 开启括号
+			adc.OpenBracket(LOCTEXT("ImportMorphAnimation", "Importing VMD Morph Animation"));
+
+			// 添加所有曲线
+			for (const FAnimationCurveIdentifier& CurveId : CurvesToAdd)
+			{
+				adc.AddCurve(CurveId);
+			}
+
+			// 添加所有关键帧
+			for (auto& Pair : CurveKeysMap)
+			{
+				adc.SetCurveKeys(Pair.Key, Pair.Value);
+			}
+
+			// 更新曲线名称并通知填充
+			adc.UpdateCurveNamesFromSkeleton(Skeleton, ERawCurveTrackTypes::RCT_Float);
+			adc.NotifyPopulated();
+
+			// 关闭括号
+			adc.CloseBracket();
 		}
 	}
 
 	/////////////////////////////////////////
-	// end process?
+	// end process
 	////////////////////////////////////////
 	if (exsistAnimSequ)
 	{
-		bool existAsset = true;
-		/***********************/
-		// refresh TrackToskeletonMapIndex
-		// exsistAnimSequ->RefreshTrackMapFromAnimTrackNames();
-		if (existAsset)
+		// 标记包为脏
+		exsistAnimSequ->MarkPackageDirty();
+
+		if (SkeletalMesh)
 		{
-			UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("更新已存在的资产"));
-			// exsistAnimSequ->BakeTrackCurvesToRawAnimation();
-		}
-		else
-		{
-			UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("更新控制器"));
-			// otherwise just compress
-			// exsistAnimSequ->PostProcessSequence();
-
-			auto& adc = exsistAnimSequ->GetController();
-			adc.OpenBracket(LOCTEXT("ImportAsSkeletalMesh", "Importing VMD Animation"));
-
-			adc.UpdateCurveNamesFromSkeleton(Skeleton, ERawCurveTrackTypes::RCT_Float);
-			adc.NotifyPopulated();
-
-			adc.CloseBracket();
-
-			// mark package as dirty
-			MarkPackageDirty();
-			SkeletalMesh->MarkPackageDirty();
-
-			exsistAnimSequ->PostEditChange();
 			exsistAnimSequ->SetPreviewMesh(SkeletalMesh);
-			exsistAnimSequ->MarkPackageDirty();
+			SkeletalMesh->MarkPackageDirty();
 
 			Skeleton->SetPreviewMesh(SkeletalMesh);
 			Skeleton->PostEditChange();
 		}
+
+		// 确保初始化正确
+		exsistAnimSequ->Modify();
+		exsistAnimSequ->PostEditChange();
 	}
+
 	return exsistAnimSequ;
 }
 /*******************
- *导入Morph目标AnimCurve
- *将Morphtarget FloatCurve从VMD文件数据导入AnimSeq
+ *准备Morph目标AnimCurve数据
+ *将VMD文件中的变形目标数据转换为AnimSeq可用的格式，但不直接应用
+ *收集并准备所有曲线数据，以便后续批量添加到动画序列中
  **********************/
-bool UVmdFactory::ImportMorphCurveToAnimSequence(
+bool UVmdFactory::PrepareMorphCurveData(
 	UAnimSequence* DestSeq,
 	USkeleton* Skeleton,
 	USkeletalMesh* SkeletalMesh,
 	UDataTable* ReNameTable,
-	MMD4UE5::VmdMotionInfo* vmdMotionInfo)
+	MMD4UE5::VmdMotionInfo* vmdMotionInfo,
+	TArray<FAnimationCurveIdentifier>& OutCurvesToAdd,
+	TMap<FAnimationCurveIdentifier, TArray<FRichCurveKey>>& OutCurveKeysMap)
 {
 	if (!DestSeq || !Skeleton || !vmdMotionInfo)
 	{
@@ -649,7 +724,7 @@ bool UVmdFactory::ImportMorphCurveToAnimSequence(
 	USkeletalMesh* mesh = SkeletalMesh;
 	if (!mesh)
 	{
-		UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("ImportMorphCurveToAnimSequence GetAssetPreviewMesh未找到"));
+		UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("PrepareMorphCurveData GetAssetPreviewMesh未找到"));
 		return false;
 	}
 
@@ -727,9 +802,6 @@ bool UVmdFactory::ImportMorphCurveToAnimSequence(
 	const float SequenceLength = DestSeq->GetPlayLength();
 
 	// 第一阶段：先收集所有需要添加的曲线，然后一次性添加
-	TArray<FAnimationCurveIdentifier> CurvesToAdd;
-	TMap<FAnimationCurveIdentifier, TArray<FRichCurveKey>> CurveKeysMap;
-
 	// 预估总关键帧数，避免过多的记忆体重分配
 	int32 totalEstimatedKeyframes = 0;
 	for (int i = 0; i < vmdMotionInfo->keyFaceList.Num(); ++i)
@@ -741,8 +813,10 @@ bool UVmdFactory::ImportMorphCurveToAnimSequence(
 	}
 
 	// 预分配足够的空间
-	CurvesToAdd.Reserve(vmdMotionInfo->keyFaceList.Num());
-	CurveKeysMap.Reserve(vmdMotionInfo->keyFaceList.Num());
+	OutCurvesToAdd.Reset();
+	OutCurveKeysMap.Reset();
+	OutCurvesToAdd.Reserve(vmdMotionInfo->keyFaceList.Num());
+	OutCurveKeysMap.Reserve(vmdMotionInfo->keyFaceList.Num());
 
 	// 第一阶段：收集所有曲线数据
 	for (int i = 0; i < vmdMotionInfo->keyFaceList.Num(); ++i)
@@ -787,13 +861,13 @@ bool UVmdFactory::ImportMorphCurveToAnimSequence(
 		}
 
 		// 记录需要添加的曲线
-		CurvesToAdd.Add(CurveId);
+		OutCurvesToAdd.Add(CurveId);
 
 		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("表情[%d]:[%s]添加关键帧，总数: %d"),
 			i, *Name.ToString(), vmdFaceTrackPtr->keyList.Num());
 
 		// 预分配关键帧数组空间
-		TArray<FRichCurveKey>& keyFrames = CurveKeysMap.Add(CurveId);
+		TArray<FRichCurveKey>& keyFrames = OutCurveKeysMap.Add(CurveId);
 		keyFrames.Reserve(vmdFaceTrackPtr->keyList.Num());
 
 		// 处理每个关键帧
@@ -821,71 +895,50 @@ bool UVmdFactory::ImportMorphCurveToAnimSequence(
 		}
 	}
 
-	// 获取控制器
-	auto& adc = DestSeq->GetController();
-
-	// 非常重要: 开始批次处理，确保所有修改都在一个括号内
-	adc.OpenBracket(LOCTEXT("ImportMorphAnimation", "Importing VMD Morph Animation"));
-
-	// 第二阶段：批次添加所有曲线
-	for (const FAnimationCurveIdentifier& CurveId : CurvesToAdd)
-	{
-		adc.AddCurve(CurveId);
-	}
-
-	// 第三阶段：批次设置所有关键帧
-	for (auto& Pair : CurveKeysMap)
-	{
-		adc.SetCurveKeys(Pair.Key, Pair.Value);
-	}
-
-	// 关闭括号，触发一次完整的更新
-	adc.CloseBracket();
-
-	// 标记动画序列已修改
-	DestSeq->Modify();
-
 	return true;
 }
 
 /*******************
- * Import VMD Animation
- * 从VMD文件的数据将运动数据导入AnimSeq
+ * 准备VMD骨骼动画数据
+ * 从VMD文件数据中提取骨骼动画信息并转换为UE可用的格式
+ * 生成所有骨骼轨道的原始数据，以便后续批量添加到动画序列中
  **********************/
-bool UVmdFactory::ImportVMDBoneToAnimSequence(
+bool UVmdFactory::PrepareVMDBoneAnimData(
 	UAnimSequence* DestSeq,
 	USkeleton* Skeleton,
 	UDataTable* ReNameTable,
 	UIKRigDefinition* IKRig,
 	UMMDExtendAsset* mmdExtend,
-	MMD4UE5::VmdMotionInfo* vmdMotionInfo)
+	MMD4UE5::VmdMotionInfo* vmdMotionInfo,
+	TArray<FName>& OutBoneNames,
+	TArray<FRawAnimSequenceTrack>& OutRawTracks)
 {
 	// nullptr check in-param
 	if (!DestSeq || !Skeleton || !vmdMotionInfo)
 	{
 		UE_LOG(LogMMD4UE5_VMDFactory, Error,
-			TEXT("ImportVMDBoneToAnimSequence : Ref InParam is Null. DestSeq[%x],Skelton[%x],vmdMotionInfo[%x]"),
+			TEXT("PrepareVMDBoneAnimData : Ref InParam is Null. DestSeq[%x],Skelton[%x],vmdMotionInfo[%x]"),
 			DestSeq, Skeleton, vmdMotionInfo);
 		// TBD:: ERR in Param...
 		return false;
 	}
+
 	if (!ReNameTable)
 	{
 		UE_LOG(LogMMD4UE5_VMDFactory, Log,
-			TEXT("ImportVMDBoneToAnimSequence : Target ReNameTable is null."));
+			TEXT("PrepareVMDBoneAnimData : Target ReNameTable is null."));
 	}
+
 	if (!mmdExtend)
 	{
 		UE_LOG(LogMMD4UE5_VMDFactory, Log,
-			TEXT("ImportVMDBoneToAnimSequence : Target MMDExtendAsset is null."));
+			TEXT("PrepareVMDBoneAnimData : Target MMDExtendAsset is null."));
 	}
 
 	float ResampleRate = 30.f;
 
 	auto& adc = DestSeq->GetController();
-
 	adc.InitializeModel();
-	// adc.OpenBracket(LOCTEXT("AddNewRawTrack_Bracket", "Adding new Bone Animation Track"));
 
 	const FFrameRate ResampleFrameRate(ResampleRate, 1);
 	adc.SetFrameRate(ResampleFrameRate);
@@ -894,10 +947,10 @@ bool UVmdFactory::ImportVMDBoneToAnimSequence(
 	adc.SetNumberOfFrames(NumberOfFrames.Value, false);
 
 	const int32 NumBones = Skeleton->GetReferenceSkeleton().GetNum();
-
 	const TArray<FTransform>& RefBonePose = Skeleton->GetReferenceSkeleton().GetRefBonePose();
 
-	TArray<FRawAnimSequenceTrack> TempRawTrackList;
+	OutBoneNames.Reset(NumBones);
+	OutRawTracks.Reset(NumBones);
 
 	// /* 添加调试输出：打印Skeleton中的所有骨骼名称 */
 	// UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("====== Skeleton骨骼列表开始 ======"));
@@ -988,14 +1041,15 @@ bool UVmdFactory::ImportVMDBoneToAnimSequence(
 	// 注册与Skeleton的Bone关系@必要事项
 	for (int32 BoneIndex = 0; BoneIndex < NumBones; ++BoneIndex)
 	{
-		TempRawTrackList.Add(FRawAnimSequenceTrack());
-		check(BoneIndex == TempRawTrackList.Num() - 1);
-		FRawAnimSequenceTrack& RawTrack = TempRawTrackList[BoneIndex];
+		OutRawTracks.Add(FRawAnimSequenceTrack());
+		check(BoneIndex == OutRawTracks.Num() - 1);
+		FRawAnimSequenceTrack& RawTrack = OutRawTracks[BoneIndex];
 
 		auto refTranslation = RefBonePose[BoneIndex].GetTranslation();
 
 		FName targetName = Skeleton->GetReferenceSkeleton().GetBoneName(BoneIndex);
-		;
+		OutBoneNames.Add(targetName);
+
 		FName* pn = NameMap.Find(targetName);
 		if (pn)
 			targetName = *pn;
@@ -1019,7 +1073,7 @@ bool UVmdFactory::ImportVMDBoneToAnimSequence(
 		{
 			// {
 			//     UE_LOG(LogMMD4UE5_VMDFactory, Warning,
-			//            TEXT("ImportVMDBoneToAnimSequence Target Bone Not Found...[%s]"),
+			//            TEXT("PrepareVMDBoneAnimData Target Bone Not Found...[%s]"),
 			//            *targetName.ToString());
 			// }
 
@@ -1040,14 +1094,14 @@ bool UVmdFactory::ImportVMDBoneToAnimSequence(
 			int sortIndex = 0;
 			int preKeyIndex = -1;
 			auto& kybone = vmdMotionInfo->keyBoneList[vmdKeyListIndex];
-			// if (kybone.keyList.Num() < 2)					continue;
+			// if (kybone.keyList.Num() < 2)                    continue;
 			int nextKeyIndex = kybone.sortIndexList[sortIndex];
 			int nextKeyFrame = kybone.keyList[nextKeyIndex].Frame;
 			int baseKeyFrame = 0;
 
 			// {
 			//     UE_LOG(LogMMD4UE5_VMDFactory, Log,
-			//            TEXT("ImportVMDBoneToAnimSequence Target Bone Found...Name[%s]-KeyNum[%d]"),
+			//            TEXT("PrepareVMDBoneAnimData Target Bone Found...Name[%s]-KeyNum[%d]"),
 			//            *targetName.ToString(),
 			//            kybone.sortIndexList.Num());
 			// }
@@ -1235,7 +1289,6 @@ bool UVmdFactory::ImportVMDBoneToAnimSequence(
 
 					if (nextKeyFrame == i)
 					{
-
 						preKeyIndex = nextKeyIndex;
 						uint32 lastKF = nextKeyFrame;
 						while (sortIndex + 1 < kybone.sortIndexList.Num() && kybone.keyList[nextKeyIndex].Frame <= lastKF)
@@ -1256,47 +1309,7 @@ bool UVmdFactory::ImportVMDBoneToAnimSequence(
 			}
 		}
 	}
-	adc.OpenBracket(LOCTEXT("AddNewRawTrack_Bracket", "Adding new Bone Animation Track"));
-	/* AddTrack */
-	for (int32 BoneIndex = 0; BoneIndex < NumBones; ++BoneIndex)
-	{
-		FName BoneName = Skeleton->GetReferenceSkeleton().GetBoneName(BoneIndex);
 
-		FRawAnimSequenceTrack& RawTrack = TempRawTrackList[BoneIndex];
-
-		// DestSeq->AddNewRawTrack(BoneName, &RawTrack);
-
-		int32 NewTrackIndex = INDEX_NONE;
-		if (RawTrack.PosKeys.Num() > 1)
-		{
-			bool is_sucess = false; // 写法改变
-
-			is_sucess = adc.AddBoneCurve(BoneName);
-
-			if (is_sucess)
-			{
-				if (BoneName == L"腰")
-				{
-					for (int32 ix = 0; ix < RawTrack.PosKeys.Num(); ix++)
-					{
-						// RawTrack.PosKeys[ix] = FVector3f(0.0f,0.0f,0.0f);
-						RawTrack.PosKeys[ix].X = 0.0f;
-						RawTrack.PosKeys[ix].Y = 0.0f;
-						RawTrack.RotKeys[ix] = FQuat4f(0.0f, 0.0f, 0.0f, 1.0f);
-					}
-					// UE_LOG(LogMMD4UE5_VMDFactory, Warning, TEXT("%f,%f,%f"), RawTrack.PosKeys[1].X, RawTrack.PosKeys[1].Y, RawTrack.PosKeys[1].Z);//看看有多少个
-				}
-
-				adc.SetBoneTrackKeys(BoneName, RawTrack.PosKeys, RawTrack.RotKeys, RawTrack.ScaleKeys);
-			}
-		}
-	}
-
-	adc.UpdateCurveNamesFromSkeleton(Skeleton, ERawCurveTrackTypes::RCT_Float);
-	adc.NotifyPopulated();
-
-	adc.CloseBracket();
-	// GWarn->EndSlowTask();
 	return true;
 }
 

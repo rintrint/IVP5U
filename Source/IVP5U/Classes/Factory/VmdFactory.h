@@ -69,22 +69,26 @@ class IVP5U_API UVmdFactory : public UFactory
 		UDataTable* ReNameTable,
 		MMD4UE5::VmdMotionInfo* vmdMotionInfo);
 
-	/*将Morphtarget FloatCurve从VMD文件数据导入AnimSeq*/
-	bool ImportMorphCurveToAnimSequence(
-		UAnimSequence* DestSeq,
-		USkeleton* Skeleton,
-		USkeletalMesh* SkeletalMesh,
-		UDataTable* ReNameTable,
-		MMD4UE5::VmdMotionInfo* vmdMotionInfo);
-
-	/*从VMD文件的数据将运动数据导入AnimSeq*/
-	bool ImportVMDBoneToAnimSequence(
+	/*准备VMD骨骼动画数据，但不执行AnimDataController操作*/
+	bool PrepareVMDBoneAnimData(
 		UAnimSequence* DestSeq,
 		USkeleton* Skeleton,
 		UDataTable* ReNameTable,
 		UIKRigDefinition* IKRig,
 		UMMDExtendAsset* mmdExtend,
-		MMD4UE5::VmdMotionInfo* vmdMotionInfo);
+		MMD4UE5::VmdMotionInfo* vmdMotionInfo,
+		TArray<FName>& OutBoneNames,
+		TArray<FRawAnimSequenceTrack>& OutRawTracks);
+
+	/*准备VMD变形动画数据，但不执行AnimDataController操作*/
+	bool PrepareMorphCurveData(
+		UAnimSequence* DestSeq,
+		USkeleton* Skeleton,
+		USkeletalMesh* SkeletalMesh,
+		UDataTable* ReNameTable,
+		MMD4UE5::VmdMotionInfo* vmdMotionInfo,
+		TArray<FAnimationCurveIdentifier>& OutCurvesToAdd,
+		TMap<FAnimationCurveIdentifier, TArray<FRichCurveKey>>& OutCurveKeysMap);
 
 	/*从MMD侧的名称检索并取得TableRow的UE侧名称*/
 	bool FindTableRowMMD2UEName(
