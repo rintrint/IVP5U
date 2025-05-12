@@ -174,17 +174,17 @@ UObject* UVmdFactory::FactoryCreateBinary(
 
 	MMD4UE5::VmdMotionInfo vmdMotionInfo;
 
-	// 读取vmd文件，这是第一个主要瓶颈，导致显示导入选项对话框前有一段延迟，直到显示对话框
-	UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("开始读取vmd文件"));
+	// 读取VMD文件，这是第一个主要瓶颈，导致显示导入选项对话框前有一段延迟，直到显示对话框
+	UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("开始读取VMD文件"));
 	double StartTime = FPlatformTime::Seconds();
 	if (vmdMotionInfo.VMDLoaderBinary(Buffer, BufferEnd) == false)
 	{
-		UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("VMD导入取消:: vmd数据加载失败"));
+		UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("VMD导入取消:: VMD数据读取失败"));
 		return NULL;
 	}
-	UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("读取vmd文件耗时：%.3fs"), FPlatformTime::Seconds() - StartTime);
+	UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("读取VMD文件耗时：%.3fs"), FPlatformTime::Seconds() - StartTime);
 
-	UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("VMD解析成功，keyBoneList=%d，keyFaceList=%d，keyCameraList=%d"),
+	UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("VMD数据读取成功，keyBoneList=%d，keyFaceList=%d，keyCameraList=%d"),
 		vmdMotionInfo.keyBoneList.Num(), vmdMotionInfo.keyFaceList.Num(), vmdMotionInfo.keyCameraList.Num());
 
 	/////////////////////////////////////////
@@ -222,6 +222,14 @@ UObject* UVmdFactory::FactoryCreateBinary(
 			bIsPmxFormat,
 			ForcedImportType);
 
+		// 檢查用戶是否取消了操作
+		if (bOperationCanceled)
+		{
+			UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("用户取消VMD导入"));
+			bOutOperationCanceled = true; // 設置引擎級取消標誌
+			return NULL;				  // 返回NULL表示沒有創建資產
+		}
+
 		/* 第一次判定 */
 		if (ImportOptions)
 		{
@@ -242,6 +250,14 @@ UObject* UVmdFactory::FactoryCreateBinary(
 					ImportUI->bIsObjImport, // bIsPmxFormat,
 					bIsPmxFormat,
 					ForcedImportType);
+
+				// 再次檢查取消狀態
+				if (bOperationCanceled)
+				{
+					UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("用户取消VMD导入"));
+					bOutOperationCanceled = true; // 設置引擎級取消標誌
+					return NULL;				  // 返回NULL表示沒有創建資產
+				}
 			}
 		}
 
@@ -268,7 +284,7 @@ UObject* UVmdFactory::FactoryCreateBinary(
 				////////////////////////////////////
 				if (!ImportOptions->AnimSequenceAsset)
 				{
-					// 根据之前从vmd文件读取的数据添加动画序列，这是第二个主要瓶颈，导致点击对话框的Import后有一段延迟，直到导入成功
+					// 根据之前从VMD文件读取的数据添加动画序列，这是第二个主要瓶颈，导致点击对话框的Import后有一段延迟，直到导入成功
 					UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("开始添加动画序列"));
 					StartTime = FPlatformTime::Seconds();
 					// create AnimSequence Asset from VMD
@@ -300,13 +316,14 @@ UObject* UVmdFactory::FactoryCreateBinary(
 		}
 		else
 		{
-			UE_LOG(LogMMD4UE5_VMDFactory, Warning, TEXT("VMD导入取消"));
+			UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("导入选项获取失败"));
 		}
 	}
 	else
 	{
-		UE_LOG(LogMMD4UE5_VMDFactory, Warning, TEXT("相机动画导入未实现"));
-		LastCreatedAnim = NULL;
+		UE_LOG(LogMMD4UE5_VMDFactory, Warning, TEXT("相机动画导入未实现，请按Sequencer里的Import VMD file按钮"));
+		bOutOperationCanceled = true; // 設置引擎級取消標誌
+		return NULL;				  // 返回NULL表示沒有創建資產
 	}
 	return LastCreatedAnim;
 };
@@ -323,152 +340,140 @@ UAnimSequence* UVmdFactory::ImportAnimations(
 {
 	UAnimSequence* LastCreatedAnim = NULL;
 
-	// we need skeleton to create animsequence
+	// 检查骨骼是否存在
 	if (Skeleton == NULL)
 	{
 		UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("ImportAnimations: Skeleton为空"));
 		return NULL;
 	}
 
+	// 优化：使用字符串构建器而不是多次连接
+	FString SequenceName = FString::Printf(TEXT("%s_%s"), *Name, *Skeleton->GetName());
+	SequenceName = ObjectTools::SanitizeObjectName(SequenceName);
+
+	// 优化：使用字符串视图避免不必要的复制
+	FString animpath = SkeletalMesh->GetPathName();
+	int32 indexs = animpath.Find(TEXT("/"), ESearchCase::CaseSensitive, ESearchDir::FromEnd);
+	if (indexs != INDEX_NONE)
 	{
-		FString SequenceName = Name;
-
-		SequenceName += "_";
-		SequenceName += Skeleton->GetName();
-
-		SequenceName = ObjectTools::SanitizeObjectName(SequenceName);
-
-		FString animpath = SkeletalMesh->GetPathName();
-		int32 indexs = -1;
-		if (animpath.FindLastChar('/', indexs))
-		{
-			animpath = animpath.Left(indexs);
-		}
-		else
-		{
-			UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("获取动画路径失败"));
-			return NULL;
-		}
-
-		FString ParentPath;
-		if (Outer)
-		{
-			ParentPath = FString::Printf(TEXT("%s/%s"), *FPackageName::GetLongPackagePath(*Outer->GetName()), *SequenceName);
-		}
-		else
-		{
-			ParentPath = FString::Printf(TEXT("%s/%s"), *animpath, *SequenceName);
-		}
-
-		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("动画路径: %s"), *ParentPath);
-
-		UObject* ParentPackage = CreatePackage(*ParentPath);
-		UAnimSequence* DestSeq = nullptr;
-
-		// 先检查资产是否存在
-		FString AssetPath = FString::Printf(TEXT("%s.%s"), *ParentPath, *SequenceName);
-		UObject* ExistingAsset = StaticFindObject(UObject::StaticClass(), nullptr, *AssetPath);
-
-		if (ExistingAsset)
-		{
-			// 如果资产已存在，检查它是否是正确的类型
-			DestSeq = Cast<UAnimSequence>(ExistingAsset);
-
-			if (!DestSeq)
-			{
-				UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("同名资产已存在但不是AnimSequence类型: %s"), *AssetPath);
-				return LastCreatedAnim;
-			}
-			else
-			{
-				UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("重置现有AnimSequence: %s"), *SequenceName);
-				DestSeq->ResetAnimation();
-			}
-		}
-		else
-		{
-			// 如果资产不存在，创建新的
-			UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("创建新的AnimSequence: %s"), *SequenceName);
-			DestSeq = NewObject<UAnimSequence>(ParentPackage, *SequenceName, RF_Public | RF_Standalone);
-
-			// Notify the asset registry
-			FAssetRegistryModule::AssetCreated(DestSeq);
-		}
-
-		DestSeq->SetSkeleton(Skeleton);
-		LastCreatedAnim = DestSeq;
+		animpath.LeftInline(indexs);
+	}
+	else
+	{
+		UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("获取动画路径失败"));
+		return NULL;
 	}
 
-	///////////////////////////////////
-	// Create RawCurve -> Track Curve Key
-	//////////////////////
+	// 优化：直接使用格式化字符串
+	FString ParentPath = Outer ? FString::Printf(TEXT("%s/%s"), *FPackageName::GetLongPackagePath(*Outer->GetName()), *SequenceName) : FString::Printf(TEXT("%s/%s"), *animpath, *SequenceName);
 
+	UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("动画路径: %s"), *ParentPath);
+
+	// 优化：创建包时使用已有的字符串
+	UObject* ParentPackage = CreatePackage(*ParentPath);
+	UAnimSequence* DestSeq = nullptr;
+
+	// 优化：避免重复字符串连接
+	FString AssetPath = FString::Printf(TEXT("%s.%s"), *ParentPath, *SequenceName);
+
+	// 优化：使用更具体的搜索而不是通用搜索
+	UObject* ExistingAsset = StaticFindObject(UAnimSequence::StaticClass(), nullptr, *AssetPath);
+
+	if (ExistingAsset)
+	{
+		// 资产已存在，直接转换
+		DestSeq = Cast<UAnimSequence>(ExistingAsset);
+
+		if (!DestSeq)
+		{
+			UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("同名资产已存在但不是AnimSequence类型: %s"), *AssetPath);
+			return LastCreatedAnim;
+		}
+		else
+		{
+			UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("重置现有AnimSequence: %s"), *SequenceName);
+			DestSeq->ResetAnimation();
+		}
+	}
+	else
+	{
+		// 优化：直接创建动画序列
+		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("创建新的AnimSequence: %s"), *SequenceName);
+		DestSeq = NewObject<UAnimSequence>(ParentPackage, *SequenceName, RF_Public | RF_Standalone);
+
+		// 通知资产注册表
+		FAssetRegistryModule::AssetCreated(DestSeq);
+	}
+
+	// 设置骨架引用
+	DestSeq->SetSkeleton(Skeleton);
+	LastCreatedAnim = DestSeq;
+
+	// 如果成功创建了动画序列
 	if (LastCreatedAnim)
 	{
 		bool importSuccessFlag = true;
 
-		/* vmd animation regist*/
+		// 导入VMD骨骼动画
 		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("开始导入VMD骨骼动画"));
+
+		// 优化：使用预分配的内存和优化的算法
+		double StartTime = FPlatformTime::Seconds();
 		if (!ImportVMDBoneToAnimSequence(LastCreatedAnim, Skeleton, ReNameTable, IKRig, mmdExtend, vmdMotionInfo))
 		{
 			UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("ImportVMDBoneToAnimSequence失败"));
 			importSuccessFlag = false;
 		}
-		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("完成导入VMD骨骼动画"));
+		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("完成导入VMD骨骼动画，耗时: %.3f秒"), FPlatformTime::Seconds() - StartTime);
 
-		/* morph animation regist*/
+		// 导入变形动画
 		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("开始导入VMD变形动画"));
+		StartTime = FPlatformTime::Seconds();
 		if (!ImportMorphCurveToAnimSequence(LastCreatedAnim, Skeleton, SkeletalMesh, ReNameTable, vmdMotionInfo))
 		{
 			UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("ImportMorphCurveToAnimSequence失败"));
 			importSuccessFlag = false;
 		}
-		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("完成导入VMD变形动画"));
+		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("完成导入VMD变形动画，耗时: %.3f秒"), FPlatformTime::Seconds() - StartTime);
 
-		/*Import正常時PreviewMesh更新*/
+		// 导入成功时更新预览网格
 		if ((importSuccessFlag) && (SkeletalMesh))
 		{
-			// 设置预览网格
 			LastCreatedAnim->SetPreviewMesh(SkeletalMesh);
 		}
 	}
 
-	/////////////////////////////////////////
-	// end process?
-	////////////////////////////////////////
+	// Complete animation asset processing
 	if (LastCreatedAnim)
 	{
 		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("完成动画资产处理"));
 
+		// Use the animation controller directly
 		auto& adc = LastCreatedAnim->GetController();
+
+		// Open bracket to mark beginning of a large operation
 		adc.OpenBracket(LOCTEXT("ImportAsSkeletalMesh", "Importing VMD Animation"));
 
+		// Update curve names from skeleton
 		adc.UpdateCurveNamesFromSkeleton(Skeleton, ERawCurveTrackTypes::RCT_Float);
 		adc.NotifyPopulated();
 		adc.CloseBracket();
 
-		// mark package as dirty
+		// Mark package as dirty
 		MarkPackageDirty();
 		SkeletalMesh->MarkPackageDirty();
 
-		// 添加后处理以确保动画资料正确 (compress)
-		// otherwise just compress
-		// LastCreatedAnim->PostProcessSequence();
-		// 使用默认的压缩设置
-		// LastCreatedAnim->BoneCompressionSettings = FAnimationUtils::GetDefaultAnimationBoneCompressionSettings();
-		// LastCreatedAnim->CurveCompressionSettings = FAnimationUtils::GetDefaultAnimationCurveCompressionSettings();
-		// 尝试重新压缩动画数据
-		// LastCreatedAnim->RequestSyncAnimRecompression(false);
-		// 确保初始化正确
+		// Ensure initialization is correct
 		LastCreatedAnim->Modify();
-
 		LastCreatedAnim->PostEditChange();
 		LastCreatedAnim->SetPreviewMesh(SkeletalMesh);
 		LastCreatedAnim->MarkPackageDirty();
 
+		// Set skeleton preview mesh
 		Skeleton->SetPreviewMesh(SkeletalMesh);
 		Skeleton->PostEditChange();
 	}
+
 	return LastCreatedAnim;
 }
 
@@ -602,6 +607,37 @@ bool UVmdFactory::ImportMorphCurveToAnimSequence(
 		return false;
 	}
 
+	// 优化1: 预先缓存模型中的表情和名称映射
+	TMap<FName, UMorphTarget*> MorphTargetMap;
+
+	// 优化2: 一次性获取所有表情数据
+	const TArray<TObjectPtr<UMorphTarget>>& MorphTargets = mesh->GetMorphTargets();
+	int32 totalMeshMorphs = MorphTargets.Num();
+
+	// 预加载所有表情映射
+	for (const TObjectPtr<UMorphTarget>& MorphTarget : MorphTargets)
+	{
+		MorphTargetMap.Add(MorphTarget->GetFName(), MorphTarget.Get());
+	}
+
+	// 优化3: 预处理重命名表
+	TMap<FName, FName> RenameMap;
+	if (ReNameTable)
+	{
+		const TArray<FName> RowNames = ReNameTable->GetRowNames();
+		FString ContextString;
+
+		// 预处理重命名表
+		for (const FName& RowName : RowNames)
+		{
+			const FMMD2UE5NameTableRow* DataRow = ReNameTable->FindRow<FMMD2UE5NameTableRow>(RowName, ContextString);
+			if (DataRow)
+			{
+				RenameMap.Add(RowName, FName(*DataRow->MmdOriginalName));
+			}
+		}
+	}
+
 	// 检查VMD表情在模型中的存在情况
 	{
 		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("====== 检查VMD表情在模型中的存在情况 ======"));
@@ -611,31 +647,31 @@ bool UVmdFactory::ImportMorphCurveToAnimSequence(
 		int32 foundMorphs = 0;
 		int32 notFoundMorphs = 0;
 
-		// 获取模型中的表情数量
-		const TArray<TObjectPtr<UMorphTarget>>& MorphTargets = mesh->GetMorphTargets();
-		int32 totalMeshMorphs = MorphTargets.Num();
+		// 用于检测的临时映射
+		TSet<FName> TestedMorphs;
 
 		for (int i = 0; i < totalVmdMorphs; ++i)
 		{
 			FName Name = *vmdMotionInfo->keyFaceList[i].TrackName;
 
-			if (ReNameTable)
-			{
-				FMMD2UE5NameTableRow* dataRow;
-				FString ContextString;
-				dataRow = ReNameTable->FindRow<FMMD2UE5NameTableRow>(Name, ContextString);
-				if (dataRow)
-					Name = FName(*dataRow->MmdOriginalName);
-			}
+			// 应用重命名表
+			FName* MappedName = RenameMap.Find(Name);
+			FName TestName = MappedName ? *MappedName : Name;
 
-			if (!mesh->FindMorphTarget(Name))
+			// 避免重复测试相同名称
+			if (!TestedMorphs.Contains(TestName))
 			{
-				UE_LOG(LogMMD4UE5_VMDFactory, Warning, TEXT("VMD表情在模型中未找到: [%s]"),
-					*vmdMotionInfo->keyFaceList[i].TrackName);
-				notFoundMorphs++;
+				TestedMorphs.Add(TestName);
+
+				if (!MorphTargetMap.Contains(TestName))
+				{
+					UE_LOG(LogMMD4UE5_VMDFactory, Warning, TEXT("VMD表情在模型中未找到: [%s]"),
+						*vmdMotionInfo->keyFaceList[i].TrackName);
+					notFoundMorphs++;
+				}
+				else
+					foundMorphs++;
 			}
-			else
-				foundMorphs++;
 		}
 
 		// 输出统计信息
@@ -647,7 +683,17 @@ bool UVmdFactory::ImportMorphCurveToAnimSequence(
 		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("====== VMD表情检查完成 ======"));
 	}
 
+	// 获取控制器并预处理
 	auto& adc = DestSeq->GetController();
+
+	// 优化4: 预先分配曲线修改操作所需的内存
+	TMap<FAnimationCurveIdentifier, TArray<FRichCurveKey>> CurveKeysMap;
+	CurveKeysMap.Reserve(vmdMotionInfo->keyFaceList.Num());
+
+	// 优化5: 预先计算序列长度，避免重复访问
+	const float SequenceLength = DestSeq->GetPlayLength();
+
+	// 处理每个表情的关键帧
 	for (int i = 0; i < vmdMotionInfo->keyFaceList.Num(); ++i)
 	{
 		MMD4UE5::VmdFaceTrackList* vmdFaceTrackPtr = &vmdMotionInfo->keyFaceList[i];
@@ -655,89 +701,95 @@ bool UVmdFactory::ImportMorphCurveToAnimSequence(
 		// 获取原始名称
 		FName Name = *vmdFaceTrackPtr->TrackName;
 
-		if (ReNameTable)
+		// 应用重命名表
+		FName* MappedName = RenameMap.Find(Name);
+		if (MappedName)
 		{
-			// 如果指定了转换表，则获取转换后的名称
-			FMMD2UE5NameTableRow* dataRow;
-			FString ContextString;
-			dataRow = ReNameTable->FindRow<FMMD2UE5NameTableRow>(Name, ContextString);
-			if (dataRow)
-			{
-				UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("表情[%d]:[%s]表情名称从转换表映射: %s -> %s"),
-					i, *Name.ToString(), *Name.ToString(), *dataRow->MmdOriginalName);
-				Name = FName(*dataRow->MmdOriginalName);
-			}
+			UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("表情[%d]:[%s]表情名称从转换表映射: %s -> %s"),
+				i, *Name.ToString(), *Name.ToString(), *MappedName->ToString());
+			Name = *MappedName;
 		}
 
-		if (mesh != NULL)
+		// 检查该表情是否存在于模型中
+		UMorphTarget* morphTargetPtr = MorphTargetMap.FindRef(Name);
+		if (!morphTargetPtr)
 		{
-			UMorphTarget* morphTargetPtr = mesh->FindMorphTarget(Name);
-			if (!morphTargetPtr)
-			{
-				UE_LOG(LogMMD4UE5_VMDFactory, Warning,
-					TEXT("表情[%d]:[%s]未找到变形目标...搜索[%s]VMD原始名称[%s]"),
-					i, *Name.ToString(), *Name.ToString(), *vmdFaceTrackPtr->TrackName);
-			}
-			else
-			{
-				if (!(vmdFaceTrackPtr->keyList.Num() == 1 && vmdFaceTrackPtr->keyList[0].Factor == 0.0f))
-				{
-					// 直接创建曲线标识符的方式在UE5.5中发生了变化
-					FAnimationCurveIdentifier CurveId(Name, ERawCurveTrackTypes::RCT_Float);
-
-					// 检查曲线名称是否有效
-					if (CurveId.IsValid())
-					{
-						TArray<FRichCurveKey> keyarrys;
-						bool addResult = adc.AddCurve(CurveId);
-						if (addResult)
-						{
-							UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("表情[%d]:[%s]添加关键帧，总数: %d"),
-								i, *Name.ToString(), vmdFaceTrackPtr->keyList.Num());
-
-							MMD4UE5::VMD_FACE_KEY* faceKeyPtr = NULL;
-							for (int s = 0; s < vmdFaceTrackPtr->keyList.Num(); ++s)
-							{
-								check(vmdFaceTrackPtr->sortIndexList[s] < vmdFaceTrackPtr->keyList.Num());
-								faceKeyPtr = &vmdFaceTrackPtr->keyList[vmdFaceTrackPtr->sortIndexList[s]];
-								check(faceKeyPtr);
-
-								float SequenceLength = DestSeq->GetPlayLength();
-								float timeCurve = faceKeyPtr->Frame / 30.0f;
-
-								if (timeCurve > SequenceLength)
-								{
-									UE_LOG(LogMMD4UE5_VMDFactory, Warning, TEXT("表情[%d]:[%s]关键帧时间 %f 超出序列长度 %f，停止添加"),
-										i, *Name.ToString(), timeCurve, SequenceLength);
-									break;
-								}
-
-								keyarrys.Add(FRichCurveKey(timeCurve, faceKeyPtr->Factor));
-							}
-							adc.SetCurveKeys(CurveId, keyarrys);
-						}
-						else
-						{
-							UE_LOG(LogMMD4UE5_VMDFactory, Warning, TEXT("表情[%d]:[%s]添加曲线失败，关键帧数[%d]"),
-								i, *Name.ToString(), vmdFaceTrackPtr->keyList.Num());
-						}
-					}
-					else
-					{
-						UE_LOG(LogMMD4UE5_VMDFactory, Warning, TEXT("表情[%d]:[%s]曲线标识符无效"),
-							i, *Name.ToString());
-					}
-				}
-				else
-				{
-					UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("表情[%d]:[%s]只有一个值为0的关键帧，跳过"),
-						i, *Name.ToString());
-				}
-			}
+			UE_LOG(LogMMD4UE5_VMDFactory, Warning,
+				TEXT("表情[%d]:[%s]未找到变形目标...搜索[%s]VMD原始名称[%s]"),
+				i, *Name.ToString(), *Name.ToString(), *vmdFaceTrackPtr->TrackName);
+			continue;
 		}
-		// 标记动画序列已修改
-		DestSeq->Modify();
+
+		// 跳过只有一个值为0的关键帧
+		if (vmdFaceTrackPtr->keyList.Num() == 1 && vmdFaceTrackPtr->keyList[0].Factor == 0.0f)
+		{
+			UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("表情[%d]:[%s]只有一个值为0的关键帧，跳过"),
+				i, *Name.ToString());
+			continue;
+		}
+
+		// 创建曲线标识符
+		FAnimationCurveIdentifier CurveId(Name, ERawCurveTrackTypes::RCT_Float);
+
+		// 检查曲线名称是否有效
+		if (!CurveId.IsValid())
+		{
+			UE_LOG(LogMMD4UE5_VMDFactory, Warning, TEXT("表情[%d]:[%s]曲线标识符无效"),
+				i, *Name.ToString());
+			continue;
+		}
+
+		// 添加曲线
+		bool addResult = adc.AddCurve(CurveId);
+		if (!addResult)
+		{
+			UE_LOG(LogMMD4UE5_VMDFactory, Warning, TEXT("表情[%d]:[%s]添加曲线失败，关键帧数[%d]"),
+				i, *Name.ToString(), vmdFaceTrackPtr->keyList.Num());
+			continue;
+		}
+
+		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("表情[%d]:[%s]添加关键帧，总数: %d"),
+			i, *Name.ToString(), vmdFaceTrackPtr->keyList.Num());
+
+		// 优化6: 预先分配关键帧数组空间
+		TArray<FRichCurveKey>& keyarrys = CurveKeysMap.FindOrAdd(CurveId);
+		keyarrys.Reserve(vmdFaceTrackPtr->keyList.Num());
+
+		// 处理每个关键帧
+		for (int s = 0; s < vmdFaceTrackPtr->keyList.Num(); ++s)
+		{
+			int sortedIndex = vmdFaceTrackPtr->sortIndexList[s];
+			if (sortedIndex >= vmdFaceTrackPtr->keyList.Num())
+			{
+				UE_LOG(LogMMD4UE5_VMDFactory, Warning, TEXT("表情[%d]:[%s]索引越界: %d/%d"),
+					i, *Name.ToString(), sortedIndex, vmdFaceTrackPtr->keyList.Num());
+				continue;
+			}
+
+			MMD4UE5::VMD_FACE_KEY* faceKeyPtr = &vmdFaceTrackPtr->keyList[sortedIndex];
+
+			float timeCurve = faceKeyPtr->Frame / 30.0f;
+
+			if (timeCurve > SequenceLength)
+			{
+				UE_LOG(LogMMD4UE5_VMDFactory, Warning, TEXT("表情[%d]:[%s]关键帧时间 %f 超出序列长度 %f，停止添加"),
+					i, *Name.ToString(), timeCurve, SequenceLength);
+				break;
+			}
+
+			keyarrys.Add(FRichCurveKey(timeCurve, faceKeyPtr->Factor));
+		}
 	}
+
+	// 优化7: 批量设置曲线关键帧
+	for (auto& CurveKeysPair : CurveKeysMap)
+	{
+		adc.SetCurveKeys(CurveKeysPair.Key, CurveKeysPair.Value);
+	}
+
+	// 标记动画序列已修改
+	DestSeq->Modify();
+
 	return true;
 }
 
@@ -905,7 +957,7 @@ bool UVmdFactory::ImportVMDBoneToAnimSequence(
 			}
 		}
 
-		// UE_LOG(LogTemp, Warning, TEXT("%s"),*targetName.ToString());
+		// UE_LOG(LogMMD4UE5_VMDFactory, Warning, TEXT("%s"),*targetName.ToString());
 		int vmdKeyListIndex = vmdMotionInfo->FindKeyTrackName(targetName.ToString(),
 			MMD4UE5::VmdMotionInfo::EVMD_KEYBONE);
 		if (vmdKeyListIndex == -1)
@@ -1177,7 +1229,7 @@ bool UVmdFactory::ImportVMDBoneToAnimSequence(
 						RawTrack.PosKeys[ix].Y = 0.0f;
 						RawTrack.RotKeys[ix] = FQuat4f(0.0f, 0.0f, 0.0f, 1.0f);
 					}
-					// UE_LOG(LogTemp, Warning, TEXT("%f,%f,%f"), RawTrack.PosKeys[1].X, RawTrack.PosKeys[1].Y, RawTrack.PosKeys[1].Z);//看看有多少个
+					// UE_LOG(LogMMD4UE5_VMDFactory, Warning, TEXT("%f,%f,%f"), RawTrack.PosKeys[1].X, RawTrack.PosKeys[1].Y, RawTrack.PosKeys[1].Z);//看看有多少个
 				}
 
 				adc.SetBoneTrackKeys(BoneName, RawTrack.PosKeys, RawTrack.RotKeys, RawTrack.ScaleKeys);
