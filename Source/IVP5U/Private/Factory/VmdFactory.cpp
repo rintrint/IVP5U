@@ -16,6 +16,9 @@
 
 #include "Factory/VmdImportOption.h"
 
+#include "Framework/Notifications/NotificationManager.h"
+#include "Widgets/Notifications/SNotificationList.h"
+
 #define LOCTEXT_NAMESPACE "VMDImportFactory"
 
 DEFINE_LOG_CATEGORY(LogMMD4UE5_VMDFactory)
