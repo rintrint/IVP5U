@@ -187,6 +187,41 @@ UObject* UVmdFactory::FactoryCreateBinary(
 	UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("VMD数据读取成功，keyBoneList=%d，keyFaceList=%d，keyCameraList=%d"),
 		vmdMotionInfo.keyBoneList.Num(), vmdMotionInfo.keyFaceList.Num(), vmdMotionInfo.keyCameraList.Num());
 
+	// 输出关键帧统计、动画长度等实际讯息
+	{
+		int32 totalBoneKeyframes = 0;
+		int32 totalFaceKeyframes = 0;
+		int32 totalCameraKeyframes = 0;
+
+		// 计算骨骼关键帧总数
+		for (int i = 0; i < vmdMotionInfo.keyBoneList.Num(); ++i)
+		{
+			totalBoneKeyframes += vmdMotionInfo.keyBoneList[i].keyList.Num();
+		}
+
+		// 计算表情关键帧总数
+		for (int i = 0; i < vmdMotionInfo.keyFaceList.Num(); ++i)
+		{
+			totalFaceKeyframes += vmdMotionInfo.keyFaceList[i].keyList.Num();
+		}
+
+		// 计算相机关键帧总数
+		for (int i = 0; i < vmdMotionInfo.keyCameraList.Num(); ++i)
+		{
+			totalCameraKeyframes += vmdMotionInfo.keyCameraList[i].keyList.Num();
+		}
+
+		// 输出总关键帧数量
+		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("VMD关键帧统计：骨骼关键帧总数=%d，表情关键帧总数=%d，相机关键帧总数=%d，总关键帧数=%d"),
+			totalBoneKeyframes, totalFaceKeyframes, totalCameraKeyframes,
+			totalBoneKeyframes + totalFaceKeyframes + totalCameraKeyframes);
+
+		// 输出动画长度信息
+		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("VMD动画长度：最小帧=%d，最大帧=%d，总帧数=%d，时长=%.2f秒"),
+			vmdMotionInfo.minFrame, vmdMotionInfo.maxFrame, vmdMotionInfo.maxFrame + 1,
+			(vmdMotionInfo.maxFrame + 1) / 30.0f); // 假设VMD帧率为30fps
+	}
+
 	/////////////////////////////////////////
 	UAnimSequence* LastCreatedAnim = NULL;
 	USkeleton* Skeleton = NULL;
@@ -321,7 +356,17 @@ UObject* UVmdFactory::FactoryCreateBinary(
 	}
 	else
 	{
-		UE_LOG(LogMMD4UE5_VMDFactory, Warning, TEXT("相机动画导入未实现，请按Sequencer里的Import VMD file按钮"));
+		UE_LOG(LogMMD4UE5_VMDFactory, Warning, TEXT("这个VMD文件是相机动画，请按Sequencer里的Import VMD file按钮"));
+
+		// 添加Slate通知功能
+		const bool bNotifySlate = !FApp::IsUnattended() && !GIsRunningUnattendedScript;
+		if (bNotifySlate)
+		{
+			FNotificationInfo Info(LOCTEXT("CameraMotionImportError", "这个VMD文件是相机动画，请按Sequencer里的Import VMD file按钮"));
+			Info.ExpireDuration = 5.0f;
+			FSlateNotificationManager::Get().AddNotification(Info)->SetCompletionState(SNotificationItem::CS_Fail);
+		}
+
 		bOutOperationCanceled = true; // 設置引擎級取消標誌
 		return NULL;				  // 返回NULL表示沒有創建資產
 	}
