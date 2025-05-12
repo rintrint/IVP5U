@@ -588,6 +588,12 @@ UAnimSequence* UVmdFactory::ImportAnimations(
  ******************************************************************************/
 float UVmdFactory::interpolateBezier(float x1, float y1, float x2, float y2, float x)
 {
+	// optimize: fast path for boundary values
+	if (x <= 0.0f)
+		return 0.0f;
+	if (x >= 1.0f)
+		return 1.0f;
+
 	float t = 0.5, s = 0.5;
 	for (int i = 0; i < 15; i++)
 	{
