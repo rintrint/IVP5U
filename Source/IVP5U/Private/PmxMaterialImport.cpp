@@ -244,7 +244,7 @@ UTexture* UPmxMaterialImport::ImportTexture(
 	}
 	if (DataBinary.Num() > 0)
 	{
-		UE_LOG(LogCategoryPMXMaterialImport, Verbose,
+		UE_LOG(LogCategoryPMXMaterialImport, Log,
 			TEXT("Loading texture file %s"), *Filename);
 		const uint8* PtrTexture = DataBinary.GetData();
 		auto TextureFact = NewObject<UTextureFactory>();
