@@ -260,12 +260,12 @@ UObject* UVmdFactory::FactoryCreateBinary(
 			bIsPmxFormat,
 			ForcedImportType);
 
-		// 檢查用戶是否取消了操作
+		// 检查用户是否取消了操作
 		if (bOperationCanceled)
 		{
 			UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("用户取消VMD导入"));
-			bOutOperationCanceled = true; // 設置引擎級取消標誌
-			return NULL;				  // 返回NULL表示沒有創建資產
+			bOutOperationCanceled = true; // 设置引擎级取消标誌
+			return NULL;				  // 返回NULL表示没有创建资产
 		}
 
 		/* 第一次判定 */
@@ -289,12 +289,12 @@ UObject* UVmdFactory::FactoryCreateBinary(
 					bIsPmxFormat,
 					ForcedImportType);
 
-				// 再次檢查取消狀態
+				// 再次检查取消状态
 				if (bOperationCanceled)
 				{
 					UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("用户取消VMD导入"));
-					bOutOperationCanceled = true; // 設置引擎級取消標誌
-					return NULL;				  // 返回NULL表示沒有創建資產
+					bOutOperationCanceled = true; // 设置引擎级取消标誌
+					return NULL;				  // 返回NULL表示没有创建资产
 				}
 			}
 		}
@@ -370,8 +370,8 @@ UObject* UVmdFactory::FactoryCreateBinary(
 			FSlateNotificationManager::Get().AddNotification(Info)->SetCompletionState(SNotificationItem::CS_Fail);
 		}
 
-		bOutOperationCanceled = true; // 設置引擎級取消標誌
-		return NULL;				  // 返回NULL表示沒有創建資產
+		bOutOperationCanceled = true; // 设置引擎级取消标誌
+		return NULL;				  // 返回NULL表示没有创建资产
 	}
 	return LastCreatedAnim;
 };
@@ -510,7 +510,7 @@ UAnimSequence* UVmdFactory::ImportAnimations(
 				FRawAnimSequenceTrack& RawTrack = RawTracks[BoneIndex];
 
 				// 实际上到这一步所有骨骼都会有2个关键帧了，所以即便是VMD内只有1帧或是静止不动的骨骼，都会添加骨骼动画曲线
-				// 腳本目前是給所有Skeleton所有骨骼都添加骨骼动画曲线
+				// 脚本目前是给所有Skeleton所有骨骼都添加骨骼动画曲线
 				if (RawTrack.PosKeys.Num() > 1)
 				{
 					if (adc.AddBoneCurve(BoneName))
@@ -529,7 +529,7 @@ UAnimSequence* UVmdFactory::ImportAnimations(
 					}
 					else
 					{
-						UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("骨骼[%d]:[%s]添加軌道失敗"),
+						UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("骨骼[%d]:[%s]添加轨道失败"),
 							BoneIndex, *BoneName.ToString());
 					}
 				}
@@ -602,7 +602,7 @@ float UVmdFactory::interpolateBezier(float x1, float y1, float x2, float y2, flo
 	// 只有表情动画是Curve，可以设定关键帧是贝塞尔插值，但没有意义了因为VMD表情动画数据都是线性插值
 
 	// 此函数用于在导入时烘焙骨骼动画
-	// 插件目前在导入VMD时会烘焙骨骼动画，表情动画则直接设置Curve，不需烘焙，符合UE5作法，UE5导入FBX时也是这麽做的
+	// 插件目前在导入VMD时会烘焙骨骼动画，表情动画则直接设置Curve，不需烘焙，符合UE5作法，UE5导入FBX时也是这么做的
 
 	// optimize: fast path for boundary values
 	// Useful when keyframes are directly connected. No interpolation needed.
