@@ -8,7 +8,7 @@ https://www.bilibili.com/video/BV17p4y1K7MM/
 https://www.bilibili.com/video/BV1Ju4y197Pz/  
 
 ## 注意事项
-Project Settings開啟Support 16-bit Bone Index
+Project Settings开启Support 16-bit Bone Index
 
 设置Movie Pipeline CLI Encoder
 ```
@@ -30,12 +30,37 @@ ffmpeg下载(二选一)
 https://github.com/BtbN/FFmpeg-Builds/releases 选择ffmpeg-master-latest-win64-gpl-shared.zip
 https://www.gyan.dev/ffmpeg/builds 选择ffmpeg-git-full.7z
 
+导入行为
+骨骼关键帧全部导入
+表情关键帧如果只有一个且值为0，则跳过，其馀全部导入
+
 ## Reference
 - https://github.com/bm9/IM4U
 - https://github.com/axilesoft/IM-for-UE5
 - https://github.com/NaN-Name-bilbil/IVP5U
 
 ## 插件开发
+### TODO
+过时的API
+翻译插件、优化代码注释
+
+### 已完成
+优化两大瓶颈
+优化VMDLoaderBinary，从50秒变为1秒
+优化ImportAnimations，从50秒变为4秒
+不负责任的优化顺序树
+```
+FactoryCreateBinary 100秒变为5秒
+    |
+    ├── VMDLoaderBinary 50秒变为1秒
+    |
+    └── ImportAnimations 50秒变为4秒
+        |
+        ├── AnimDataController操作 48.5秒变为3.5秒
+        |
+        └── interpolateBezier 1.5秒变为0.5秒
+```
+
 ### 代码风格
 使用.clang-format文件  
 文件是从 https://github.com/TensorWorks/UE-Clang-Format 下载的  
@@ -49,11 +74,11 @@ IVP5U文件夹
 ```
 FactoryCreateBinary
     |
-    ├── VMDLoaderBinary (耗時操作！完整解析VMD文件)
+    ├── VMDLoaderBinary (耗时操作！完整解析VMD文件)
     |
     ├── 检查是否为相机动画
     |   |
-    |   └── (如果是) 导入相机动画 (未实现，在插件的另一个功能里：MMDCameraImporter文件夹)
+    |   └── (如果是) 显示警告讯息 (未实现，在插件的另一个功能里：MMDCameraImporter文件夹)
     |
     └── (如果不是) 导入骨骼和变形动画
         |
@@ -66,14 +91,6 @@ FactoryCreateBinary
         |   └── ImportAnimations
         |       |
         |       ├── 创建新的AnimSequence
-        |       |
-        |       ├── ImportVMDBoneToAnimSequence (导入骨骼动画)
-        |       |   |
-        |       |   └── 处理骨骼轨道数据
-        |       |
-        |       └── ImportMorphCurveToAnimSequence (导入变形动画)
-        |           |
-        |           └── 处理变形轨道数据
         |
         └── 如果是向现有AnimSequence添加变形数据
             |
@@ -92,28 +109,6 @@ ImportVmdCamera
     |   └── 设置初始相机参数和附加关系
     |
     └── ImportVmdCameraToExisting
-        |
-        ├── 获取相机组件和GUID
-        |
-        ├── ComputeCameraCuts (计算相机切换点)
-        |
-        ├── CreateCameraCutTrack (创建相机切换轨道)
-        |
-        ├── ImportVmdCameraFocalLengthProperty (导入焦距数据)
-        |   |
-        |   └── 转换FOV到焦距并应用用户缩放
-        |
-        ├── CreateVmdCameraMotionBlurProperty (创建运动模糊，可选)
-        |
-        ├── ImportVmdCameraTransform (导入相机变换)
-        |   |
-        |   └── 将VMD距离应用到位置通道
-        |
-        └── ImportVmdCameraCenterTransform (导入相机中心变换)
-            |
-            ├── 映射VMD位置数据到UE位置
-            |
-            └── 设置旋转通道并应用旋转偏移
 ```
 
 ### 导入参数说明

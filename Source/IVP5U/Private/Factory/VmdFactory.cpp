@@ -582,24 +582,45 @@ UAnimSequence* UVmdFactory::ImportAnimations(
 
 /******************************************************************************
  * Start
- * copy from: http://d.hatena.ne.jp/edvakf/touch/20111016/1318716097
+ * copy and modify from: http://d.hatena.ne.jp/edvakf/touch/20111016/1318716097
  * x1~y2 : 0 <= xy <= 1 :bezier points
  * x : 0<= x <= 1 : frame rate
  ******************************************************************************/
 float UVmdFactory::interpolateBezier(float x1, float y1, float x2, float y2, float x)
 {
+	// MMD骨骼动画都是贝塞尔插值，线性插值时只是调整控制点的位置使曲线变成直线
+	// MMD表情动画都是线性插值
+	// 不管是MMD操作介面还是VMD数据本身都是如此
+
+	// 根据UE5导入FBX测试和查看引擎的FBX导入代码得知，UE5骨骼动画都是取样过的(Sampled)
+	// 相当于每个Frame都有关键帧，且用户不可调整，也无法设定关键帧的贝塞尔插值
+	// 预期收到烘焙过的动画并在收到未烘焙的动画时自动烘焙可能是行业标准
+	// Mixamo也预设使用全帧关键帧，Mixamo和UE5 Level Seqence都是预设使用30帧，VMD也是预设使用30帧但Mixamo有60帧选项
+	// FBX本身支持Constant Linear Cubic三种插值，Bezier是Cubic的一种
+	// 所以FBX支持Bezier，但工具之间不一定支持FBX的全部功能，导出FBX前先烘焙关键帧可以确保结果的一致性
+	// UE5只能全局设定Animation Sequence是Linear还是Step来决定播放时是否做线性插值，例如用60帧播放30帧动画序列时可以更流畅
+	// 只有表情动画是Curve，可以设定关键帧是贝塞尔插值，但没有意义了因为VMD表情动画数据都是线性插值
+
+	// 此函数用于在导入时烘焙骨骼动画
+	// 插件目前在导入VMD时会烘焙骨骼动画，表情动画则直接设置Curve，不需烘焙，符合UE5作法，UE5导入FBX时也是这麽做的
+
 	// optimize: fast path for boundary values
+	// Useful when keyframes are directly connected. No interpolation needed.
 	if (x <= 0.0f)
 		return 0.0f;
 	if (x >= 1.0f)
 		return 1.0f;
 
+	// LINEAR
+	if (x1 == y1 && x2 == y2)
+		return x;
+
 	float t = 0.5, s = 0.5;
 	for (int i = 0; i < 15; i++)
 	{
 		float ft = (3 * s * s * t * x1) + (3 * s * t * t * x2) + (t * t * t) - x;
-		if (ft == 0)
-			break; // Math.abs(ft) < 0.00001 でもいいかも
+		// if (ft == 0)
+		// 	break; // Math.abs(ft) < 0.00001 でもいいかも
 		if (FGenericPlatformMath::Abs(ft) < 0.0001)
 			break;
 		if (ft > 0)
@@ -897,7 +918,14 @@ bool UVmdFactory::PrepareMorphCurveData(
 				break;
 			}
 
-			keyFrames.Add(FRichCurveKey(timeCurve, faceKeyPtr->Factor));
+			// MMD表情动画都是线性插值
+			// 原代码，依赖UE5默认使用线性插值
+			// keyFrames.Add(FRichCurveKey(timeCurve, faceKeyPtr->Factor));
+			// 改为明确使用线性插值，不依赖UE5默认行为
+			FRichCurveKey newKey(timeCurve, faceKeyPtr->Factor);
+			newKey.InterpMode = ERichCurveInterpMode::RCIM_Linear;
+			newKey.TangentMode = ERichCurveTangentMode::RCTM_Auto;
+			keyFrames.Add(newKey);
 		}
 	}
 
@@ -1200,6 +1228,11 @@ bool UVmdFactory::PrepareVMDBoneAnimData(
 						else
 						{
 							// TBD:：帧间为1的话不以0.5计算吗？
+							// 当前帧插值计算：
+							// - 当 i == PreKey.Frame 时，blendRate = 0.0（使用PreKey的值）
+							// - 当 i == NextKey.Frame 时，blendRate = 1.0（使用NextKey的值）
+							// - 当 i 在两个关键帧之间时，blendRate在0到1之间，根据位置插值
+							// 注意：当关键帧间隔为1时，不会有落在中间的帧，不需要0.5的插值计算
 							blendRate = 1.0f - (float)(NextKey.Frame - (uint32)i) / (float)(NextKey.Frame - PreKey.Frame);
 						}
 						// pose
