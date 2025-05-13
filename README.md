@@ -42,7 +42,6 @@ https://www.gyan.dev/ffmpeg/builds 选择ffmpeg-git-full.7z
 ## 插件开发
 ### TODO
 过时的API
-翻译插件、优化代码注释
 
 ### 已完成
 优化两大瓶颈
