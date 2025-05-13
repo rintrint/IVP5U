@@ -80,18 +80,18 @@ public:
 	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Perspective Mode Settings", meta = (ToolTip = "Determines whether to use VMD original settings or force a specific perspective mode.\n决定是使用VMD原始设定，还是强制使用特定的透视模式。"))
 	// ECameraPerspectiveMode PerspectiveMode;
 
-	// /** 正交模擬強度 - 控制相機拉遠距離的倍數 */
+	// /** 正交模拟强度 - 控制相机拉远距离的倍数 */
 	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Perspective Mode Settings",
 	//           meta = (ClampMin = "1.0", ClampMax = "100.0", UIMin = "1.0", UIMax = "50.0",
 	//                   EditCondition = "PerspectiveMode != ECameraPerspectiveMode::ForcePerspective",
-	//                   ToolTip = "正交模式使用拉遠相機模擬，當使用正交模式時，相機距離的倍數倍率。數值越大，正交效果越強"))
+	//                   ToolTip = "正交模式使用拉远相机模拟，当使用正交模式时，相机距离的倍数倍率。数值越大，正交效果越强"))
 	// float OrthographicStrength;
 
-	// /** 透視強度調整 - 控制透視模式下的視場角度縮放 */
+	// /** 透视强度调整 - 控制透视模式下的视场角度缩放 */
 	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Perspective Mode Settings",
 	//           meta = (ClampMin = "0.1", ClampMax = "5.0", UIMin = "0.1", UIMax = "3.0",
 	//                   EditCondition = "PerspectiveMode != ECameraPerspectiveMode::ForceOrthographic",
-	//                   ToolTip = "調整透視模式下的視場角度。值小於1時減弱透視效果，值大於1時加強透視效果"))
+	//                   ToolTip = "调整透视模式下的视场角度。值小于1时减弱透视效果，值大于1时加强透视效果"))
 	// float PerspectiveStrength;
 
 	/** 相机切换导入类型 */
@@ -102,12 +102,12 @@ public:
 	UPROPERTY(EditAnywhere, config, Category = KeyFrame, meta = (ClampMin = "1", ClampMax = "4", ToolTip = "Number of cameras to import.\n要导入的相机数量。"))
 	int CameraCount;
 
-	/** 添加运动模糊关键帧 */
-	UPROPERTY(EditAnywhere, config, Category = KeyFrame, meta = (ToolTip = "Whether to add motion blur keyframes.\n是否添加运动模糊关键帧。"))
+	/** 添加运动模煳关键帧 */
+	UPROPERTY(EditAnywhere, config, Category = KeyFrame, meta = (ToolTip = "Whether to add motion blur keyframes.\n是否添加运动模煳关键帧。"))
 	bool bAddMotionBlurKey;
 
-	/** 运动模糊量 */
-	UPROPERTY(EditAnywhere, config, Category = KeyFrame, meta = (ClampMin = "0.0", ClampMax = "1.0", EditCondition = "bAddMotionBlurKey", ToolTip = "Amount of motion blur to apply.\n应用的运动模糊量。"))
+	/** 运动模煳量 */
+	UPROPERTY(EditAnywhere, config, Category = KeyFrame, meta = (ClampMin = "0.0", ClampMax = "1.0", EditCondition = "bAddMotionBlurKey", ToolTip = "Amount of motion blur to apply.\n应用的运动模煳量。"))
 	float MotionBlurAmount;
 
 	/** 数字胶片设置 */
