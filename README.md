@@ -26,9 +26,9 @@ mp4
 -qp 30
 ```
 
-ffmpeg下载(二选一)  
-https://github.com/BtbN/FFmpeg-Builds/releases 选择ffmpeg-master-latest-win64-gpl-shared.zip
-https://www.gyan.dev/ffmpeg/builds 选择ffmpeg-git-full.7z
+ffmpeg下载(二选一)，并设置环境变数  
+https://github.com/BtbN/FFmpeg-Builds/releases 选择ffmpeg-master-latest-win64-gpl-shared.zip  
+https://www.gyan.dev/ffmpeg/builds 选择ffmpeg-git-full.7z  
 
 导入行为
 骨骼关键帧全部导入
