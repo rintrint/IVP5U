@@ -12,6 +12,12 @@ Support UE5.5
 
 ## 注意事项  
 Project Settings开启Support 16-bit Bone Index  
+未开启会导致模型直接不显示，变成空气  
+默认的8-bit Bone Index仅支持256根骨骼，MMD模型容易超过  
+
+使用VRM4U导入模型后，需要重启UE5  
+未重启就导入VMD会导致角色动画看起来鬼畜，但实际上VMD有正确导入，重启后就不鬼畜了  
+原因不明，不重启有时还会导致UE5卡死
 
 设置Movie Pipeline CLI Encoder  
 ```
@@ -33,7 +39,7 @@ ffmpeg下载(二选一)，并设置环境变数
 https://github.com/BtbN/FFmpeg-Builds/releases 选择ffmpeg-master-latest-win64-gpl-shared.zip  
 https://www.gyan.dev/ffmpeg/builds 选择ffmpeg-git-full.7z  
 
-**插件的行为**  
+## 插件的行为  
 骨骼关键帧全部导入  
 表情关键帧如果只有一个且值为0，则跳过，其馀全部导入  
 
