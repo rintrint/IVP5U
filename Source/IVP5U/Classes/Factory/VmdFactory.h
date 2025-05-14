@@ -102,10 +102,10 @@ class IVP5U_API UVmdFactory : public UFactory
 		const FName& TargetName);
 
 	/*递归计算当前关键帧中指定Bone的Glb坐标*/
-	FTransform CalcGlbTransformFromBoneIndex(
+	FTransform CalcGlbTransformFromBoneName(
 		UAnimSequence* DestSeq,
 		USkeleton* Skeleton,
-		int32 BoneIndex,
+		FName BoneName,
 		int32 keyIndex);
 	float baseFrameRate;
 

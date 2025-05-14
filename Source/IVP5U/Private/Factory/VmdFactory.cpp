@@ -546,8 +546,7 @@ UAnimSequence* UVmdFactory::ImportAnimations(
 				adc.SetCurveKeys(Pair.Key, Pair.Value);
 			}
 
-			// 更新曲线名称并通知填充
-			adc.UpdateCurveNamesFromSkeleton(Skeleton, ERawCurveTrackTypes::RCT_Float);
+			// 通知填充
 			adc.NotifyPopulated();
 
 			// 关闭括号
@@ -696,8 +695,7 @@ UAnimSequence* UVmdFactory::AddtionalMorphCurveImportToAnimations(
 				adc.SetCurveKeys(Pair.Key, Pair.Value);
 			}
 
-			// 更新曲线名称并通知填充
-			adc.UpdateCurveNamesFromSkeleton(Skeleton, ERawCurveTrackTypes::RCT_Float);
+			// 通知填充
 			adc.NotifyPopulated();
 
 			// 关闭括号
@@ -1479,39 +1477,55 @@ int32 UVmdFactory::FindRefBoneInfoIndexFromBoneName(
 }
 
 /*****************
- * 递归计算当前关键帧中指定Bone的Glb坐标
- * Return :trncform
- * @param :TargetName is Target Bone Name
+ * 递归计算当前关键帧中指定骨骼的全局坐标
+ * 使用骨骼名称而非索引，避免使用弃用API
+ * @param DestSeq 动画序列
+ * @param Skeleton 骨架
+ * @param BoneName 骨骼名称
+ * @param keyIndex 关键帧索引
+ * @return 骨骼的全局变换
  ****************/
-FTransform UVmdFactory::CalcGlbTransformFromBoneIndex(
+FTransform UVmdFactory::CalcGlbTransformFromBoneName(
 	UAnimSequence* DestSeq,
 	USkeleton* Skeleton,
-	int32 BoneIndex,
+	FName BoneName,
 	int32 keyIndex)
 {
-	if (DestSeq == NULL || Skeleton == NULL || BoneIndex < 0 || keyIndex < 0)
+	if (DestSeq == NULL || Skeleton == NULL || BoneName == NAME_None || keyIndex < 0)
 	{
-		// error root
+		// 错误输入参数
 		return FTransform::Identity;
 	}
 
-	auto& dat = DestSeq->GetDataModel()->GetBoneAnimationTracks()[BoneIndex].InternalTrackData;
-
-	FTransform resultTrans(
-		FQuat(dat.RotKeys[keyIndex]), // qt.X, qt.Y, qt.Z, qt.W),
-		FVector(dat.PosKeys[keyIndex]),
-		FVector(dat.ScaleKeys[keyIndex]));
-
-	int ParentBoneIndex = Skeleton->GetReferenceSkeleton().GetParentIndex(BoneIndex);
-	if (ParentBoneIndex >= 0)
+	// 检查骨骼轨道是否有效
+	if (!DestSeq->GetDataModel()->IsValidBoneTrackName(BoneName))
 	{
-		// found parent bone
-		resultTrans *= CalcGlbTransformFromBoneIndex(
-			DestSeq,
-			Skeleton,
-			ParentBoneIndex,
-			keyIndex);
+		return FTransform::Identity;
 	}
+
+	// 使用非弃用的API获取骨骼变换
+	FTransform resultTrans = DestSeq->GetDataModel()->GetBoneTrackTransform(BoneName, FFrameNumber(keyIndex));
+
+	// 获取骨骼在骨架中的索引
+	int32 BoneIndex = Skeleton->GetReferenceSkeleton().FindBoneIndex(BoneName);
+	if (BoneIndex != INDEX_NONE)
+	{
+		// 获取父骨骼索引
+		int32 ParentBoneIndex = Skeleton->GetReferenceSkeleton().GetParentIndex(BoneIndex);
+		if (ParentBoneIndex >= 0)
+		{
+			// 获取父骨骼名称
+			FName ParentBoneName = Skeleton->GetReferenceSkeleton().GetBoneName(ParentBoneIndex);
+
+			// 递归获取父骨骼的全局变换
+			resultTrans *= CalcGlbTransformFromBoneName(
+				DestSeq,
+				Skeleton,
+				ParentBoneName,
+				keyIndex);
+		}
+	}
+
 	return resultTrans;
 }
 bool UVmdFactory::ImportVmdFromFile(FString file, USkeletalMesh* SkeletalMesh)

@@ -131,7 +131,7 @@ private:
 	TSharedPtr<IDetailsView> DetailView;
 	FString ImportFilename;
 	// ReSharper disable once CppUninitializedNonStaticDataMember
-	UMovieSceneSequence* Sequence;
+	TObjectPtr<UMovieSceneSequence> Sequence;
 	// ReSharper disable once CppUninitializedNonStaticDataMember
 	ISequencer* Sequencer;
 };
