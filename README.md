@@ -3,8 +3,8 @@ PMX and VMD loader for UnrealEngine5
 Support UE5.5  
 
 ## UE5 MMD教程  
-UE5.5 MMD教程  
-待补  
+UE5.5 MMD教程 替代Blender渲染 VRM4U IVP5U NexGiMa FFmpeg  
+https://www.bilibili.com/video/BV1EbEzzrED9/  
 UE5.2 动画製作: VRM4U导入PMX模型 + IVP5U导入VMD动作  
 https://www.bilibili.com/video/BV17p4y1K7MM/  
 UE5.2 动画製作: 使用 IVP5U 导入MMD模型、动作和镜头  
