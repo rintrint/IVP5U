@@ -28,8 +28,8 @@ UMmdUserImportVmdSettings::UMmdUserImportVmdSettings(const FObjectInitializer& I
 	// OrthographicStrength = 10.0f; // 默認拉遠10倍來模擬正交
 	// PerspectiveStrength = 1.0f;   // 默認保持原始透視強度
 
-	CameraCutImportType = ECameraCutImportType::OneFrameInterval;
-	CameraCount = 1;
+	CameraCutImportType = ECameraCutImportType::AdaptiveConstantKey; // 從AdaptiveOneFrameInterval改為AdaptiveConstantKey
+	CameraCount = 1;												 // 從2改為1
 	bAddMotionBlurKey = false;
 	MotionBlurAmount = 0.5f;
 

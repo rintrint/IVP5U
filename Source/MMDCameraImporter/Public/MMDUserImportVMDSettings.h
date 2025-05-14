@@ -10,10 +10,17 @@
 UENUM()
 enum class ECameraCutImportType
 {
-	OneFrameInterval UMETA(DisplayName = "One Frame Interval (Best for Sequencer)"),
-	ConstantKey UMETA(DisplayName = "Constant Key (MMD 60 frame animation method)"),
-	OneFrameIntervalWithConstantKey UMETA(DisplayNAme = "One Frame Interval with Constant Key (For fps scalable environment e.g. game)"),
-	ImportAsIs UMETA(DisplayName = "Import As Is (For 30 frame animation)"),
+	ImportAsIs UMETA(DisplayName = "Import As Is\n原样导入",
+		ToolTip = "All frames use Bezier interpolation, no optimization for camera cuts (only suitable for 30fps animations)\n所有帧使用贝塞尔插值，没有针对相机切换优化 (只适合製作30帧的动画)"),
+
+	AdaptiveConstantKey UMETA(DisplayName = "Adaptive Constant Key\n自适应常数帧",
+		ToolTip = "If the next keyframe is adjacent and has a different value, it is treated as a camera cut. In this case, the keyframe is changed to constant interpolation (can create animations above 30fps, frame rate can be adjusted after import without affecting the moment of camera cut)\n若下一个关键帧相邻且数值不同时，视为相机切换，此时将关键帧改为常数插值 (可製作大于30帧的动画，可于导入后调整帧率，不会因为插值影响相机切换的瞬间)"),
+
+	AdaptiveOneFrameInterval UMETA(DisplayName = "Adaptive One Frame Interval\n自适应单帧间隔",
+		ToolTip = "If the next keyframe is adjacent and has a different value, it is treated as a camera cut. When a keyframe is between two camera cuts (previous and next keyframes both adjacent with different values), it maintains its original time and uses constant interpolation for single camera or cubic interpolation for multiple cameras. Otherwise, it adjusts the keyframe position based on the current frame rate to maintain a one-frame interval between adjacent keyframes. Can create animations above 30fps, frame rate must be adjusted before import, otherwise interpolation will affect the moment of camera cut.\n当下一个关键帧相邻且数值不同时视为相机切换。若当前帧同时被前后两个相机切换帧夹住（前后相邻帧都有值变化），则保持原始时间点且在单相机情况下使用常数插值，多相机情况下使用贝塞尔插值；否则，将根据当前帧率调整关键帧位置以维持相邻关键帧间的单帧间隔。可製作高于30帧的动画，需要导入前调整好帧率，否则会因为插值影响相机切换的瞬间"),
+
+	AdaptiveConstantKeyWithAdaptiveOneFrameInterval UMETA(DisplayName = "Adaptive Constant Key + Adaptive One Frame Interval\n自适应常数帧 + 自适应单帧间隔",
+		ToolTip = "If the next keyframe is adjacent and has a different value, it is treated as a camera cut. When a keyframe is between two camera cuts (previous and next keyframes both adjacent with different values), it maintains its original time and uses constant interpolation for single camera or cubic interpolation for multiple cameras. Otherwise, it adjusts the keyframe position based on the current frame rate to maintain a one-frame interval between adjacent keyframes AND uses constant interpolation. Can create animations above 30fps, frame rate can be adjusted after import without affecting the moment of camera cut.\n当下一个关键帧相邻且数值不同时视为相机切换。若当前帧同时被前后两个相机切换帧夹住（前后相邻帧都有值变化），则保持原始时间点且在单相机情况下使用常数插值，多相机情况下使用贝塞尔插值；否则，将根据当前帧率调整关键帧位置以维持相邻关键帧间的单帧间隔，并使用常数插值。可製作高于30帧的动画，可于导入后调整帧率，不会因为插值影响相机切换的瞬间"),
 };
 
 UENUM(BlueprintType)

@@ -263,52 +263,150 @@ private:
 				ComputedKey.LeaveTangent = FVector2D(LeaveTangentX, LeaveTangentY);
 			}
 
-			if (CameraCutImportType != ECameraCutImportType::ImportAsIs && NextKeyFrame != nullptr && NextKeyFrame->FrameNumber - CurrentKeyFrame.FrameNumber <= 1 && GetValueFunc(*NextKeyFrame) != GetValueFunc(CurrentKeyFrame))
-			{
-				// ReSharper disable once CppTooWideScopeInitStatement
-				const FVmdObject::FCameraKeyFrame* PreviousKeyFrame = 1 <= i
-					? &ReducedKeys[i - 1]
-					: nullptr;
+			// // 设置关键帧时间点和插值模式
+			// if (CameraCutImportType != ECameraCutImportType::ImportAsIs && NextKeyFrame != nullptr && NextKeyFrame->FrameNumber - CurrentKeyFrame.FrameNumber <= 1 && GetValueFunc(*NextKeyFrame) != GetValueFunc(CurrentKeyFrame))
+			// {
+			// 	// ReSharper disable once CppTooWideScopeInitStatement
+			// 	const FVmdObject::FCameraKeyFrame* PreviousKeyFrame = 1 <= i
+			// 		? &ReducedKeys[i - 1]
+			// 		: nullptr;
 
-				if (PreviousKeyFrame != nullptr && CurrentKeyFrame.FrameNumber - PreviousKeyFrame->FrameNumber <= 1 && GetValueFunc(CurrentKeyFrame) != GetValueFunc(*PreviousKeyFrame))
+			// 	if (PreviousKeyFrame != nullptr && CurrentKeyFrame.FrameNumber - PreviousKeyFrame->FrameNumber <= 1 && GetValueFunc(CurrentKeyFrame) != GetValueFunc(*PreviousKeyFrame))
+			// 	{
+			// 		ComputedKey.Time = static_cast<int32>(CurrentKeyFrame.FrameNumber) * FrameRatio;
+
+			// 		if (CameraCutImportType == ECameraCutImportType::AdaptiveConstantKey)
+			// 		{
+			// 			ComputedKey.InterpMode = RCIM_Constant;
+			// 		}
+			// 		else if (CameraCutImportType == ECameraCutImportType::AdaptiveOneFrameInterval || CameraCutImportType == ECameraCutImportType::AdaptiveConstantKeyWithAdaptiveOneFrameInterval)
+			// 		{
+			// 			// if use multiple camera, Constant Interpolation is not required
+			// 			ComputedKey.InterpMode = Channels.Num() == 1
+			// 				? RCIM_Constant
+			// 				: RCIM_Cubic;
+			// 		}
+			// 	}
+			// 	else
+			// 	{
+			// 		if (CameraCutImportType == ECameraCutImportType::AdaptiveConstantKey)
+			// 		{
+			// 			ComputedKey.Time = static_cast<int32>(CurrentKeyFrame.FrameNumber) * FrameRatio;
+			// 			ComputedKey.InterpMode = RCIM_Constant;
+			// 		}
+			// 		else if (CameraCutImportType == ECameraCutImportType::AdaptiveOneFrameInterval)
+			// 		{
+			// 			ComputedKey.Time = (static_cast<int32>(NextKeyFrame->FrameNumber) * FrameRatio) - OneSampleFrame;
+			// 			ComputedKey.InterpMode = RCIM_Cubic;
+			// 		}
+			// 		else if (CameraCutImportType == ECameraCutImportType::AdaptiveConstantKeyWithAdaptiveOneFrameInterval)
+			// 		{
+			// 			ComputedKey.Time = (static_cast<int32>(NextKeyFrame->FrameNumber) * FrameRatio) - OneSampleFrame;
+			// 			ComputedKey.InterpMode = RCIM_Constant;
+			// 		}
+			// 	}
+			// }
+			// else
+			// {
+			// 	ComputedKey.Time = static_cast<int32>(CurrentKeyFrame.FrameNumber) * FrameRatio;
+			// 	ComputedKey.InterpMode = RCIM_Cubic;
+			// }
+
+			// 设置关键帧时间点和插值模式
+			switch (CameraCutImportType)
+			{
+				case ECameraCutImportType::ImportAsIs:
 				{
+					// 原样导入模式，总是使用当前帧时间和贝塞尔插值
+					ComputedKey.Time = static_cast<int32>(CurrentKeyFrame.FrameNumber) * FrameRatio;
+					ComputedKey.InterpMode = RCIM_Cubic;
+					break;
+				}
+				case ECameraCutImportType::AdaptiveConstantKey:
+				{
+					// 自适应常数键模式，总是使用当前帧时间
 					ComputedKey.Time = static_cast<int32>(CurrentKeyFrame.FrameNumber) * FrameRatio;
 
-					if (CameraCutImportType == ECameraCutImportType::ConstantKey)
+					// 检查相邻帧的值变化
+					if (NextKeyFrame && NextKeyFrame->FrameNumber - CurrentKeyFrame.FrameNumber <= 1 && GetValueFunc(*NextKeyFrame) != GetValueFunc(CurrentKeyFrame))
 					{
+						// 相邻关键帧且值不同，使用常数插值（突变效果）
 						ComputedKey.InterpMode = RCIM_Constant;
 					}
-					else if (CameraCutImportType == ECameraCutImportType::OneFrameInterval || CameraCutImportType == ECameraCutImportType::OneFrameIntervalWithConstantKey)
+					else
 					{
-						// if use multiple camera, ConstantKey is not required
-						ComputedKey.InterpMode = Channels.Num() == 1
-							? RCIM_Constant
-							: RCIM_Cubic;
-					}
-				}
-				else
-				{
-					if (CameraCutImportType == ECameraCutImportType::ConstantKey)
-					{
-						ComputedKey.Time = static_cast<int32>(CurrentKeyFrame.FrameNumber) * FrameRatio;
-						ComputedKey.InterpMode = RCIM_Constant;
-					}
-					else if (CameraCutImportType == ECameraCutImportType::OneFrameInterval)
-					{
-						ComputedKey.Time = (static_cast<int32>(NextKeyFrame->FrameNumber) * FrameRatio) - OneSampleFrame;
+						// 间隔2帧以上或值相同，使用贝塞尔曲线插值（平滑效果）
 						ComputedKey.InterpMode = RCIM_Cubic;
 					}
-					else if (CameraCutImportType == ECameraCutImportType::OneFrameIntervalWithConstantKey)
-					{
-						ComputedKey.Time = (static_cast<int32>(NextKeyFrame->FrameNumber) * FrameRatio) - OneSampleFrame;
-						ComputedKey.InterpMode = RCIM_Constant;
-					}
+					break;
 				}
-			}
-			else
-			{
-				ComputedKey.Time = static_cast<int32>(CurrentKeyFrame.FrameNumber) * FrameRatio;
-				ComputedKey.InterpMode = RCIM_Cubic;
+				case ECameraCutImportType::AdaptiveOneFrameInterval:
+				{
+					// 判断是否处于相邻帧且值变化的情况
+					if (NextKeyFrame && NextKeyFrame->FrameNumber - CurrentKeyFrame.FrameNumber <= 1 && GetValueFunc(*NextKeyFrame) != GetValueFunc(CurrentKeyFrame))
+					{
+						// 检查前一帧的情况
+						const FVmdObject::FCameraKeyFrame* PreviousKeyFrame = (1 <= i) ? &ReducedKeys[i - 1] : nullptr;
+
+						if (PreviousKeyFrame && CurrentKeyFrame.FrameNumber - PreviousKeyFrame->FrameNumber <= 1 && GetValueFunc(CurrentKeyFrame) != GetValueFunc(*PreviousKeyFrame))
+						{
+							// 前后帧都相邻且都有值变化
+							ComputedKey.Time = static_cast<int32>(CurrentKeyFrame.FrameNumber) * FrameRatio;
+
+							// if use multiple camera, Constant Interpolation is not required
+							// 多相机情况使用贝塞尔插值，单相机使用常数插值
+							// 因为前一帧已经是相机切换了，这一帧不能移动，只能用常数插值代替
+							ComputedKey.InterpMode = (Channels.Num() == 1) ? RCIM_Constant : RCIM_Cubic;
+						}
+						else
+						{
+							// 使用下一帧时间减一个采样帧
+							ComputedKey.Time = (static_cast<int32>(NextKeyFrame->FrameNumber) * FrameRatio) - OneSampleFrame;
+							ComputedKey.InterpMode = RCIM_Cubic;
+						}
+					}
+					else
+					{
+						// 非相邻帧或值相同，使用当前帧时间和贝塞尔插值
+						ComputedKey.Time = static_cast<int32>(CurrentKeyFrame.FrameNumber) * FrameRatio;
+						ComputedKey.InterpMode = RCIM_Cubic;
+					}
+					break;
+				}
+				case ECameraCutImportType::AdaptiveConstantKeyWithAdaptiveOneFrameInterval:
+				default:
+				{
+					// 判断是否处于相邻帧且值变化的情况
+					if (NextKeyFrame && NextKeyFrame->FrameNumber - CurrentKeyFrame.FrameNumber <= 1 && GetValueFunc(*NextKeyFrame) != GetValueFunc(CurrentKeyFrame))
+					{
+						// 检查前一帧的情况
+						const FVmdObject::FCameraKeyFrame* PreviousKeyFrame = (1 <= i) ? &ReducedKeys[i - 1] : nullptr;
+
+						if (PreviousKeyFrame && CurrentKeyFrame.FrameNumber - PreviousKeyFrame->FrameNumber <= 1 && GetValueFunc(CurrentKeyFrame) != GetValueFunc(*PreviousKeyFrame))
+						{
+							// 前后帧都相邻且都有值变化
+							ComputedKey.Time = static_cast<int32>(CurrentKeyFrame.FrameNumber) * FrameRatio;
+
+							// if use multiple camera, Constant Interpolation is not required
+							// 多相机情况使用贝塞尔插值，单相机使用常数插值
+							// 因为前一帧已经是相机切换了，这一帧不能移动，只能用常数插值代替
+							ComputedKey.InterpMode = (Channels.Num() == 1) ? RCIM_Constant : RCIM_Cubic;
+						}
+						else
+						{
+							// 使用下一帧时间减一个采样帧，但总是使用常数插值
+							ComputedKey.Time = (static_cast<int32>(NextKeyFrame->FrameNumber) * FrameRatio) - OneSampleFrame;
+							ComputedKey.InterpMode = RCIM_Constant;
+						}
+					}
+					else
+					{
+						// 非相邻帧或值相同，使用当前帧时间和贝塞尔插值
+						ComputedKey.Time = static_cast<int32>(CurrentKeyFrame.FrameNumber) * FrameRatio;
+						ComputedKey.InterpMode = RCIM_Cubic;
+					}
+					break;
+				}
 			}
 
 			TimeComputedKeys.Push(ComputedKey);

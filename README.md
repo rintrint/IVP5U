@@ -2,13 +2,19 @@
 PMX and VMD loader for UnrealEngine5  
 Support UE5.5  
 
-## 教程  
-视频教程  
-- https://www.bilibili.com/video/BV17p4y1K7MM/  
-- https://www.bilibili.com/video/BV1Ju4y197Pz/  
+## UE5 MMD教程  
+UE5.5 MMD教程  
+待补  
+UE5.2 动画製作: VRM4U导入PMX模型 + IVP5U导入VMD动作  
+https://www.bilibili.com/video/BV17p4y1K7MM/  
+UE5.2 动画製作: 使用 IVP5U 导入MMD模型、动作和镜头  
+https://www.bilibili.com/video/BV1Ju4y197Pz/  
 
-非视频教程  
-- 暂无  
+##  NexGiMa烘焙物理  
+NexGiMa下载  
+https://sites.google.com/view/nexgima/Home#h.p_zUEhIi0xDZD8  
+NexGiMa教程  
+https://www.bilibili.com/video/BV1Hz42167oE/  
 
 ## 注意事项  
 Project Settings开启Support 16-bit Bone Index  
@@ -16,8 +22,7 @@ Project Settings开启Support 16-bit Bone Index
 默认的8-bit Bone Index仅支持256根骨骼，MMD模型容易超过  
 
 使用VRM4U导入模型后，需要重启UE5  
-未重启就导入VMD会导致角色动画看起来鬼畜，但实际上VMD有正确导入，重启后就不鬼畜了  
-原因不明，不重启有时还会导致UE5卡死
+未重启就导入VMD会导致动画鬼畜，原因不明，不重启有时还会导致UE5卡死  
 
 设置Movie Pipeline CLI Encoder  
 ```
@@ -50,12 +55,14 @@ https://www.gyan.dev/ffmpeg/builds 选择ffmpeg-git-full.7z
 
 ## 插件开发  
 ### TODO  
-过时的API  
+更新过时的API  
+调查Sequencer关键帧形状和颜色没有正确显示的问题  
 
 ### 已完成  
 优化两大瓶颈  
 优化VMDLoaderBinary，从50秒变为1秒  
 优化ImportAnimations，从50秒变为4秒  
+
 不负责任的优化顺序树  
 ```
 FactoryCreateBinary 100秒变为5秒
