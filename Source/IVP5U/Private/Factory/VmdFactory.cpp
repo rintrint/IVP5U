@@ -603,6 +603,8 @@ float UVmdFactory::interpolateBezier(float x1, float y1, float x2, float y2, flo
 	// 此函数用于在导入时烘焙骨骼动画
 	// 插件目前在导入VMD时会烘焙骨骼动画，表情动画则直接设置Curve，不需烘焙，符合UE5作法，UE5导入FBX时也是这么做的
 
+	// 这是自适应步长方法，不是牛顿法
+
 	// optimize: fast path for boundary values
 	// Useful when keyframes are directly connected. No interpolation needed.
 	if (x <= 0.0f)
