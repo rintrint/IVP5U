@@ -41,14 +41,11 @@ namespace
 
 void UPmxMaterialImport::AssetsCreateTexture(
 	UObject* InParentx,
-	// EObjectFlags Flags,
-	// FFeedbackContext * Warn,
 	FString CurPath,
 	FString filePath,
 	TArray<UTexture*>& textureAssetList)
 {
 	TArray<FString> ImagePaths;
-	// FString CurPath = FPaths::GetPath(GetCurrentFilename());
 
 	FAssetToolsModule& AssetToolsModule = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools");
 
