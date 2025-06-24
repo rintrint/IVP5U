@@ -296,7 +296,6 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 											// MMD Extend asset
 											CreateMMDExtendFromMMDModel(
 												InParent,
-												// FName(*NewObject->GetName()),
 												Cast<USkeletalMesh>(NewObject),
 												&pmxMeshInfoPtr);
 										}
@@ -600,7 +599,6 @@ UObject* UPmxFactory::FactoryCreateBinary(
 							// MMD Extend asset
 							CreateMMDExtendFromMMDModel(
 								InParent,
-								// FName(*NewObject->GetName()),
 								Cast<USkeletalMesh>(NewObject),
 								&pmxMeshInfoPtr);
 						}
@@ -686,8 +684,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 
 	if (true /*!FbxShapeArray*/)
 	{
-		// UObject* ExistingObject = StaticFindObjectFast(UObject::StaticClass(), InParent, *Name.ToString(), false, false, RF_PendingKill);// ~UE 4.10
-		UObject* ExistingObject = StaticFindObjectFast(UObject::StaticClass(), InParent, *Name.ToString(), false, false, EObjectFlags::RF_Standalone, EInternalObjectFlags::LoaderImport); // UE 4.11~
+		UObject* ExistingObject = FindObject<UObject>(InParent, *Name.ToString());
 		USkeletalMesh* ExistingSkelMesh = Cast<USkeletalMesh>(ExistingObject);
 
 		if (ExistingSkelMesh)
@@ -798,12 +795,8 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 	const int32 ImportLODModelIndex = 0;
 	FSkeletalMeshLODModel& LODModel = ImportedResource->LODModels[ImportLODModelIndex];
 
-	SkeletalMesh->SaveLODImportedData(0, *SkelMeshImportDataPtr);
+	SkeletalMesh->CommitMeshDescription(0);
 
-	{
-		// We reimport both
-		SkeletalMesh->SetLODImportedDataVersions(ImportLODModelIndex, ESkeletalMeshGeoImportVersions::LatestVersion, ESkeletalMeshSkinningImportVersions::LatestVersion);
-	}
 	SkeletalMesh->ResetLODInfo();
 	FSkeletalMeshLODInfo& NewLODInfo = SkeletalMesh->AddLODInfo();
 	NewLODInfo.ReductionSettings.NumOfTrianglesPercentage = 1.0f;
@@ -914,7 +907,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		for (TObjectIterator<USkeletalMeshComponent> It; It; ++It)
 		{
 			USkeletalMeshComponent* SkelComp = *It;
-			if (SkelComp->SkeletalMesh == SkeletalMesh)
+			if (SkelComp->GetSkeletalMeshAsset() == SkeletalMesh)
 			{
 				FComponentReregisterContext ReregisterContext(SkelComp);
 			}

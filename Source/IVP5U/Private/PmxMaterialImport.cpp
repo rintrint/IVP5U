@@ -1114,8 +1114,7 @@ UMaterialInterface* UPmxMaterialImport::DuplicateBaseMaterial(
 	// 获取基础材质的复制源
 	UMaterial* BaseMatOriginal = nullptr;
 
-	// FAssetData AssetData = AssetRegistryModule.Get().GetAssetByObjectPath(FName(TEXT(*DupAssetBaseName)));
-	FAssetData AssetData = AssetRegistryModule.Get().GetAssetByObjectPath(FName(*DupAssetBaseName)); // 2023/5/1fix
+	FAssetData AssetData = AssetRegistryModule.Get().GetAssetByObjectPath(FSoftObjectPath(*DupAssetBaseName));
 	// TArray<FAssetData> AssetDataArray;
 	// AssetRegistryModule.Get().GetAssetsByPath(FName(*DupAssetBaseName), AssetDataArray, true);
 	// FAssetData AssetData = AssetDataArray[0];
