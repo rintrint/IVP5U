@@ -1,7 +1,7 @@
 // Copyright 2023 NaN_Name, Inc. All Rights Reserved.
 
 #pragma once
-#include "Factories/FbxAssetImportData.h"
+#include "EditorFramework/AssetImportData.h"
 #include "MMDMeshImportData.generated.h"
 UENUM()
 enum EMMDNormalImportMethod
