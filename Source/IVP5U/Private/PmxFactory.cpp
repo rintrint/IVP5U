@@ -788,21 +788,25 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 	// Dirty the DDC Key for any imported Skeletal Mesh
 	SkeletalMesh->InvalidateDeriveDataCacheGUID();
 
-	FSkeletalMeshModel* ImportedResource = SkeletalMesh->GetImportedModel();
-	check(ImportedResource->LODModels.Num() == 0);
-	ImportedResource->LODModels.Empty();
-	ImportedResource->LODModels.Add(new FSkeletalMeshLODModel());
-	const int32 ImportLODModelIndex = 0;
-	FSkeletalMeshLODModel& LODModel = ImportedResource->LODModels[ImportLODModelIndex];
-
-	SkeletalMesh->CommitMeshDescription(0);
-
+	// 1. 先重置並新增 LOD 0 的「設定資訊」 (LODInfo)
 	SkeletalMesh->ResetLODInfo();
 	FSkeletalMeshLODInfo& NewLODInfo = SkeletalMesh->AddLODInfo();
 	NewLODInfo.ReductionSettings.NumOfTrianglesPercentage = 1.0f;
 	NewLODInfo.ReductionSettings.NumOfVertPercentage = 1.0f;
 	NewLODInfo.ReductionSettings.MaxDeviationPercentage = 0.0f;
 	NewLODInfo.LODHysteresis = 0.02f;
+
+	// 2. 再為 LOD 0 新增「幾何數據」的儲存空間 (LODModel)
+	FSkeletalMeshModel* ImportedResource = SkeletalMesh->GetImportedModel();
+	check(ImportedResource->LODModels.Num() == 0);
+	ImportedResource->LODModels.Empty();
+	ImportedResource->LODModels.Add(new FSkeletalMeshLODModel());
+
+	// 3. 現在 LODInfo 和 LODModels 都已準備好，可以安全地提交 MeshDescription
+	SkeletalMesh->CommitMeshDescription(0);
+
+	UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("ImportSkeletalMesh: Added new LODModel. Total LOD count is now: %d. The only valid index should be 0."), ImportedResource->LODModels.Num());
+	FSkeletalMeshLODModel& LODModel = ImportedResource->LODModels[0];
 
 	// Create initial bounding box based on expanded version of reference pose for meshes without physics assets. Can be overridden by artist.
 	FBox3f BoundingBox(SkelMeshImportDataPtr->Points.GetData(), SkelMeshImportDataPtr->Points.Num());
