@@ -16,23 +16,18 @@ namespace UnrealBuildTool.Rules
 			get { return Path.GetFullPath(Path.Combine(ModulePath, "../../ThirdParty/")); }
 		}
 
-		
 		public IVP5U(ReadOnlyTargetRules Target) : base(Target)
 		{
 			// string LibName;
 			if ((Target.Platform == UnrealTargetPlatform.Win64 ))
 			{
-
-
 			}
 
-			
-			
 			PublicIncludePaths.AddRange(
 				new string[] {
 					// ... add public include paths required here ...
 				}
-				);
+			);
 
 			PrivateIncludePaths.AddRange(
 				new string[] {
@@ -40,17 +35,15 @@ namespace UnrealBuildTool.Rules
 					ThirdPartyPath+"/glm"
 					// ... add other private include paths required here ...
 				}
-				);
+			);
 
 			PublicDependencyModuleNames.AddRange(
 				new string[]
 				{
-
-
 					"Core",
 					"CoreUObject",
-					"Engine", 
-					"InputCore", 
+					"Engine",
+					"InputCore",
 					"UnrealEd",
 					"AssetTools",
 					"Slate" ,
@@ -67,7 +60,7 @@ namespace UnrealBuildTool.Rules
 					"IKRigEditor"
 					// ... add other public dependencies that you statically link with here ...
 				}
-				);
+			);
 
 			PrivateDependencyModuleNames.AddRange(
 				new string[]
@@ -76,7 +69,7 @@ namespace UnrealBuildTool.Rules
 					"EditorWidgets"
 					// ... add private dependencies that you statically link with here ...
 				}
-				);
+			);
 
 			DynamicallyLoadedModuleNames.AddRange(
 				new string[]
@@ -84,7 +77,7 @@ namespace UnrealBuildTool.Rules
 					"AssetRegistry",
 					// ... add any modules that your module loads dynamically here ...
 				}
-				);
+			);
 		}
 	}
 }
