@@ -66,6 +66,7 @@ https://www.gyan.dev/ffmpeg/builds 选择ffmpeg-git-full.7z
 ### TODO  
 更新过时的API  
 调查Sequencer关键帧形状和颜色没有正确显示的问题  
+修复PMX导入问题、LOD
 
 ### 已完成  
 优化两大瓶颈  
