@@ -1,6 +1,15 @@
 # IVP5U (New IM4U)  
 PMX and VMD loader for UnrealEngine5  
-Support UE5.5  
+Support UE5.5, 5.6
+
+| UE5版本   | 插件版本     |
+|-----------|-------------|
+| UE5.5     | IVP5U_UE5.5 |
+| UE5.6     | main分支    |
+
+建议搭配VRM4U使用(最佳组合):
+- **VRM4U**:导入PMX
+- **IVP5U**:导入VMD
 
 ## UE5 MMD教程  
 UE5.5 MMD教程 替代Blender渲染 VRM4U IVP5U NexGiMa FFmpeg  
