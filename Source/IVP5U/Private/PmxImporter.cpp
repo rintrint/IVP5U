@@ -383,7 +383,6 @@ namespace MMD4UE5
 			// 获取骨骼数
 			uint32 PmxBoneNum = 0;
 
-#if 1
 			// 确保存储骨骼数据的存储空间
 			boneList.AddZeroed(1);
 			// 获取骨骼信息
@@ -393,8 +392,7 @@ namespace MMD4UE5
 				boneList[PmxBoneNum].Position = FVector3f(0);
 				boneList[PmxBoneNum].ParentBoneIndex = INDEX_NONE;
 			}
-#endif
-			//
+
 			memcopySize = sizeof(PmxBoneNum);
 			FMemory::Memcpy(&PmxBoneNum, Buffer, memcopySize);
 			Buffer += memcopySize;
