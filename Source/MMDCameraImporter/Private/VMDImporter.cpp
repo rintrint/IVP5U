@@ -28,7 +28,6 @@ bool FVmdImporter::IsValidVmdFile()
 	if (!FileReader.IsValid())
 	{
 		FileReader = TUniquePtr<FArchive>(OpenFile(FilePath));
-
 		if (!FileReader.IsValid())
 		{
 			UE_LOG(LogMMDCameraImporter, Error, TEXT("Can't open file(%s)"), *FilePath);
@@ -38,12 +37,14 @@ bool FVmdImporter::IsValidVmdFile()
 
 	const int64 FileSize = FileReader->TotalSize();
 
+	// 檢查最小文件大小（Header）
 	if (FileSize < sizeof(FVmdObject::FHeader))
 	{
 		UE_LOG(LogMMDCameraImporter, Error, TEXT("File seems to be corrupt(FileSize < sizeof(FVmdObject::FHeader))"));
 		return false;
 	}
 
+	// 檢查魔術字節
 	FileReader->Seek(0);
 	uint8 Magic[30];
 	FileReader->Serialize(Magic, sizeof Magic);
@@ -55,6 +56,7 @@ bool FVmdImporter::IsValidVmdFile()
 
 	int64 Offset = sizeof(FVmdObject::FHeader);
 
+	// === 必要部分：Bone KeyFrames ===
 	if (FileSize < Offset + static_cast<int64>(sizeof(uint32)))
 	{
 		UE_LOG(LogMMDCameraImporter, Error, TEXT("File seems to be corrupt(Failed to read number of bone keyframes)"));
@@ -65,6 +67,7 @@ bool FVmdImporter::IsValidVmdFile()
 	FileReader->Serialize(&BoneKeyFrameCount, sizeof(uint32));
 	Offset += sizeof(uint32) + (sizeof(FVmdObject::FBoneKeyFrame) * BoneKeyFrameCount);
 
+	// === 必要部分：Morph KeyFrames ===
 	if (FileSize < Offset + static_cast<int64>(sizeof(uint32)))
 	{
 		UE_LOG(LogMMDCameraImporter, Error, TEXT("File seems to be corrupt(Failed to read number of morph keyframes)"));
@@ -75,6 +78,7 @@ bool FVmdImporter::IsValidVmdFile()
 	FileReader->Serialize(&MorphKeyFrameCount, sizeof(uint32));
 	Offset += sizeof(uint32) + (sizeof(FVmdObject::FMorphKeyFrame) * MorphKeyFrameCount);
 
+	// === 必要部分：Camera KeyFrames ===
 	if (FileSize < Offset + static_cast<int64>(sizeof(uint32)))
 	{
 		UE_LOG(LogMMDCameraImporter, Error, TEXT("File seems to be corrupt(Failed to read number of camera keyframes)"));
@@ -85,62 +89,8 @@ bool FVmdImporter::IsValidVmdFile()
 	FileReader->Serialize(&CameraKeyFrameCount, sizeof(uint32));
 	Offset += sizeof(uint32) + (sizeof(FVmdObject::FCameraKeyFrame) * CameraKeyFrameCount);
 
-	if (FileSize < Offset + static_cast<int64>(sizeof(uint32)))
-	{
-		UE_LOG(LogMMDCameraImporter, Error, TEXT("File seems to be corrupt(Failed to read number of light keyframes)"));
-		return false;
-	}
-	FileReader->Seek(Offset);
-	uint32 LightKeyFrameCount = 0;
-	FileReader->Serialize(&LightKeyFrameCount, sizeof(uint32));
-	Offset += sizeof(uint32) + (sizeof(FVmdObject::FLightKeyFrame) * LightKeyFrameCount);
-
-	if (FileSize < Offset + static_cast<int64>(sizeof(uint32)))
-	{
-		UE_LOG(LogMMDCameraImporter, Error, TEXT("File seems to be corrupt(Failed to read number of self shadow keyframes)"));
-		return false;
-	}
-	FileReader->Seek(Offset);
-	uint32 SelfShadowKeyFrameCount = 0;
-	FileReader->Serialize(&SelfShadowKeyFrameCount, sizeof(uint32));
-	Offset += sizeof(uint32) + (sizeof(FVmdObject::FSelfShadowKeyFrame) * SelfShadowKeyFrameCount);
-
-	if (FileSize < Offset + static_cast<int64>(sizeof(uint32)))
-	{
-		UE_LOG(LogMMDCameraImporter, Error, TEXT("File seems to be corrupt(Failed to read number of properties keyframes)"));
-		return false;
-	}
-	FileReader->Seek(Offset);
-	uint32 PropertyKeyFrameCount = 0;
-	FileReader->Serialize(&PropertyKeyFrameCount, sizeof(uint32));
-	Offset += sizeof(uint32);
-
-	for (PTRINT i = 0; i < PropertyKeyFrameCount; ++i)
-	{
-		Offset += sizeof(FVmdObject::FPropertyKeyFrame);
-
-		if (FileSize < Offset + static_cast<int64>(sizeof(uint32)))
-		{
-			UE_LOG(LogMMDCameraImporter, Error, TEXT("File seems to be corrupt(Failed to read number of IK state keyframes)"));
-			return false;
-		}
-		FileReader->Seek(Offset);
-		uint32 IkStateCount = 0;
-		FileReader->Serialize(&IkStateCount, sizeof(uint32));
-		Offset += sizeof(uint32) + (sizeof(FVmdObject::FPropertyKeyFrame::FIkState) * IkStateCount);
-	}
-
-	if (FileSize < Offset)
-	{
-		UE_LOG(LogMMDCameraImporter, Error, TEXT("File seems to be corrupt(FileSize < Offset)"));
-		return false;
-	}
-
-	if (FileSize != Offset)
-	{
-		UE_LOG(LogMMDCameraImporter, Warning, TEXT("File seems to be corrupt or additional data exists"));
-	}
-
+	// 核心部分檢查通過，認為是有效的 VMD 文件
+	// 可選部分（Light、SelfShadow、Property）在 ParseVmdFile 中處理
 	return true;
 }
 
@@ -149,14 +99,12 @@ FVmdParseResult FVmdImporter::ParseVmdFile()
 	if (!FileReader.IsValid())
 	{
 		FileReader = TUniquePtr<FArchive>(OpenFile(FilePath));
-
 		if (!FileReader.IsValid())
 		{
 			UE_LOG(LogMMDCameraImporter, Error, TEXT("Can't open file(%s)"), *FilePath);
 
 			FVmdParseResult FailedResult;
 			FailedResult.bIsSuccess = false;
-
 			return FailedResult;
 		}
 	}
@@ -208,37 +156,88 @@ FVmdParseResult FVmdImporter::ParseVmdFile()
 	FileReader->Serialize(VmdParseResult.CameraKeyFrames.GetData(), sizeof(FVmdObject::FCameraKeyFrame) * CameraKeyFrameCount);
 	VmdParseResult.CameraKeyFrames.Sort([](const FVmdObject::FCameraKeyFrame& A, const FVmdObject::FCameraKeyFrame& B) { return A.FrameNumber < B.FrameNumber; });
 
+	// === 可選部分：Light KeyFrames ===
 	if (ImportVmdTask.ShouldCancel())
 	{
 		return VmdParseResult;
 	}
 	ImportVmdTask.EnterProgressFrame(1, LOCTEXT("ReadingVMDFileLightKeyFrames", "Reading Light Key Frames"));
-	uint32 LightKeyFrameCount = 0;
-	FileReader->Serialize(&LightKeyFrameCount, sizeof(uint32));
-	VmdParseResult.LightKeyFrames.SetNum(LightKeyFrameCount);
-	FileReader->Serialize(VmdParseResult.LightKeyFrames.GetData(), sizeof(FVmdObject::FLightKeyFrame) * LightKeyFrameCount);
-	VmdParseResult.LightKeyFrames.Sort([](const FVmdObject::FLightKeyFrame& A, const FVmdObject::FLightKeyFrame& B) { return A.FrameNumber < B.FrameNumber; });
 
+	int64 RemainingBytes = FileReader->TotalSize() - FileReader->Tell();
+	if (RemainingBytes >= static_cast<int64>(sizeof(uint32)))
+	{
+		uint32 LightKeyFrameCount = 0;
+		FileReader->Serialize(&LightKeyFrameCount, sizeof(uint32));
+
+		const int64 RequiredBytes = static_cast<int64>(sizeof(uint32)) + static_cast<int64>(sizeof(FVmdObject::FLightKeyFrame)) * static_cast<int64>(LightKeyFrameCount);
+		if (RemainingBytes >= RequiredBytes)
+		{
+			VmdParseResult.LightKeyFrames.SetNum(LightKeyFrameCount);
+			FileReader->Serialize(VmdParseResult.LightKeyFrames.GetData(), sizeof(FVmdObject::FLightKeyFrame) * LightKeyFrameCount);
+			VmdParseResult.LightKeyFrames.Sort([](const FVmdObject::FLightKeyFrame& A, const FVmdObject::FLightKeyFrame& B) { return A.FrameNumber < B.FrameNumber; });
+		}
+		else
+		{
+			UE_LOG(LogMMDCameraImporter, Log, TEXT("Light keyframes data incomplete, skipping"));
+			VmdParseResult.bIsSuccess = true;
+			return VmdParseResult;
+		}
+	}
+	else
+	{
+		UE_LOG(LogMMDCameraImporter, Log, TEXT("No light keyframes data found"));
+		VmdParseResult.bIsSuccess = true;
+		return VmdParseResult;
+	}
+
+	// === 可選部分：Self Shadow KeyFrames ===
 	if (ImportVmdTask.ShouldCancel())
 	{
 		return VmdParseResult;
 	}
 	ImportVmdTask.EnterProgressFrame(1, LOCTEXT("ReadingVMDFileSelfShadowKeyFrames", "Reading Self Shadow Key Frames"));
-	uint32 SelfShadowKeyFrameCount = 0;
-	FileReader->Serialize(&SelfShadowKeyFrameCount, sizeof(uint32));
-	VmdParseResult.SelfShadowKeyFrames.SetNum(SelfShadowKeyFrameCount);
-	FileReader->Serialize(VmdParseResult.SelfShadowKeyFrames.GetData(), sizeof(FVmdObject::FSelfShadowKeyFrame) * SelfShadowKeyFrameCount);
-	VmdParseResult.SelfShadowKeyFrames.Sort([](const FVmdObject::FSelfShadowKeyFrame& A, const FVmdObject::FSelfShadowKeyFrame& B) { return A.FrameNumber < B.FrameNumber; });
 
+	RemainingBytes = FileReader->TotalSize() - FileReader->Tell();
+	if (RemainingBytes >= static_cast<int64>(sizeof(uint32)))
+	{
+		uint32 SelfShadowKeyFrameCount = 0;
+		FileReader->Serialize(&SelfShadowKeyFrameCount, sizeof(uint32));
+
+		const int64 RequiredBytes = static_cast<int64>(sizeof(uint32)) + static_cast<int64>(sizeof(FVmdObject::FSelfShadowKeyFrame)) * static_cast<int64>(SelfShadowKeyFrameCount);
+		if (RemainingBytes >= RequiredBytes)
+		{
+			VmdParseResult.SelfShadowKeyFrames.SetNum(SelfShadowKeyFrameCount);
+			FileReader->Serialize(VmdParseResult.SelfShadowKeyFrames.GetData(), sizeof(FVmdObject::FSelfShadowKeyFrame) * SelfShadowKeyFrameCount);
+			VmdParseResult.SelfShadowKeyFrames.Sort([](const FVmdObject::FSelfShadowKeyFrame& A, const FVmdObject::FSelfShadowKeyFrame& B) { return A.FrameNumber < B.FrameNumber; });
+		}
+		else
+		{
+			UE_LOG(LogMMDCameraImporter, Log, TEXT("Self shadow keyframes data incomplete, skipping"));
+			VmdParseResult.bIsSuccess = true;
+			return VmdParseResult;
+		}
+	}
+	else
+	{
+		UE_LOG(LogMMDCameraImporter, Log, TEXT("No self shadow keyframes data found"));
+		VmdParseResult.bIsSuccess = true;
+		return VmdParseResult;
+	}
+
+	// === 可選部分：Property KeyFrames ===
 	if (ImportVmdTask.ShouldCancel())
 	{
 		return VmdParseResult;
 	}
 	ImportVmdTask.EnterProgressFrame(1, LOCTEXT("ReadingVMDFilePropertyKeyFrames", "Reading Property Key Frames"));
-	uint32 PropertyKeyFrameCount = 0;
-	FileReader->Serialize(&PropertyKeyFrameCount, sizeof(uint32));
-	VmdParseResult.PropertyKeyFrames.SetNum(PropertyKeyFrameCount);
+
+	RemainingBytes = FileReader->TotalSize() - FileReader->Tell();
+	if (RemainingBytes >= static_cast<int64>(sizeof(uint32)))
 	{
+		uint32 PropertyKeyFrameCount = 0;
+		FileReader->Serialize(&PropertyKeyFrameCount, sizeof(uint32));
+		VmdParseResult.PropertyKeyFrames.SetNum(PropertyKeyFrameCount);
+
 		FScopedSlowTask ImportPropertyKeyFramesTask(PropertyKeyFrameCount, LOCTEXT("ReadingVMDFilePropertyKeyFrames", "Reading Property Key Frames"));
 
 		for (PTRINT i = 0; i < PropertyKeyFrameCount; ++i)
@@ -249,21 +248,51 @@ FVmdParseResult FVmdImporter::ParseVmdFile()
 			}
 			ImportPropertyKeyFramesTask.EnterProgressFrame();
 
+			RemainingBytes = FileReader->TotalSize() - FileReader->Tell();
+			if (RemainingBytes < static_cast<int64>(sizeof(FVmdObject::FPropertyKeyFrame)))
+			{
+				UE_LOG(LogMMDCameraImporter, Log, TEXT("Property keyframes data incomplete at frame %d, skipping remaining"), i);
+				VmdParseResult.PropertyKeyFrames.SetNum(i); // 保留已讀取的部分
+				break;
+			}
+
 			FVmdObject::FPropertyKeyFrame PropertyKeyFrame;
 			FileReader->Serialize(&PropertyKeyFrame, sizeof(FVmdObject::FPropertyKeyFrame));
 			VmdParseResult.PropertyKeyFrames[i].FrameNumber = PropertyKeyFrame.FrameNumber;
 			VmdParseResult.PropertyKeyFrames[i].Visible = static_cast<bool>(PropertyKeyFrame.Visible);
 
+			RemainingBytes = FileReader->TotalSize() - FileReader->Tell();
+			if (RemainingBytes < static_cast<int64>(sizeof(uint32)))
+			{
+				UE_LOG(LogMMDCameraImporter, Log, TEXT("IK state count data incomplete at frame %d, skipping remaining"), i);
+				VmdParseResult.PropertyKeyFrames.SetNum(i + 1); // 保留當前幀，但沒有 IK 狀態
+				break;
+			}
+
 			uint32 IkStateCount = 0;
 			FileReader->Serialize(&IkStateCount, sizeof(uint32));
-			VmdParseResult.PropertyKeyFrames[i].IkStates.SetNum(IkStateCount);
-			FileReader->Serialize(VmdParseResult.PropertyKeyFrames[i].IkStates.GetData(), sizeof(FVmdObject::FPropertyKeyFrame::FIkState) * IkStateCount);
+
+			const int64 RequiredBytes = static_cast<int64>(sizeof(uint32)) + static_cast<int64>(sizeof(FVmdObject::FPropertyKeyFrame::FIkState)) * static_cast<int64>(IkStateCount);
+			if (RemainingBytes >= RequiredBytes)
+			{
+				VmdParseResult.PropertyKeyFrames[i].IkStates.SetNum(IkStateCount);
+				FileReader->Serialize(VmdParseResult.PropertyKeyFrames[i].IkStates.GetData(), sizeof(FVmdObject::FPropertyKeyFrame::FIkState) * IkStateCount);
+			}
+			else
+			{
+				UE_LOG(LogMMDCameraImporter, Log, TEXT("IK state data incomplete at frame %d, skipping IK states"), i);
+				VmdParseResult.PropertyKeyFrames[i].IkStates.Empty();
+			}
 		}
+
+		VmdParseResult.PropertyKeyFrames.Sort([](const FVmdParseResult::FPropertyKeyFrameWithIkState& A, const FVmdParseResult::FPropertyKeyFrameWithIkState& B) { return A.FrameNumber < B.FrameNumber; });
 	}
-	VmdParseResult.PropertyKeyFrames.Sort([](const FVmdParseResult::FPropertyKeyFrameWithIkState& A, const FVmdParseResult::FPropertyKeyFrameWithIkState& B) { return A.FrameNumber < B.FrameNumber; });
+	else
+	{
+		UE_LOG(LogMMDCameraImporter, Log, TEXT("No property keyframes data found"));
+	}
 
 	VmdParseResult.bIsSuccess = true;
-
 	return VmdParseResult;
 }
 
