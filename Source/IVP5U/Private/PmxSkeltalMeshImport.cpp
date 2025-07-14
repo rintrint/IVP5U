@@ -916,13 +916,13 @@ void UPmxFactory::ImportMorphTargetsInternal(
 			FOverlappingThresholds hd;
 			// Build MorphTargets
 			FLODUtilities::BuildMorphTargets(
-				BaseSkelMesh,
-				BaseImportData,
-				LODIndex,
-				true,
-				true,
-				true,
-				hd);
+				BaseSkelMesh,	// USkeletalMesh*
+				BaseImportData, // FSkeletalMeshImportData&
+				LODIndex,		// int32 LODIndex
+				true,			// bool ShouldImportNormals
+				true,			// bool ShouldImportTangents
+				true,			// bool bUseMikkTSpace
+				hd);			// const FOverlappingThresholds&
 		}
 	}
 }
