@@ -394,8 +394,6 @@ namespace MMD4UE5
 				minFrame = FMath::Min(minFrame, track.minFrameCount);
 			}
 		}
-
-		maxFrame++; // min 1frame ?
 	}
 
 	// 优化：构建名称映射以加速查找
