@@ -1,8 +1,15 @@
-//
 // Copyright(c) 2016-2017 benikabocha.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 //
 // Copyright 2023 NaN_Name, Inc. All Rights Reserved.
+
+// CP932 (Microsoft Shift-JIS) to Unicode conversion tables
+// This implementation supports the full CP932 character set including:
+// - ASCII (0x00-0x7E)
+// - Half-width Katakana (0xA1-0xDF)
+// - Double-byte characters (0x8140-0x9FFC, 0xE040-0xEFFC)
+// Note: CP932 extends standard Shift-JIS with additional characters
+
 #include "SjisToUnicode.h"
 
 #include <cstdint>
