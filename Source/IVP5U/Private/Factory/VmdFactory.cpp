@@ -980,6 +980,15 @@ bool UVmdFactory::PrepareVMDBoneAnimData(
 	const FFrameNumber NumberOfFrames = FGenericPlatformMath::Max<int32>((int32)vmdMotionInfo->maxFrame, 1);
 	adc.SetNumberOfFrames(NumberOfFrames.Value, false);
 
+	UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("調試幀數設置:"));
+	UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("  VMD minFrame = %d"), vmdMotionInfo->minFrame);
+	UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("  VMD maxFrame = %d"), vmdMotionInfo->maxFrame);
+	UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("  計算的總幀數 = %d"), vmdMotionInfo->maxFrame + 1);
+	UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("  計算的動畫時長 = %.3f秒"), (vmdMotionInfo->maxFrame + 1) / 30.0f);
+	UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("  骨骼軌道數量 = %d"), vmdMotionInfo->keyBoneList.Num());
+	UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("  表情軌道數量 = %d"), vmdMotionInfo->keyFaceList.Num());
+	UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("  相機軌道數量 = %d"), vmdMotionInfo->keyCameraList.Num());
+
 	const int32 NumBones = Skeleton->GetReferenceSkeleton().GetNum();
 	const TArray<FTransform>& RefBonePose = Skeleton->GetReferenceSkeleton().GetRefBonePose();
 
