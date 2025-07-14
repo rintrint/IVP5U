@@ -63,13 +63,41 @@ namespace MMD4UE5
 					FMemory::Memcpy(&vmdKeyPtr->Name[0], Buffer, memcopySize);
 					Buffer += memcopySize;
 
-					// posandQurt + bezier (一次性读取更多数据)
-					memcopySize = sizeof(int32) + sizeof(float) * (4 + 3) + sizeof(vmdKeyPtr->Bezier);
+					// Frame + Position + Quaternion (一次性读取)
+					memcopySize = sizeof(vmdKeyPtr->Frame) + sizeof(vmdKeyPtr->Position) + sizeof(vmdKeyPtr->Quaternion);
 					FMemory::Memcpy(&vmdKeyPtr->Frame, Buffer, memcopySize);
 					Buffer += memcopySize;
 
-					// dummy bezier
-					Buffer += 48 * sizeof(uint8);
+					// 高效讀取64字節插值數據，直接提取關鍵位置的數據
+					// 根據MMD Tools的minimum acceptable data格式，只讀取有效位置
+					const uint8* interpolationBuffer = Buffer;
+
+					// 使用指針直接訪問，避免複製64字節到臨時數組
+					// X軸: 位置 0, 4, 8, 12
+					vmdKeyPtr->Bezier[0][0][0] = interpolationBuffer[0];  // x_x1
+					vmdKeyPtr->Bezier[0][1][0] = interpolationBuffer[4];  // x_y1
+					vmdKeyPtr->Bezier[1][0][0] = interpolationBuffer[8];  // x_x2
+					vmdKeyPtr->Bezier[1][1][0] = interpolationBuffer[12]; // x_y2
+
+					// Y軸: 位置 16, 20, 24, 28
+					vmdKeyPtr->Bezier[0][0][1] = interpolationBuffer[16]; // y_x1
+					vmdKeyPtr->Bezier[0][1][1] = interpolationBuffer[20]; // y_y1
+					vmdKeyPtr->Bezier[1][0][1] = interpolationBuffer[24]; // y_x2
+					vmdKeyPtr->Bezier[1][1][1] = interpolationBuffer[28]; // y_y2
+
+					// Z軸: 位置 32, 36, 40, 44
+					vmdKeyPtr->Bezier[0][0][2] = interpolationBuffer[32]; // z_x1
+					vmdKeyPtr->Bezier[0][1][2] = interpolationBuffer[36]; // z_y1
+					vmdKeyPtr->Bezier[1][0][2] = interpolationBuffer[40]; // z_x2
+					vmdKeyPtr->Bezier[1][1][2] = interpolationBuffer[44]; // z_y2
+
+					// 旋轉軸: 位置 48, 52, 56, 60
+					vmdKeyPtr->Bezier[0][0][3] = interpolationBuffer[48]; // r_x1
+					vmdKeyPtr->Bezier[0][1][3] = interpolationBuffer[52]; // r_y1
+					vmdKeyPtr->Bezier[1][0][3] = interpolationBuffer[56]; // r_x2
+					vmdKeyPtr->Bezier[1][1][3] = interpolationBuffer[60]; // r_y2
+
+					Buffer += 64; // 跳過整個64字節區塊
 				}
 			}
 			// 设置每个数据的起始地址
