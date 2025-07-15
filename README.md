@@ -64,9 +64,10 @@ https://www.gyan.dev/ffmpeg/builds 选择ffmpeg-git-full.7z
 
 ## 插件开发  
 ### TODO  
-更新过时的API  
+~~更新过时的API~~(已完成)  
 调查Sequencer关键帧形状和颜色没有正确显示的问题  
-修复PMX导入问题、LOD
+检查行为是否皆与MMD、MMD Tools一致  
+~~完善PMX导入功能~~(无此计划，使用VRM4U更合理)  
 
 ### 已完成  
 优化两大瓶颈  
