@@ -911,7 +911,8 @@ bool UVmdFactory::PrepareMorphCurveData(
 			MMD4UE5::VMD_FACE_KEY* faceKeyPtr = &vmdFaceTrackPtr->keyList[sortedIndex];
 			float timeCurve = faceKeyPtr->Frame / 30.0f;
 
-			if (timeCurve > SequenceLength)
+			const float Epsilon = 0.00001f; // 定義一個很小的容錯值，解決浮點誤差
+			if (timeCurve > (SequenceLength + Epsilon))
 			{
 				UE_LOG(LogMMD4UE5_VMDFactory, Warning, TEXT("表情[%d]:[%s]关键帧时间 %f 超出序列长度 %f，停止添加"),
 					i, *Name.ToString(), timeCurve, SequenceLength);
