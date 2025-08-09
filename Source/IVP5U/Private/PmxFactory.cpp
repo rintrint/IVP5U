@@ -1,6 +1,7 @@
 // Copyright 2023 NaN_Name, Inc. All Rights Reserved.
 // see S:\UE5SRC\EpicUE5\UE_5.0\Engine\Source\Editor\UnrealEd\Private\Fbx\FbxSkeletalMeshImport.cpp
 #include "PmxFactory.h"
+#include "IVP5USettings.h"
 #include "IVP5UPrivatePCH.h"
 
 #include "CoreMinimal.h"
@@ -84,7 +85,24 @@ UPmxFactory::UPmxFactory(const FObjectInitializer& ObjectInitializer)
 	bOperationCanceled = false;
 	bDetectImportTypeOnImport = false;
 
+	const UIVP5USettings* Settings = GetDefault<UIVP5USettings>();
+	ImportPriority = FMath::Max(1, Settings->ImportPriority);
+
 	// ImportUI = NewObject<UPmxImportUI>(this, NAME_None, RF_NoFlags);
+}
+
+bool UPmxFactory::FactoryCanImport(const FString& Filename)
+{
+	const FString Extension = FPaths::GetExtension(Filename);
+
+	if (Extension == TEXT("pmd") || Extension == TEXT("pmx"))
+	{
+		UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("FactoryCanImport: Can import %s"), *Filename);
+		return true;
+	}
+
+	UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("FactoryCanImport: Cannot import %s (extension: %s)"), *Filename, *Extension);
+	return false;
 }
 
 void UPmxFactory::PostInitProperties()
@@ -102,6 +120,25 @@ bool UPmxFactory::DoesSupportClass(UClass* Class)
 UClass* UPmxFactory::ResolveSupportedClass()
 {
 	return UPmxFactory::StaticClass();
+}
+
+bool UPmxFactory::CanReimport(UObject* Obj, TArray<FString>& OutFilenames)
+{
+	return false;
+}
+
+void UPmxFactory::SetReimportPaths(UObject* Obj, const TArray<FString>& NewReimportPaths)
+{
+}
+
+EReimportResult::Type UPmxFactory::Reimport(UObject* Obj)
+{
+	return EReimportResult::Failed;
+}
+
+int32 UPmxFactory::GetPriority() const
+{
+	return ImportPriority;
 }
 
 ////////////////////////////////////////////////

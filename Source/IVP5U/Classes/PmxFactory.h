@@ -7,6 +7,7 @@
 #include "CoreMinimal.h"
 #include "Runtime/Core/Public/Logging/TokenizedMessage.h"
 #include "Factories.h"
+#include "EditorReimportHandler.h"
 #include "BusyCursor.h"
 #include "SSkeletonWidget.h"
 #include "ImportUtils/SkelImport.h"
@@ -21,13 +22,14 @@ DECLARE_LOG_CATEGORY_EXTERN(LogMMD4UE5_PMXFactory, Log, All)
 /////////////////////////////////////////////////////////////
 
 UCLASS()
-class IVP5U_API UPmxFactory : public UFactory // public UFbxFactory
+class IVP5U_API UPmxFactory : public UFactory, public FReimportHandler // public UFbxFactory
 {
 	GENERATED_UCLASS_BODY()
 
 	class UPmxImportUI* ImportUI;
 	// Begin UFactory Interface
 	virtual void PostInitProperties() override;
+	virtual bool FactoryCanImport(const FString& Filename) override;
 	virtual bool DoesSupportClass(UClass* Class) override;
 	virtual UClass* ResolveSupportedClass() override;
 	virtual UObject* FactoryCreateBinary(
@@ -42,6 +44,13 @@ class IVP5U_API UPmxFactory : public UFactory // public UFbxFactory
 		FFeedbackContext* Warn,
 		bool& bOutOperationCanceled) override;
 	// End UFactory Interface
+
+	// FReimportHandler interface
+	virtual bool CanReimport(UObject* Obj, TArray<FString>& OutFilenames) override;
+	virtual void SetReimportPaths(UObject* Obj, const TArray<FString>& NewReimportPaths) override;
+	virtual EReimportResult::Type Reimport(UObject* Obj) override;
+	virtual int32 GetPriority() const override;
+	// End of FReimportHandler interface
 
 	enum E_LOAD_ASSETS_TYPE_MMD
 	{
@@ -137,6 +146,8 @@ protected:
 
 	/** true if the import operation was canceled. */
 	bool bOperationCanceled;
+
+	int32 ImportPriority;
 
 	//
 	UPmxMaterialImport pmxMaterialImportHelper;
