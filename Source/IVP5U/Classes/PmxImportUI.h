@@ -99,15 +99,7 @@ class UPmxImportUI : public UObject
 
 	/** Import data used when importing static meshes */
 	// UPROPERTY(EditAnywhere, Instanced, Category = Mesh, meta = (ImportType = "StaticMesh"))
-	// class UFbxStaticMeshImportData* StaticMeshImportData;
-
-	/** Import data used when importing static meshes */
-	// UPROPERTY(EditAnywhere, Instanced, Category = Mesh, meta = (ImportType = "StaticMesh"))
 	class UMMDStaticMeshImportData* StaticMeshImportData;
-
-	/** Import data used when importing skeletal meshes */
-	// UPROPERTY(EditAnywhere, Instanced, Category = Mesh, meta = (ImportType = "SkeletalMesh"))
-	// class UFbxSkeletalMeshImportData* SkeletalMeshImportData;
 
 	/** Import data used when importing skeletal meshes */
 	// UPROPERTY(EditAnywhere, Instanced, Category = Mesh, meta = (ImportType = "SkeletalMesh"))
@@ -117,17 +109,9 @@ class UPmxImportUI : public UObject
 	// UPROPERTY(EditAnywhere, config, Category = Mesh, meta = (OBJRestrict = "true", ToolTip = "If enabled, creates Unreal morph objects for the imported meshes"))
 	uint32 bImportMorphTargets : 1;
 
-	/** Import data used when importing animations */
-	// UPROPERTY(EditAnywhere, Instanced, Category = Animation, meta = (editcondition = "bImportAnimations", ImportType = "Animation"))
-	// class UFbxAnimSequenceImportData* AnimSequenceImportData;
-
 	/** Type of asset to import from the FBX file */
 	// UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = Animation, meta = (editcondition = "bImportAnimations", ImportType = "SkeletalMesh|Animation"))
 	bool bPreserveLocalTransform;
-
-	/** Import data used when importing textures */
-	// UPROPERTY(EditAnywhere, Instanced, Category = Material)
-	// class UFbxTextureImportData* TextureImportData;
 
 	// Begin UObject Interface
 	virtual bool CanEditChange(const FProperty* InProperty) const override;

@@ -98,7 +98,7 @@ VMDImportOptions* GetVMDImportOptions(
 		}
 		else
 		{
-			ImportUI->ImportUniformScale = 1.0f;
+			ImportUI->ImportUniformScale = 0.08f;
 		}
 
 		// ImportUI->bImportAsSkeletal = ImportUI->MeshTypeToImport == VMDIT_Animation;
@@ -266,13 +266,6 @@ UVmdImportUI::UVmdImportUI(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer) //, MMD2UE5NameTableRow(MMD2UE5NameTableRowDmmy)
 {
 	ImportUniformScale = 0.08f;
-#if 0
-	StaticMeshImportData = CreateDefaultSubobject<UMMDStaticMeshImportData>(TEXT("StaticMeshImportData"));
-	SkeletalMeshImportData = CreateDefaultSubobject<UMMDSkeletalMeshImportData>(TEXT("SkeletalMeshImportData"));
-	/*AnimSequenceImportData = CreateDefaultSubobject<UFbxAnimSequenceImportData>(TEXT("AnimSequenceImportData"));
-	TextureImportData = CreateDefaultSubobject<UFbxTextureImportData>(TEXT("TextureImportData"));
-	*/
-#endif
 }
 
 bool UVmdImportUI::CanEditChange(const FProperty* InProperty) const

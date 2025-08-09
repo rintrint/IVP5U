@@ -54,31 +54,15 @@ class UVmdImportUI : public UObject
 
 	/** Import data used when importing static meshes */
 	// UPROPERTY(EditAnywhere, Instanced, Category = Mesh, meta = (ImportType = "StaticMesh"))
-	// class UFbxStaticMeshImportData* StaticMeshImportData;
-
-	/** Import data used when importing static meshes */
-	// UPROPERTY(EditAnywhere, Instanced, Category = Mesh, meta = (ImportType = "StaticMesh"))
 	class UMMDStaticMeshImportData* StaticMeshImportData;
-
-	/** Import data used when importing skeletal meshes */
-	// UPROPERTY(EditAnywhere, Instanced, Category = Mesh, meta = (ImportType = "SkeletalMesh"))
-	// class UFbxSkeletalMeshImportData* SkeletalMeshImportData;
 
 	/** Import data used when importing skeletal meshes */
 	// UPROPERTY(EditAnywhere, Instanced, Category = Mesh, meta = (ImportType = "SkeletalMesh"))
 	class UMMDSkeletalMeshImportData* SkeletalMeshImportData;
 
-	/** Import data used when importing animations */
-	// UPROPERTY(EditAnywhere, Instanced, Category = Animation, meta = (editcondition = "bImportAnimations", ImportType = "Animation"))
-	// class UFbxAnimSequenceImportData* AnimSequenceImportData;
-
 	/** Type of asset to import from the FBX file */
 	// UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = Animation, meta = (editcondition = "bImportAnimations", ImportType = "SkeletalMesh|Animation"))
 	bool bPreserveLocalTransform;
-
-	/** Import data used when importing textures */
-	// UPROPERTY(EditAnywhere, Instanced, Category = Material)
-	// class UFbxTextureImportData* TextureImportData;
 
 	// Begin UObject Interface
 	virtual bool CanEditChange(const FProperty* InProperty) const override;
@@ -93,7 +77,7 @@ class UVmdImportUI : public UObject
 	class UAnimSequence* AnimSequenceAsset;
 
 	/** Import uniform scale for the asset */
-	UPROPERTY(EditAnywhere, Category = Transform, meta = (OBJRestrict = "false", ClampMin = "0.001", UIMin = "0.001"))
+	UPROPERTY(EditAnywhere, Category = Transform, meta = (OBJRestrict = "false", ClampMin = "0.0", UIMin = "0.0"))
 	float ImportUniformScale;
 
 	/** Skeleton to use for imported asset. When importing a mesh, leaving this as "None" will create a new skeleton. When importing and animation this MUST be specified to import the asset. */

@@ -138,17 +138,6 @@ PMXImportOptions* GetImportOptions(
 		{
 			ImportUI->SkeletalMeshImportData->SaveConfig();
 		}
-#if 0
-		if (ImportUI->AnimSequenceImportData)
-		{
-			ImportUI->AnimSequenceImportData->SaveConfig();
-		}
-
-		if (ImportUI->TextureImportData)
-		{
-			ImportUI->TextureImportData->SaveConfig();
-		}
-#endif
 		if (PmxOptionWindow->ShouldImport())
 		{
 			bOutImportAll = PmxOptionWindow->ShouldImportAll();
@@ -185,7 +174,6 @@ void ApplyImportUIToImportOptions(
 	check(ImportUI);
 
 	InOutImportOptions.bImportMaterials = ImportUI->bImportMaterials;
-	// InOutImportOptions.bInvertNormalMap = ImportUI->TextureImportData->bInvertNormalMaps;
 	InOutImportOptions.bImportTextures = ImportUI->bImportTextures;
 	InOutImportOptions.bCreateMaterialInstMode = ImportUI->bCreateMaterialInstMode;
 	InOutImportOptions.bUnlitMaterials = ImportUI->bUnlitMaterials;
