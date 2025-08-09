@@ -2,7 +2,7 @@
 
 #include "IVP5UPrivatePCH.h"
 
-class FIVP5U : public IIVP5U
+class FIVP5U : public IVP5U
 {
 	/** IModuleInterface implementation */
 	virtual void StartupModule() override;

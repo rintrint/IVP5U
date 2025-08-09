@@ -4,13 +4,13 @@
 
 #include "Modules/ModuleInterface.h"
 
-class IIVP5U : public IModuleInterface
+class IVP5U : public IModuleInterface
 {
 
 public:
-	static inline IIVP5U& Get()
+	static inline IVP5U& Get()
 	{
-		return FModuleManager::LoadModuleChecked<IIVP5U>("IVP5U");
+		return FModuleManager::LoadModuleChecked<IVP5U>("IVP5U");
 	}
 
 	static inline bool IsAvailable()
