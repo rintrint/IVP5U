@@ -34,6 +34,9 @@
 #include "PhysicsEngine/PhysicsConstraintTemplate.h"
 #include "Developer/PhysicsUtilities/Public/PhysicsAssetUtils.h"
 
+#include "Animation/Skeleton.h"
+#include "Engine/CurveTable.h"
+
 ////////////
 
 #include "PmdImporter.h"
@@ -1106,6 +1109,54 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		}
 
 		SkeletalMesh->SetSkeleton(Skeleton);
+
+		// Curve 處理
+		if (ImportUI->bImportMorphTargets && pmxMeshInfoPtr->morphList.Num() > 0)
+		{
+			// 收集所有 morph target 名稱
+			TArray<FString> MorphNameList;
+			for (int32 NodeIndex = 0; NodeIndex < pmxMeshInfoPtr->morphList.Num(); NodeIndex++)
+			{
+				MMD4UE5::PMX_MORPH* pmxMorphPtr = &(pmxMeshInfoPtr->morphList[NodeIndex]);
+				if (pmxMorphPtr->Type == 1 && pmxMorphPtr->Vertex.Num() > 0)
+				{
+					FString ShapeName = pmxMorphPtr->Name;
+					MorphNameList.AddUnique(ShapeName);
+				}
+			}
+
+			// 清理舊的 morph curves
+			if (Skeleton)
+			{
+				TArray<FName> namelist;
+				Skeleton->GetCurveMetaDataNames(namelist);
+				for (auto name : namelist)
+				{
+					FCurveMetaData* m = Skeleton->GetCurveMetaData(name);
+					if (m == nullptr)
+						continue;
+					if (m->Type.bMorphtarget)
+					{
+						Skeleton->RemoveCurveMetaData(name);
+					}
+				}
+
+				// 為每個 morph target 創建對應的 curve
+				for (auto name : MorphNameList)
+				{
+					FCurveMetaData* FoundCurveMetaData = Skeleton->GetCurveMetaData(*name);
+					if (FoundCurveMetaData)
+					{
+						FoundCurveMetaData->Type.bMorphtarget = true;
+						continue;
+					}
+
+					// 自動累積 curve metadata，並設置為 morph target
+					Skeleton->AccumulateCurveMetaData(*name, false, true);
+				}
+			}
+		}
+
 		SkeletalMesh->MarkPackageDirty();
 		SkeletalMesh->PostEditChange();
 	}

@@ -34,6 +34,10 @@
 
 #include "Animation/MorphTarget.h"
 #include "ComponentReregisterContext.h"
+
+#include "Animation/Skeleton.h"
+#include "Engine/CurveTable.h"
+
 ////////////
 
 #include "PmxFactory.h"
@@ -923,6 +927,28 @@ void UPmxFactory::ImportMorphTargetsInternal(
 				true,			// bool ShouldImportTangents
 				true,			// bool bUseMikkTSpace
 				hd);			// const FOverlappingThresholds&
+		}
+		// 確保 Skeleton 有對應的 Curves
+		if (BaseSkelMesh->GetSkeleton())
+		{
+			USkeleton* Skeleton = BaseSkelMesh->GetSkeleton();
+
+			// 為每個成功導入的 morph target 確保有對應的 curve
+			for (const FString& MorphName : BaseImportData.MorphTargetNames)
+			{
+				FCurveMetaData* FoundCurveMetaData = Skeleton->GetCurveMetaData(*MorphName);
+				if (FoundCurveMetaData)
+				{
+					FoundCurveMetaData->Type.bMorphtarget = true;
+					continue;
+				}
+
+				// 如果沒有找到，創建新的 curve metadata
+				Skeleton->AccumulateCurveMetaData(*MorphName, false, true);
+			}
+
+			// 標記 Skeleton 需要保存
+			Skeleton->MarkPackageDirty();
 		}
 	}
 }
