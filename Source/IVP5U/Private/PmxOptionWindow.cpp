@@ -66,19 +66,6 @@ void SPmxOptionWindow::Construct(const FArguments& InArgs)
 				[
 					SNew(SUniformGridPanel)
 					.SlotPadding(2)
-					/*+ SUniformGridPanel::Slot(0, 0)
-					[
-						IDocumentation::Get()->CreateAnchor(FString("Engine/Content/FBX/ImportOptions"))
-					]
-					+ SUniformGridPanel::Slot(0, 0)
-						[
-							SNew(SButton)
-							.HAlign(HAlign_Center)
-							.Text(LOCTEXT("MMDOptionWindow_ImportAll", "Import All"))
-							.ToolTipText(LOCTEXT("MMDOptionWindow_ImportAll_ToolTip", "Import all files with these same settings"))
-							.IsEnabled(this, &SPmxOptionWindow::CanImport)
-							.OnClicked(this, &SPmxOptionWindow::OnImportAll)
-						]*/
 					+ SUniformGridPanel::Slot(1, 0)
 						[
 							SAssignNew(ImportButton, SButton)

@@ -105,9 +105,4 @@ class UVmdImportUI : public UObject
 	class UMMDExtendAsset* MmdExtendAsset;
 
 	// struct FTableRowBase MMD2UE5NameTableRowDmmy;
-
-	// 暫定版::上記クラスだと上手く表示できていないため必要な項目のみ抽出
-	/** True to import I-Aggree , I Read README for Model. */
-	// UPROPERTY(EditAnywhere, Category = Mast_ReadmeForModel, meta = (OBJRestrict = "true", ToolTip = "If enabled, creates Unreal morph objects for the imported meshes"))
-	//	uint32 bImportIAgree : 1;
 };
