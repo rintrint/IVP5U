@@ -92,6 +92,14 @@ VMDImportOptions* GetVMDImportOptions(
 		{
 			ImportUI->AnimSequenceAsset = NULL;
 		}
+		if (ImportOptions->ImportUniformScale)
+		{
+			ImportUI->ImportUniformScale = ImportOptions->ImportUniformScale;
+		}
+		else
+		{
+			ImportUI->ImportUniformScale = 1.0f;
+		}
 
 		// ImportUI->bImportAsSkeletal = ImportUI->MeshTypeToImport == VMDIT_Animation;
 		ImportUI->bIsObjImport = bIsObjFormat;
@@ -184,6 +192,7 @@ void ApplyVMDImportUIToImportOptions(
 	InOutImportOptions.AnimSequenceAsset = ImportUI->AnimSequenceAsset;
 	InOutImportOptions.MMD2UE5NameTableRow = ImportUI->MMD2UE5NameTableRow;
 	InOutImportOptions.MmdExtendAsset = ImportUI->MmdExtendAsset;
+	InOutImportOptions.ImportUniformScale = ImportUI->ImportUniformScale;
 }
 
 TSharedPtr<FVmdImporter> FVmdImporter::StaticInstance;
@@ -256,6 +265,7 @@ VMDImportOptions* FVmdImporter::GetImportOptions() const
 UVmdImportUI::UVmdImportUI(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer) //, MMD2UE5NameTableRow(MMD2UE5NameTableRowDmmy)
 {
+	ImportUniformScale = 0.08f;
 #if 0
 	StaticMeshImportData = CreateDefaultSubobject<UMMDStaticMeshImportData>(TEXT("StaticMeshImportData"));
 	SkeletalMeshImportData = CreateDefaultSubobject<UMMDSkeletalMeshImportData>(TEXT("SkeletalMeshImportData"));

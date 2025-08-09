@@ -54,7 +54,8 @@ class IVP5U_API UVmdFactory : public UFactory
 		UIKRigDefinition* IKRig,
 		UDataTable* ReNameTable,
 		UMMDExtendAsset* mmdExtend,
-		MMD4UE5::VmdMotionInfo* vmdMotionInfo);
+		MMD4UE5::VmdMotionInfo* vmdMotionInfo,
+		VMDImportOptions* ImportOptions);
 	//////////////
 	class UVmdImportUI* ImportUI;
 
@@ -77,6 +78,7 @@ class IVP5U_API UVmdFactory : public UFactory
 		UIKRigDefinition* IKRig,
 		UMMDExtendAsset* mmdExtend,
 		MMD4UE5::VmdMotionInfo* vmdMotionInfo,
+		VMDImportOptions* ImportOptions,
 		TArray<FName>& OutBoneNames,
 		TArray<FRawAnimSequenceTrack>& OutRawTracks);
 

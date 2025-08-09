@@ -334,7 +334,8 @@ UObject* UVmdFactory::FactoryCreateBinary(
 						IKRig,
 						ImportUI->MMD2UE5NameTableRow,
 						ImportUI->MmdExtendAsset,
-						&vmdMotionInfo);
+						&vmdMotionInfo,
+						ImportOptions);
 					UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("添加动画序列耗时：%.3fs"), FPlatformTime::Seconds() - StartTime);
 				}
 				else
@@ -390,7 +391,8 @@ UAnimSequence* UVmdFactory::ImportAnimations(
 	UIKRigDefinition* IKRig,
 	UDataTable* ReNameTable,
 	UMMDExtendAsset* mmdExtend,
-	MMD4UE5::VmdMotionInfo* vmdMotionInfo)
+	MMD4UE5::VmdMotionInfo* vmdMotionInfo,
+	VMDImportOptions* ImportOptions)
 {
 	UAnimSequence* LastCreatedAnim = NULL;
 
@@ -474,7 +476,7 @@ UAnimSequence* UVmdFactory::ImportAnimations(
 		StartTime = FPlatformTime::Seconds();
 		TArray<FName> BoneNames;
 		TArray<FRawAnimSequenceTrack> RawTracks;
-		if (!PrepareVMDBoneAnimData(LastCreatedAnim, Skeleton, ReNameTable, IKRig, mmdExtend, vmdMotionInfo, BoneNames, RawTracks))
+		if (!PrepareVMDBoneAnimData(LastCreatedAnim, Skeleton, ReNameTable, IKRig, mmdExtend, vmdMotionInfo, ImportOptions, BoneNames, RawTracks))
 		{
 			UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("PrepareVMDBoneAnimData失败"));
 			importSuccessFlag = false;
@@ -945,6 +947,7 @@ bool UVmdFactory::PrepareVMDBoneAnimData(
 	UIKRigDefinition* IKRig,
 	UMMDExtendAsset* mmdExtend,
 	MMD4UE5::VmdMotionInfo* vmdMotionInfo,
+	VMDImportOptions* ImportOptions,
 	TArray<FName>& OutBoneNames,
 	TArray<FRawAnimSequenceTrack>& OutRawTracks)
 {
@@ -1182,9 +1185,10 @@ bool UVmdFactory::PrepareVMDBoneAnimData(
 								kybone.keyList[nextKeyIndex].Position[0],
 								kybone.keyList[nextKeyIndex].Position[2] * (-1),
 								kybone.keyList[nextKeyIndex].Position[1])
-								* 10.0f,
+								* 100.0f * ImportOptions->ImportUniformScale,
 							FVector(1, 1, 1));
-						// 将从引用姿势移动了Key的姿势的值作为初始值
+
+						// 將從引用姿勢移動了Key的姿勢的值作為初始值
 						RawTrack.PosKeys.Add(FVector3f(tempTranceform.GetTranslation() + refTranslation));
 						RawTrack.RotKeys.Add(FQuat4f(tempTranceform.GetRotation()));
 						RawTrack.ScaleKeys.Add(FVector3f(tempTranceform.GetScale3D()));
@@ -1329,7 +1333,7 @@ bool UVmdFactory::PrepareVMDBoneAnimData(
 
 					FTransform tempTranceform(
 						NowTranc.GetRotation(),
-						NowTranc.GetTranslation() * 10.0f,
+						NowTranc.GetTranslation() * 100.0f * ImportOptions->ImportUniformScale,
 						FVector(1, 1, 1));
 					// 将从引用姿势移动了Key的姿势的值作为初始值
 					RawTrack.PosKeys.Add(FVector3f(tempTranceform.GetTranslation() + refTranslation));
@@ -1570,7 +1574,13 @@ bool UVmdFactory::ImportVmdFromFile(FString file, USkeletalMesh* SkeletalMesh)
 					UAnimSequence* LastCreatedAnim = NULL;
 					USkeleton* Skeleton = NULL;
 					// UIKRigDefinition* IKRig = NULL;
-					VMDImportOptions* ImportOptions = NULL;
+
+					// 創建一個默認的 ImportOptions
+					VMDImportOptions DefaultImportOptions;
+					FMemory::Memzero(DefaultImportOptions);			// 初始化為零
+					DefaultImportOptions.ImportUniformScale = 1.0f; // 設置默認縮放為 1.0
+
+					VMDImportOptions* ImportOptions = &DefaultImportOptions;
 					UDataTable* MMD2UE5NameTable = NULL;
 					// UMMDExtendAsset* MMDasset = NULL;
 					if (SkeletalMesh)
@@ -1585,7 +1595,8 @@ bool UVmdFactory::ImportVmdFromFile(FString file, USkeletalMesh* SkeletalMesh)
 							NULL,
 							MMD2UE5NameTable,
 							NULL,
-							&vmdMotionInfo);
+							&vmdMotionInfo,
+							ImportOptions);
 						return true;
 					}
 					else

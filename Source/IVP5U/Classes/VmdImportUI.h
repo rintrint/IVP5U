@@ -92,6 +92,10 @@ class UVmdImportUI : public UObject
 	UPROPERTY(EditAnywhere, Category = Animation, meta = (OBJRestrict = "false"))
 	class UAnimSequence* AnimSequenceAsset;
 
+	/** Import uniform scale for the asset */
+	UPROPERTY(EditAnywhere, Category = Transform, meta = (OBJRestrict = "false", ClampMin = "0.001", UIMin = "0.001"))
+	float ImportUniformScale;
+
 	/** Skeleton to use for imported asset. When importing a mesh, leaving this as "None" will create a new skeleton. When importing and animation this MUST be specified to import the asset. */
 	// UPROPERTY(EditAnywhere, Category = AnimationList, meta = (ImportType = "Animation"))
 	TArray<class UMMDSkeletalMeshImportData*> TestArrayList;
