@@ -90,8 +90,8 @@ class UPmxImportUI : public UObject
 	uint32 bImportTextures : 1;
 
 	/** create Unreal materials of MaterialInst Type */
-	UPROPERTY(EditAnywhere, config, Category = Material, meta = (OBJRestrict = "true", ToolTip = "If enabled, Create Material Inst and Duplicate Mat-Assets from IVP5U Base Mat. "))
-	uint32 bCreateMaterialInstMode : 1;
+	UPROPERTY(EditAnywhere, config, Category = Material, meta = (OBJRestrict = "true", ToolTip = "If enabled, Create Material Instance and Duplicate Mat-Assets from IVP5U Base Mat. "))
+	uint32 bCreateMaterialInstanceMode : 1;
 
 	/** create Unreal materials of Unlit Type */
 	UPROPERTY(EditAnywhere, config, Category = Material, meta = (OBJRestrict = "true", ToolTip = "If CreateMaterialInstMode enabled, effective. Create Mat Shading Model is Unlit."))

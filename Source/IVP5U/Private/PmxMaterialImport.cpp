@@ -530,7 +530,7 @@ void UPmxMaterialImport::CreateUnrealMaterial(
 	FString ParentObjName,
 	// UObject * InParent,
 	MMD4UE5::PMX_MATERIAL& PmxMaterial,
-	bool bCreateMaterialInstMode,
+	bool bCreateMaterialInstanceMode,
 	bool bMaterialUnlit,
 	TArray<UMaterialInterface*>& OutMaterials,
 	TArray<UTexture*>& textureAssetList)
@@ -543,7 +543,7 @@ void UPmxMaterialImport::CreateUnrealMaterial(
 	// 删除禁止字符（如果模型名称中包含禁止字符时的故障保护）)
 	ParentObjName = ObjectTools::SanitizeObjectName(ParentObjName);
 
-	if (false == bCreateMaterialInstMode)
+	if (false == bCreateMaterialInstanceMode)
 	{
 		if (MaterialFullName.Len() > 6)
 		{

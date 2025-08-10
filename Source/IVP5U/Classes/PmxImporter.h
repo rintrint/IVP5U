@@ -347,7 +347,7 @@ struct PMXImportOptions
 	bool bImportMaterials;
 	bool bInvertNormalMap;
 	bool bImportTextures;
-	bool bCreateMaterialInstMode;
+	bool bCreateMaterialInstanceMode;
 	bool bUnlitMaterials;
 	bool bImportLOD;
 	bool bUsedAsFullName;

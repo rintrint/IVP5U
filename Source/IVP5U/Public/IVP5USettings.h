@@ -16,7 +16,7 @@ public:
 
 	/** Enable material instance creation mode */
 	UPROPERTY(config, EditAnywhere, Category = Settings)
-	bool bCreateMaterialInstMode = true;
+	bool bCreateMaterialInstanceMode = true;
 
 	/** Enable physics asset creation */
 	UPROPERTY(config, EditAnywhere, Category = Settings)

@@ -215,7 +215,7 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 						ImportUI->bIsObjImport = true; // obj mode
 						ImportUI->OriginalImportType = EPMXImportType::PMXIT_SkeletalMesh;
 						ImportUI->bImportMaterials = true;
-						ImportUI->bCreateMaterialInstMode = true;
+						ImportUI->bCreateMaterialInstanceMode = true;
 						ImportUI->bCreatePhysicsAsset = true;
 						ImportUI->bImportMorphTargets = true;
 						ImportUI->bImportTextures = true;
@@ -517,7 +517,7 @@ UObject* UPmxFactory::FactoryCreateBinary(
 	ImportUI->bIsObjImport = true; // obj mode
 	ImportUI->OriginalImportType = EPMXImportType::PMXIT_SkeletalMesh;
 	ImportUI->bImportMaterials = true;
-	ImportUI->bCreateMaterialInstMode = true;
+	ImportUI->bCreateMaterialInstanceMode = true;
 	ImportUI->bCreatePhysicsAsset = true;
 	ImportUI->bImportMorphTargets = true;
 	ImportUI->bImportTextures = true;

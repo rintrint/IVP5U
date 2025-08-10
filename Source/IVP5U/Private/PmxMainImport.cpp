@@ -175,7 +175,7 @@ void ApplyImportUIToImportOptions(
 
 	InOutImportOptions.bImportMaterials = ImportUI->bImportMaterials;
 	InOutImportOptions.bImportTextures = ImportUI->bImportTextures;
-	InOutImportOptions.bCreateMaterialInstMode = ImportUI->bCreateMaterialInstMode;
+	InOutImportOptions.bCreateMaterialInstanceMode = ImportUI->bCreateMaterialInstanceMode;
 	InOutImportOptions.bUnlitMaterials = ImportUI->bUnlitMaterials;
 	InOutImportOptions.bUsedAsFullName = ImportUI->bOverrideFullName;
 	InOutImportOptions.bConvertScene = ImportUI->bConvertScene;

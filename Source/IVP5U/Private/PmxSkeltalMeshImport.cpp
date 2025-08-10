@@ -427,7 +427,7 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 				PmxMeshInfo->modelNameJP,
 				// InParent,
 				PmxMeshInfo->materialList[k],
-				ImportUI->bCreateMaterialInstMode,
+				ImportUI->bCreateMaterialInstanceMode,
 				ImportUI->bUnlitMaterials,
 				Materials,
 				textureAssetList);

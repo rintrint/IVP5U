@@ -107,7 +107,7 @@ public:
 		FString ParentObjName,
 		// UObject * InParent,
 		MMD4UE5::PMX_MATERIAL& PmxMaterial,
-		bool bCreateMaterialInstMode,
+		bool bCreateMaterialInstanceMode,
 		bool bMaterialUnlit,
 		TArray<UMaterialInterface*>& OutMaterials,
 		TArray<UTexture*>& textureAssetList);
