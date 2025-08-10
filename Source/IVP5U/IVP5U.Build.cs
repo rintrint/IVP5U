@@ -32,7 +32,6 @@ namespace UnrealBuildTool.Rules
 			PrivateIncludePaths.AddRange(
 				new string[] {
 					"IVP5U/Private",
-					ThirdPartyPath+"/glm"
 					// ... add other private include paths required here ...
 				}
 			);
