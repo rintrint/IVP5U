@@ -68,7 +68,6 @@ https://www.gyan.dev/ffmpeg/builds 选择ffmpeg-git-full.7z
 调查Sequencer关键帧形状和颜色没有正确显示的问题  
 检查行为是否皆与MMD、MMD Tools一致  
 ~~完善PMX导入功能~~(无此计划，使用VRM4U更合理)  
-导入刚体
 
 ### 已完成  
 优化两大瓶颈  
