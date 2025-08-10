@@ -68,9 +68,6 @@ using namespace MMD4UE5;
 UPmxFactory::UPmxFactory(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	// FEngineVersion version = FEngineVersion::Current();
-	// if (version.GetMajor() == 5 && version.GetMinor() > 1) {}
-
 	SupportedClass = NULL;
 	// SupportedClass = UPmxFactory::StaticClass();
 	Formats.Empty();

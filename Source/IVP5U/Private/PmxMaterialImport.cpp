@@ -27,12 +27,6 @@
 
 DEFINE_LOG_CATEGORY(LogCategoryPMXMaterialImport)
 
-#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION == 2
-
-	#define StaticSwitchParameters StaticSwitchParameters_DEPRECATED
-
-#endif
-
 namespace
 {
 	FContentBrowserMenuExtender_SelectedAssets ContentBrowserExtenderDelegate;
@@ -320,11 +314,7 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty(
 				// Multipule
 				UMaterialExpressionMultiply* MulExpression = NewObject<UMaterialExpressionMultiply>(UnrealMaterial);
 
-	#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION > 0
 				UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(MulExpression);
-	#else
-				UnrealMaterial->Expressions.Add(MulExpression);
-	#endif
 
 				// UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(MulExpression);
 				// UnrealMaterial->BaseColor.Expression = MulExpression;
@@ -336,13 +326,9 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty(
 
 				// Multipule
 				UMaterialExpressionMultiply* MulExpression_2 = NewObject<UMaterialExpressionMultiply>(UnrealMaterial);
-	#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION > 0
+
 				UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(MulExpression_2);
 				UnrealMaterial->GetEditorOnlyData()->BaseColor.Expression = MulExpression_2;
-	#else
-				UnrealMaterial->Expressions.Add(MulExpression_2);
-				UnrealMaterial->BaseColor.Expression = MulExpression_2;
-	#endif
 
 				MulExpression_2->B.Expression = MulExpression;
 				MulExpression_2->MaterialExpressionEditorX = -250;
@@ -360,11 +346,7 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty(
 				// and link it to the material
 				UMaterialExpressionTextureSample* UnrealTextureExpression = NewObject<UMaterialExpressionTextureSample>(UnrealMaterial);
 
-	#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION > 0
 				UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(UnrealTextureExpression);
-	#else
-				UnrealMaterial->Expressions.Add(UnrealTextureExpression); // #tag
-	#endif
 
 				// MaterialInput.Expression = UnrealTextureExpression;
 				MulExpression->A.Expression = UnrealTextureExpression;
@@ -372,11 +354,7 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty(
 				// MulExpression_2->B.Connect(4, UnrealTextureExpression);
 				// MulExpression->B.Expression = UnrealTextureExpression.Outputs[4];
 
-	#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION > 0
 				UnrealMaterial->GetEditorOnlyData()->OpacityMask.Connect(4, UnrealTextureExpression);
-	#else
-				UnrealMaterial->OpacityMask.Connect(4, UnrealTextureExpression);
-	#endif
 
 				UnrealTextureExpression->Texture = UnrealTexture;
 				UnrealTextureExpression->SamplerType = bSetupAsNormalMap ? SAMPLERTYPE_Normal : SAMPLERTYPE_Color;
@@ -389,11 +367,7 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty(
 
 				// B
 				UMaterialExpressionVectorParameter* MyColorExpression = NewObject<UMaterialExpressionVectorParameter>(UnrealMaterial);
-	#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION > 0
 				UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(MyColorExpression);
-	#else
-				UnrealMaterial->Expressions.Add(MyColorExpression);
-	#endif
 
 				// UnrealMaterial->BaseColor.Expression = MyColorExpression;
 				// MulExpression->B.Expression = MyColorExpression;
@@ -456,7 +430,6 @@ void UPmxMaterialImport::FixupMaterial(
 	MMD4UE5::PMX_MATERIAL& PmxMaterial,
 	UMaterial* UnrealMaterial)
 {
-#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION > 0
 	if (UnrealMaterial->GetEditorOnlyData()->BaseColor.Expression == NULL)
 	{
 		UnrealMaterial->BlendMode = BLEND_Masked;
@@ -471,19 +444,6 @@ void UPmxMaterialImport::FixupMaterial(
 		MyColorExpression->SetEditableName("DiffuseColor");
 
 		bool bFoundDiffuseColor = true;
-		/*
-		if (PmxMaterial.GetClassId().Is(FbxSurfacePhong::ClassId))
-		{
-		DiffuseColor = ((FbxSurfacePhong&)(PmxMaterial)).Diffuse.Get();
-		}
-		else if (PmxMaterial.GetClassId().Is(FbxSurfaceLambert::ClassId))
-		{
-		DiffuseColor = ((FbxSurfaceLambert&)(PmxMaterial)).Diffuse.Get();
-		}
-		else
-		{
-		bFoundDiffuseColor = false;
-		}*/
 		if (bFoundDiffuseColor)
 		{
 			MyColorExpression->DefaultValue.R = PmxMaterial.Diffuse[0]; // R
@@ -509,7 +469,6 @@ void UPmxMaterialImport::FixupMaterial(
 	}
 
 	//////////////////////////
-	#if 1
 	// add a basic diffuse color if no texture is linked to diffuse
 	if (UnrealMaterial->GetEditorOnlyData()->AmbientOcclusion.Expression == NULL)
 	{
@@ -558,111 +517,6 @@ void UPmxMaterialImport::FixupMaterial(
 		UnrealMaterial->GetEditorOnlyData()->AmbientOcclusion.MaskB = Output->MaskB;
 		UnrealMaterial->GetEditorOnlyData()->AmbientOcclusion.MaskA = Output->MaskA;
 	}
-	#endif
-#else
-	if (UnrealMaterial->BaseColor.Expression == NULL)
-	{
-		UnrealMaterial->BlendMode = BLEND_Masked;
-		// FbxDouble3 DiffuseColor;
-
-		UMaterialExpressionVectorParameter* MyColorExpression = NewObject<UMaterialExpressionVectorParameter>(UnrealMaterial);
-		UnrealMaterial->Expressions.Add(MyColorExpression);
-		UnrealMaterial->BaseColor.Expression = MyColorExpression;
-		UnrealMaterial->OpacityMask.Connect(4, MyColorExpression);
-		MyColorExpression->MaterialExpressionEditorX = -500;
-		MyColorExpression->MaterialExpressionEditorY = 00;
-		MyColorExpression->SetEditableName("DiffuseColor");
-
-		bool bFoundDiffuseColor = true;
-		/*
-		if (PmxMaterial.GetClassId().Is(FbxSurfacePhong::ClassId))
-		{
-		DiffuseColor = ((FbxSurfacePhong&)(PmxMaterial)).Diffuse.Get();
-		}
-		else if (PmxMaterial.GetClassId().Is(FbxSurfaceLambert::ClassId))
-		{
-		DiffuseColor = ((FbxSurfaceLambert&)(PmxMaterial)).Diffuse.Get();
-		}
-		else
-		{
-		bFoundDiffuseColor = false;
-		}*/
-		if (bFoundDiffuseColor)
-		{
-			MyColorExpression->DefaultValue.R = PmxMaterial.Diffuse[0]; // R
-			MyColorExpression->DefaultValue.G = PmxMaterial.Diffuse[1]; // G
-			MyColorExpression->DefaultValue.B = PmxMaterial.Diffuse[2]; // B
-			MyColorExpression->DefaultValue.A = PmxMaterial.Diffuse[3]; // A
-		}
-		else
-		{
-			// use random color because there may be multiple materials, then they can be different
-			MyColorExpression->DefaultValue.R = 0.5f + (0.5f * FMath::Rand()) / RAND_MAX;
-			MyColorExpression->DefaultValue.G = 0.5f + (0.5f * FMath::Rand()) / RAND_MAX;
-			MyColorExpression->DefaultValue.B = 0.5f + (0.5f * FMath::Rand()) / RAND_MAX;
-		}
-
-		TArray<FExpressionOutput> Outputs = UnrealMaterial->BaseColor.Expression->GetOutputs();
-		FExpressionOutput* Output = Outputs.GetData();
-		UnrealMaterial->BaseColor.Mask = Output->Mask;
-		UnrealMaterial->BaseColor.MaskR = Output->MaskR;
-		UnrealMaterial->BaseColor.MaskG = Output->MaskG;
-		UnrealMaterial->BaseColor.MaskB = Output->MaskB;
-		UnrealMaterial->BaseColor.MaskA = Output->MaskA;
-	}
-
-	//////////////////////////
-	#if 1
-	// add a basic diffuse color if no texture is linked to diffuse
-	if (UnrealMaterial->AmbientOcclusion.Expression == NULL)
-	{
-		// FbxDouble3 DiffuseColor;
-
-		UMaterialExpressionVectorParameter* MyColorExpression = NewObject<UMaterialExpressionVectorParameter>(UnrealMaterial);
-		UnrealMaterial->Expressions.Add(MyColorExpression);
-		UnrealMaterial->AmbientOcclusion.Expression = MyColorExpression;
-		MyColorExpression->MaterialExpressionEditorX = -500;
-		MyColorExpression->MaterialExpressionEditorY = 500;
-		MyColorExpression->SetEditableName("AmbientColor");
-
-		bool bFoundDiffuseColor = true;
-		/*
-		if (PmxMaterial.GetClassId().Is(FbxSurfacePhong::ClassId))
-		{
-		DiffuseColor = ((FbxSurfacePhong&)(PmxMaterial)).Diffuse.Get();
-		}
-		else if (PmxMaterial.GetClassId().Is(FbxSurfaceLambert::ClassId))
-		{
-		DiffuseColor = ((FbxSurfaceLambert&)(PmxMaterial)).Diffuse.Get();
-		}
-		else
-		{
-		bFoundDiffuseColor = false;
-		}*/
-		if (bFoundDiffuseColor)
-		{
-			MyColorExpression->DefaultValue.R = PmxMaterial.Ambient[0];
-			MyColorExpression->DefaultValue.G = PmxMaterial.Ambient[1];
-			MyColorExpression->DefaultValue.B = PmxMaterial.Ambient[2];
-		}
-		else
-		{
-			// use random color because there may be multiple materials, then they can be different
-			MyColorExpression->DefaultValue.R = 0.5f + (0.5f * FMath::Rand()) / RAND_MAX;
-			MyColorExpression->DefaultValue.G = 0.5f + (0.5f * FMath::Rand()) / RAND_MAX;
-			MyColorExpression->DefaultValue.B = 0.5f + (0.5f * FMath::Rand()) / RAND_MAX;
-		}
-
-		TArray<FExpressionOutput> Outputs = UnrealMaterial->AmbientOcclusion.Expression->GetOutputs();
-		FExpressionOutput* Output = Outputs.GetData();
-		UnrealMaterial->AmbientOcclusion.Mask = Output->Mask;
-		UnrealMaterial->AmbientOcclusion.MaskR = Output->MaskR;
-		UnrealMaterial->AmbientOcclusion.MaskG = Output->MaskG;
-		UnrealMaterial->AmbientOcclusion.MaskB = Output->MaskB;
-		UnrealMaterial->AmbientOcclusion.MaskA = Output->MaskA;
-	}
-	#endif
-#endif
 
 	UnrealMaterial->TwoSided = PmxMaterial.CullingOff;
 
@@ -767,7 +621,6 @@ void UPmxMaterialImport::CreateUnrealMaterial(
 		}
 
 		// textures and properties
-#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION > 0
 		if (
 			CreateAndLinkExpressionForMaterialProperty(
 				PmxMaterial,
@@ -783,23 +636,6 @@ void UPmxMaterialImport::CreateUnrealMaterial(
 		else
 		{
 		}
-#else
-		if (
-			CreateAndLinkExpressionForMaterialProperty(
-				PmxMaterial,
-				UnrealMaterial,
-				NULL,
-				UnrealMaterial->BaseColor,
-				false,
-				FVector2D(240, -320),
-				textureAssetList)
-			== true)
-		{
-		}
-		else
-		{
-		}
-#endif
 
 		FixupMaterial(PmxMaterial, UnrealMaterial); // add random diffuse if none exists
 
@@ -930,13 +766,8 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty_ForMmdAutolu
 
 				// Multipule
 				UMaterialExpressionMultiply* MulExpression = NewObject<UMaterialExpressionMultiply>(UnrealMaterial);
-	#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION > 0
 				UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(MulExpression);
 				UnrealMaterial->GetEditorOnlyData()->BaseColor.Expression = MulExpression; // test
-	#else
-				UnrealMaterial->Expressions.Add(MulExpression);
-				UnrealMaterial->BaseColor.Expression = MulExpression; // test
-	#endif
 
 				MulExpression->MaterialExpressionEditorX = -250;
 				MulExpression->MaterialExpressionEditorY = 0;
@@ -946,11 +777,7 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty_ForMmdAutolu
 
 				// Multipule
 				UMaterialExpressionMultiply* MulExpression_2 = NewObject<UMaterialExpressionMultiply>(UnrealMaterial);
-	#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION > 0
 				UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(MulExpression_2);
-	#else
-				UnrealMaterial->Expressions.Add(MulExpression_2);
-	#endif
 
 				// UnrealMaterial->OpacityMask.Expression = MulExpression_2;
 				MulExpression_2->MaterialExpressionEditorX = -250;
@@ -966,11 +793,7 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty_ForMmdAutolu
 
 				// Multipule
 				UMaterialExpressionMultiply* MulExpression_3 = NewObject<UMaterialExpressionMultiply>(UnrealMaterial);
-	#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION > 0
 				UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(MulExpression_3);
-	#else
-				UnrealMaterial->Expressions.Add(MulExpression_3);
-	#endif
 
 				// UnrealMaterial->EmissiveColor.Expression = MulExpression_3; //TES: lighting EmmisicveColor For AutoLuminous
 				MulExpression_3->MaterialExpressionEditorX = -250;
@@ -988,21 +811,14 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty_ForMmdAutolu
 				// A
 				// and link it to the material
 				UMaterialExpressionTextureSample* UnrealTextureExpression = NewObject<UMaterialExpressionTextureSample>(UnrealMaterial);
-	#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION > 0
 				UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(UnrealTextureExpression);
-	#else
-				UnrealMaterial->Expressions.Add(UnrealTextureExpression);
-	#endif
 
 				// MaterialInput.Expression = UnrealTextureExpression;
 				MulExpression->A.Expression = UnrealTextureExpression;
 				MulExpression->B.Connect(4, UnrealTextureExpression);
 				MulExpression_2->B.Connect(4, UnrealTextureExpression);
-	#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION > 0
+
 				UnrealMaterial->GetEditorOnlyData()->OpacityMask.Connect(4, UnrealTextureExpression);
-	#else
-				UnrealMaterial->OpacityMask.Connect(4, UnrealTextureExpression);
-	#endif
 
 				// TEST: Non Light EmmisciveColor For Easy AutoLuminous
 				// MulExpression->B.Expression = UnrealTextureExpression.Outputs[4];
@@ -1017,11 +833,7 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty_ForMmdAutolu
 
 				// B
 				UMaterialExpressionVectorParameter* MyColorExpression = NewObject<UMaterialExpressionVectorParameter>(UnrealMaterial);
-	#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION > 0
 				UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(MyColorExpression);
-	#else
-				UnrealMaterial->Expressions.Add(MyColorExpression);
-	#endif
 
 				// UnrealMaterial->BaseColor.Expression = MyColorExpression;
 				// MulExpression->B.Expression = MyColorExpression;
@@ -1037,11 +849,8 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty_ForMmdAutolu
 
 				// const
 				UMaterialExpressionConstant* MyConstExpression = NewObject<UMaterialExpressionConstant>(UnrealMaterial);
-	#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION > 0
+
 				UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(MyConstExpression);
-	#else
-				UnrealMaterial->Expressions.Add(MyConstExpression);
-	#endif
 
 				// UnrealMaterial->BaseColor.Expression = MyColorExpression;
 				// MulExpression->B.Expression = MyColorExpression;
@@ -1335,11 +1144,8 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Masked(
 			Param.Value = true;
 			Param.bOverride = true;
 
-#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION > 0
 			StaticParams.StaticSwitchParameters.Add(Param);
-#else
-			StaticParams.StaticSwitchParameters.Add(Param);
-#endif
+
 			UE_LOG(LogCategoryPMXMaterialImport, Log, TEXT("[%s]:Base Texure mode enable "), *(FString(__FUNCTION__)));
 		}
 	}
@@ -1363,11 +1169,9 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Masked(
 			Param.ParameterInfo.Name = FName(D_IVP5U_MatInst_Name_isToonEnable);
 			Param.Value = true;
 			Param.bOverride = true;
-#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION > 0
+
 			StaticParams.StaticSwitchParameters.Add(Param); // DestSeq->MarkRawDataAsModified();
-#else
-			StaticParams.StaticSwitchParameters.Add(Param);
-#endif
+
 			UE_LOG(LogCategoryPMXMaterialImport, Log, TEXT("[%s]:Toon Texure mode enable "), *(FString(__FUNCTION__)));
 		}
 	}
@@ -1402,17 +1206,10 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Masked(
 	}
 
 	// StaticSwitch
-#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION > 0
 	if (0 < StaticParams.StaticSwitchParameters.Num())
 	{
 		pUMIC->UpdateStaticPermutation(StaticParams);
 	}
-#else
-	if (0 < StaticParams.StaticSwitchParameters.Num())
-	{
-		pUMIC->UpdateStaticPermutation(StaticParams);
-	}
-#endif
 
 	return UnrealMaterial;
 }
@@ -1471,11 +1268,8 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Masked_Unlit(
 		Param.Value = true;
 		Param.bOverride = true;
 
-#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION > 0
 		StaticParams.StaticSwitchParameters.Add(Param); // 5.2失效
-#else
-		StaticParams.StaticSwitchParameters.Add(Param); // 5.2失效
-#endif
+
 		UE_LOG(LogCategoryPMXMaterialImport, Log, TEXT("[%s]:MIC Texure mode enable "), *(FString(__FUNCTION__)));
 	}
 
@@ -1509,17 +1303,10 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Masked_Unlit(
 	}
 
 	// 应用多个StaticSwitch
-#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION > 0
 	if (0 < StaticParams.StaticSwitchParameters.Num())
 	{
 		pUMIC->UpdateStaticPermutation(StaticParams);
 	}
-#else
-	if (0 < StaticParams.StaticSwitchParameters.Num())
-	{
-		pUMIC->UpdateStaticPermutation(StaticParams);
-	}
-#endif
 
 	return UnrealMaterial;
 }
@@ -1576,11 +1363,8 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Luminous(
 		Param.Value = true;
 		Param.bOverride = true;
 
-#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION > 0
 		StaticParams.StaticSwitchParameters.Add(Param);
-#else
-		StaticParams.StaticSwitchParameters.Add(Param);
-#endif
+
 		UE_LOG(LogCategoryPMXMaterialImport, Log, TEXT("[%s]:MIC Texure mode enable "), *(FString(__FUNCTION__)));
 	}
 
@@ -1626,17 +1410,10 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Luminous(
 	}
 
 	// StaticSwitch
-#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION > 0
 	if (0 < StaticParams.StaticSwitchParameters.Num())
 	{
 		pUMIC->UpdateStaticPermutation(StaticParams);
 	}
-#else
-	if (0 < StaticParams.StaticSwitchParameters.Num())
-	{
-		pUMIC->UpdateStaticPermutation(StaticParams);
-	}
-#endif
 
 	return UnrealMaterial;
 }
@@ -1693,11 +1470,8 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Luminous_Unlit(
 		Param.Value = true;
 		Param.bOverride = true;
 
-#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION > 0
 		StaticParams.StaticSwitchParameters.Add(Param);
-#else
-		StaticParams.StaticSwitchParameters.Add(Param);
-#endif
+
 		UE_LOG(LogCategoryPMXMaterialImport, Log, TEXT("[%s]:MIC Texure mode enable "), *(FString(__FUNCTION__)));
 	}
 
@@ -1743,17 +1517,10 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Luminous_Unlit(
 	}
 
 	// StaticSwitchの適用 複数まとめて
-#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION > 0
 	if (0 < StaticParams.StaticSwitchParameters.Num())
 	{
 		pUMIC->UpdateStaticPermutation(StaticParams);
 	}
-#else
-	if (0 < StaticParams.StaticSwitchParameters.Num())
-	{
-		pUMIC->UpdateStaticPermutation(StaticParams);
-	}
-#endif
 
 	return UnrealMaterial;
 }
