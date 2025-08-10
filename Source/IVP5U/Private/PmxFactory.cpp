@@ -687,11 +687,9 @@ UObject* UPmxFactory::FactoryCreateBinary(
 	}
 	else
 	{
-		const FText Message = FText::Format(LOCTEXT("ImportFailed_Generic",
-												"Failed to import '{0}'. Failed to create asset '{1}'\nMMD停止模型导入。\nIVP5U Plugin"),
-			FText::FromString(*Name.ToString()), FText::FromString(*Name.ToString()));
-		FMessageDialog::Open(EAppMsgType::Ok, Message);
-		// UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("%s"), *Message.ToString());
+		UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("用户取消PMX导入"));
+		bOutOperationCanceled = true; // 设置引擎级取消标誌
+									  // 不显示错误对话框，直接返回
 	}
 
 	GEditor->GetEditorSubsystem<UImportSubsystem>()->OnAssetPostImport.Broadcast(this, NewObject);
