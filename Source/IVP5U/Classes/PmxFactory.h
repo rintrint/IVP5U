@@ -147,8 +147,6 @@ protected:
 	/** true if the import operation was canceled. */
 	bool bOperationCanceled;
 
-	int32 ImportPriority;
-
 	//
 	UPmxMaterialImport pmxMaterialImportHelper;
 };

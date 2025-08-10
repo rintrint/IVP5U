@@ -138,7 +138,9 @@ EReimportResult::Type UPmxFactory::Reimport(UObject* Obj)
 
 int32 UPmxFactory::GetPriority() const
 {
-	return ImportPriority;
+	const UIVP5USettings* Settings = GetDefault<UIVP5USettings>();
+	const int CurrentImportPriority = FMath::Max(1, Settings->ImportPriority);
+	return CurrentImportPriority;
 }
 
 ////////////////////////////////////////////////

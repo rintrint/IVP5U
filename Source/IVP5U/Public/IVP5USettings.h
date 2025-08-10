@@ -11,7 +11,7 @@ class IVP5U_API UIVP5USettings : public UObject
 
 public:
 	/** priority. Default plugins priority=100 */
-	// UPROPERTY(config, EditAnywhere, Category = Settings, meta = (ConfigRestartRequired = true))
+	UPROPERTY(config, EditAnywhere, Category = Settings, meta = (ConfigRestartRequired = false))
 	int32 ImportPriority = 80;
 
 	/** Enable material instance creation mode */
