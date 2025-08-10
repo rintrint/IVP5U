@@ -544,7 +544,6 @@ UObject* UPmxFactory::FactoryCreateBinary(
 	if (ImportOptions)
 	{
 		Warn->BeginSlowTask(NSLOCTEXT("PmxFactory", "BeginImportingPmxMeshTask", "Importing Pmx mesh"), true);
-#if 1
 		{
 
 			// For animation and static mesh we assume there is at lease one interesting node by default
@@ -666,7 +665,6 @@ UObject* UPmxFactory::FactoryCreateBinary(
 			}
 			else
 			{
-	#if 1 // DEBUG_MMD_UE5_ORIGINAL_CODE
 				if (importAssetTypeMMD == E_MMD_TO_UE5_SKELTON)
 				{
 					AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_InvalidBone", "Failed to find any bone hierarchy. Try disabling the \"Import As Skeletal\" option to import as a rigid mesh. ")), "FFbxErrors::SkeletalMesh_InvalidBone");
@@ -675,7 +673,6 @@ UObject* UPmxFactory::FactoryCreateBinary(
 				{
 					AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_InvalidNode", "Could not find any node.")), "FFbxErrors::SkeletalMesh_InvalidNode");
 				}
-	#endif
 			}
 		}
 
@@ -686,7 +683,6 @@ UObject* UPmxFactory::FactoryCreateBinary(
 		}
 
 		// FbxImporter->ReleaseScene();
-#endif
 		Warn->EndSlowTask();
 	}
 	else
@@ -873,7 +869,6 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 
 	// Pass the number of texture coordinate sets to the LODModel.  Ensure there is at least one UV coord
 	LODModel.NumTexCoords = FMath::Max<uint32>(1, SkelMeshImportDataPtr->NumTexCoords);
-#if 1
 	if (bCreateRenderData)
 	{
 		TArray<FVector3f> LODPoints;
@@ -956,7 +951,6 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 			}
 		}
 	}
-#endif
 
 	if (InParent != GetTransientPackage())
 	{
@@ -1066,13 +1060,13 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 							}
 						}
 					}
-#if 1
+
 					for (int i = 0; i < bdn; i++)
 						for (int j = i + 1; j < bdn; j++)
 							if (NewPhysicsAsset->SkeletalBodySetups[i]->PhysicsType != NewPhysicsAsset->SkeletalBodySetups[j]->PhysicsType)
 								NewPhysicsAsset->EnableCollision(j, i);
 					// else						NewPhysicsAsset->DisableCollision(j, i);
-#endif
+
 					// NewPhysicsAsset->ConstraintSetup.Empty();
 					int csn = NewPhysicsAsset->ConstraintSetup.Num();
 
