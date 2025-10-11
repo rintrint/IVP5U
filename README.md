@@ -1,12 +1,13 @@
 # IVP5U (New IM4U)
 
 PMX and VMD loader for UnrealEngine5  
-Support UE5.5, 5.6
+Support UE5.5, 5.6, 5.7
 
 | UE5版本   | 插件版本     |
 |-----------|-------------|
 | UE5.5     | IVP5U_UE5.5 |
 | UE5.6     | IVP5U_UE5.6 |
+| UE5.7     | main分支    |
 
 建议搭配VRM4U使用(最佳组合):
 
@@ -22,12 +23,13 @@ UE5.2 动画製作: VRM4U导入PMX模型 + IVP5U导入VMD动作
 UE5.2 动画製作: 使用 IVP5U 导入MMD模型、动作和镜头  
 <https://www.bilibili.com/video/BV1Ju4y197Pz/>  
 
-## NexGiMa烘焙物理
+## MMDBridge烘焙物理
 
-NexGiMa下载  
-<https://sites.google.com/view/nexgima/Home#h.p_zUEhIi0xDZD8>  
-NexGiMa教程  
-<https://www.bilibili.com/video/BV1Hz42167oE/>  
+MMDBridge下载  
+<https://github.com/rintrint/mmdbridge>  
+MMDBridge教程  
+<https://www.bilibili.com/opus/1102730546871533640>  
+<https://github.com/rintrint/mmdbridge/blob/master/docs/how_to_use.md>  
 
 ## 注意事项
 
