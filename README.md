@@ -1,6 +1,6 @@
 # IVP5U (New IM4U)
 
-PMX and VMD loader for UnrealEngine5  
+Import VMD/PMX into UE5  
 Support UE5.5, 5.6, 5.7
 
 | UE5版本   | 插件版本     |
