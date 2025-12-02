@@ -822,7 +822,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 	SkeletalMesh->InvalidateDeriveDataCacheGUID();
 
 	// 1. 先重置並新增 LOD 0 的「設定資訊」 (LODInfo)
-	SkeletalMesh->ResetLODInfo();
+	SkeletalMesh->SetNumSourceModels(0);
 	FSkeletalMeshLODInfo& NewLODInfo = SkeletalMesh->AddLODInfo();
 	NewLODInfo.ReductionSettings.NumOfTrianglesPercentage = 1.0f;
 	NewLODInfo.ReductionSettings.NumOfVertPercentage = 1.0f;
