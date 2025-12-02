@@ -7,14 +7,13 @@ public class MMDCameraImporter : ModuleRules
 	public MMDCameraImporter(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
-		
+
 		PublicIncludePaths.AddRange(
 			new string[]
 			{
 				// ... add public include paths required here ...
 			}
 		);
-
 
 		PrivateIncludePaths.AddRange(
 			new string[]
@@ -29,7 +28,6 @@ public class MMDCameraImporter : ModuleRules
 				"Core",
 				"MovieScene",
 				"CinematicCamera",
-				"Sequencer",
 				// ... add other public dependencies that you statically link with here ...
 			}
 		);
@@ -37,25 +35,16 @@ public class MMDCameraImporter : ModuleRules
 		PrivateDependencyModuleNames.AddRange(
 			new string[]
 			{
-				"Projects",
-				"InputCore",
-				"EditorFramework",
-				"UnrealEd",
-				"ToolMenus",
 				"CoreUObject",
 				"Engine",
+				"InputCore",
+				"Projects",
 				"Slate",
 				"SlateCore",
-				"Sequencer",
-				"MovieSceneTools",
-				"LevelSequenceEditor",
-				"DesktopPlatform",
-				"CinematicCamera",
 				"MovieSceneTracks",
-				// ... add private dependencies that you statically link with here ...	
+				// ... add private dependencies that you statically link with here ...
 			}
 		);
-
 
 		DynamicallyLoadedModuleNames.AddRange(
 			new string[]
@@ -63,5 +52,21 @@ public class MMDCameraImporter : ModuleRules
 				// ... add any modules that your module loads dynamically here ...
 			}
 		);
+
+		if (Target.bBuildEditor)
+		{
+			PrivateDependencyModuleNames.AddRange(
+				new string[]
+				{
+					"UnrealEd",
+					"EditorFramework",
+					"ToolMenus",
+					"Sequencer",
+					"LevelSequenceEditor",
+					"MovieSceneTools",
+					"DesktopPlatform",
+				}
+			);
+		}
 	}
 }
