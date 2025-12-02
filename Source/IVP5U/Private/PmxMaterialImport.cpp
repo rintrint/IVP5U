@@ -72,7 +72,7 @@ void UPmxMaterialImport::AssetsCreateTexture(
 			BasePackageName = FPackageName::GetLongPackagePath(InParent->GetOutermost()->GetName()) / TextureName;
 		}
 
-		FString BasePackageName_2 = PackageTools::SanitizePackageName(BasePackageName);
+		FString BasePackageName_2 = UPackageTools::SanitizePackageName(BasePackageName);
 
 		UTexture* ExistingTexture = NULL;
 		// First check if the asset already exists.
@@ -182,7 +182,7 @@ UTexture* UPmxMaterialImport::ImportTexture(
 
 	// set where to place the textures
 	FString BasePackageName = FPackageName::GetLongPackagePath(InParent->GetOutermost()->GetName()) / TextureName;
-	BasePackageName = PackageTools::SanitizePackageName(BasePackageName);
+	BasePackageName = UPackageTools::SanitizePackageName(BasePackageName);
 
 	UTexture* ExistingTexture = NULL;
 	UPackage* TexturePackage = NULL;
@@ -570,7 +570,7 @@ void UPmxMaterialImport::CreateUnrealMaterial(
 		}
 
 		FString BasePackageName = FPackageName::GetLongPackagePath(InParent->GetOutermost()->GetName()) / MaterialFullName;
-		BasePackageName = PackageTools::SanitizePackageName(BasePackageName);
+		BasePackageName = UPackageTools::SanitizePackageName(BasePackageName);
 
 		// The material could already exist in the project
 		FName ObjectPath = *(BasePackageName + TEXT(".") + MaterialFullName);
