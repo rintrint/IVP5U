@@ -17,7 +17,7 @@
     "Modules": [
         {
             "Name": "IVP5U",
-            "Type": "Runtime",
+            "Type": "Editor",
             "LoadingPhase": "Default",
             "AdditionalDependencies": [
                 "Engine"
