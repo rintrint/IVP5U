@@ -14,6 +14,10 @@ Support UE5.5, 5.6, 5.7
 - **VRM4U**:导入PMX
 - **IVP5U**:导入VMD
 
+PMX需要先在MMD Tools中使用模型调试面板修复过  
+VMD需要先在MMDBridge中使用mmdbridge_vmd_mode2.py烘焙过  
+详细教程请看[这篇](https://www.bilibili.com/opus/1102730546871533640)或[这篇](https://github.com/rintrint/mmdbridge/blob/master/docs/how_to_use.md)  
+
 ## UE5 MMD教程
 
 UE5.5 MMD教程 替代Blender渲染 VRM4U IVP5U NexGiMa FFmpeg  
