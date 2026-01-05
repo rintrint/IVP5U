@@ -41,12 +41,9 @@
 ////////////
 
 #include "PmxFactory.h"
-#include "Factory/VmdFactory.h"
 
 #include "LODUtilities.h"
 #define LOCTEXT_NAMESPACE "PMXSkeltalMeshImpoter"
-extern TMap<FName, FName> NameMap;
-void initMmdNameMap();
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // FMorphMeshRawSource is removed after version 4.16. So added for only this plugin here.
 // Converts a mesh to raw vertex data used to generate a morph target mesh
@@ -267,7 +264,6 @@ bool UPmxFactory::ImportBone(
 	int32 NumberOfRoot = 0;
 
 	int32 RootIdx = -1;
-	initMmdNameMap();
 
 	for (int LinkIndex = 0; LinkIndex < PmxMeshInfo->boneList.Num(); LinkIndex++)
 	{
@@ -321,11 +317,6 @@ bool UPmxFactory::ImportBone(
 		BoneName = ANSI_TO_TCHAR(MakeName(LinkName));*/
 
 		BoneName = PmxMeshInfo->boneList[LinkIndex].Name;
-#if USE_ENG_NAME
-		const FName* pn = (FName*)NameMap.FindKey(FName(PmxMeshInfo->boneList[LinkIndex].Name));
-		if (pn)
-			BoneName = pn->ToString(); // For MMD
-#endif
 		Bone.Name = BoneName;
 
 		SkeletalMeshImportData::FJointPos& JointMatrix = Bone.BonePos;

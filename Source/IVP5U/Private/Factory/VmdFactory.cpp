@@ -23,96 +23,6 @@
 
 DEFINE_LOG_CATEGORY(LogMMD4UE5_VMDFactory)
 
-#define ADD_NAME_MAP(x, y) NameMap.Add((y), (x))
-
-void initMmdNameMap()
-{
-	if (NameMap.Num() == 0)
-	{
-		ADD_NAME_MAP(L"左足", L"左足D");
-		ADD_NAME_MAP(L"左ひざ", L"左ひざD");
-		ADD_NAME_MAP(L"左足首", L"左足首D");
-		ADD_NAME_MAP(L"左つま先", L"左足先EX");
-		ADD_NAME_MAP(L"右足", L"右足D");
-		ADD_NAME_MAP(L"右ひざ", L"右ひざD");
-		ADD_NAME_MAP(L"右足首", L"右足首D");
-		ADD_NAME_MAP(L"右つま先", L"右足先EX");
-		// ADD_NAME_MAP(L"センター", L"腰");
-		ADD_NAME_MAP(L"腰キャンセル右", L"右腰キャンセル");
-		ADD_NAME_MAP(L"腰キャンセル左", L"左腰キャンセル");
-	}
-
-	// if (NameMap.Num() == 0)
-	// {
-	// 	ADD_NAME_MAP(L"操作中心", L"op_center");
-	// 	ADD_NAME_MAP(L"全ての親", L"all_parent");
-	// 	ADD_NAME_MAP(L"センター", L"center");
-	// 	ADD_NAME_MAP(L"センター2", L"center2");
-	// 	ADD_NAME_MAP(L"グルーブ", L"groove");
-	// 	ADD_NAME_MAP(L"グルーブ2", L"groove2");
-	// 	ADD_NAME_MAP(L"腰", L"waist");
-	// 	ADD_NAME_MAP(L"下半身", L"lowerBody");
-	// 	ADD_NAME_MAP(L"上半身", L"upperBody");
-	// 	ADD_NAME_MAP(L"上半身", L"upperBody2");
-	// 	ADD_NAME_MAP(L"首", L"neck");
-	// 	ADD_NAME_MAP(L"頭", L"head");
-	// 	ADD_NAME_MAP(L"左目", L"eyeL");
-	// 	ADD_NAME_MAP(L"右目", L"eyeR");
-
-	// 	ADD_NAME_MAP(L"左肩", L"shoulderL");
-	// 	ADD_NAME_MAP(L"左腕", L"armL");
-	// 	ADD_NAME_MAP(L"左ひじ", L"elbowL");
-	// 	ADD_NAME_MAP(L"左手首", L"wristL");
-	// 	ADD_NAME_MAP(L"左親指０", L"thumb0L");
-	// 	ADD_NAME_MAP(L"左親指１", L"thumb1L");
-	// 	ADD_NAME_MAP(L"左親指２", L"thumb2L");
-	// 	ADD_NAME_MAP(L"左人指０", L"fore0L");
-	// 	ADD_NAME_MAP(L"左人指１", L"fore1L");
-	// 	ADD_NAME_MAP(L"左人指２", L"fore2L");
-	// 	ADD_NAME_MAP(L"左中指０", L"middle0L");
-	// 	ADD_NAME_MAP(L"左中指１", L"middle1L");
-	// 	ADD_NAME_MAP(L"左中指２", L"middle2L");
-	// 	ADD_NAME_MAP(L"左薬指０", L"third0L");
-	// 	ADD_NAME_MAP(L"左薬指１", L"third1L");
-	// 	ADD_NAME_MAP(L"左薬指２", L"third2L");
-	// 	ADD_NAME_MAP(L"左小指０", L"little0L");
-	// 	ADD_NAME_MAP(L"左小指１", L"little1L");
-	// 	ADD_NAME_MAP(L"左小指２", L"little2L");
-	// 	ADD_NAME_MAP(L"左足", L"legL");
-	// 	ADD_NAME_MAP(L"左ひざ", L"kneeL");
-	// 	ADD_NAME_MAP(L"左足首", L"ankleL");
-
-	// 	ADD_NAME_MAP(L"右肩", L"shoulderR");
-	// 	ADD_NAME_MAP(L"右腕", L"armR");
-	// 	ADD_NAME_MAP(L"右ひじ", L"elbowR");
-	// 	ADD_NAME_MAP(L"右手首", L"wristR");
-	// 	ADD_NAME_MAP(L"右親指０", L"thumb0R");
-	// 	ADD_NAME_MAP(L"右親指１", L"thumb1R");
-	// 	ADD_NAME_MAP(L"右親指２", L"thumb2R");
-	// 	ADD_NAME_MAP(L"右人指０", L"fore0R");
-	// 	ADD_NAME_MAP(L"右人指１", L"fore1R");
-	// 	ADD_NAME_MAP(L"右人指２", L"fore2R");
-	// 	ADD_NAME_MAP(L"右中指０", L"middle0R");
-	// 	ADD_NAME_MAP(L"右中指１", L"middle1R");
-	// 	ADD_NAME_MAP(L"右中指２", L"middle2R");
-	// 	ADD_NAME_MAP(L"右薬指０", L"third0R");
-	// 	ADD_NAME_MAP(L"右薬指１", L"third1R");
-	// 	ADD_NAME_MAP(L"右薬指２", L"third2R");
-	// 	ADD_NAME_MAP(L"右小指０", L"little0R");
-	// 	ADD_NAME_MAP(L"右小指１", L"little1R");
-	// 	ADD_NAME_MAP(L"右小指２", L"little2R");
-	// 	ADD_NAME_MAP(L"右足", L"legR");
-	// 	ADD_NAME_MAP(L"右ひざ", L"kneeR");
-	// 	ADD_NAME_MAP(L"右足首", L"ankleR");
-
-	// 	ADD_NAME_MAP(L"両目", L"eyes");
-	// 	ADD_NAME_MAP(L"左足ＩＫ", L"ikLegL");
-	// 	ADD_NAME_MAP(L"右足ＩＫ", L"ikLegR");
-	// 	ADD_NAME_MAP(L"左つま先ＩＫ", L"ikToeL");
-	// 	ADD_NAME_MAP(L"右つま先ＩＫ", L"ikToeR");
-	// }
-}
-
 /////////////////////////////////////////////////////////
 // prototype ::from dxlib
 // 创建以X轴为中心的旋转矩阵
@@ -140,8 +50,6 @@ UVmdFactory::UVmdFactory(const FObjectInitializer& ObjectInitializer)
 	bCreateNew = false;
 	bText = false;
 	bEditorImport = true;
-
-	initMmdNameMap();
 }
 
 void UVmdFactory::PostInitProperties()
@@ -517,16 +425,6 @@ UAnimSequence* UVmdFactory::ImportAnimations(
 				{
 					if (adc.AddBoneCurve(BoneName))
 					{
-						if (BoneName == L"腰")
-						{
-							for (int32 ix = 0; ix < RawTrack.PosKeys.Num(); ix++)
-							{
-								RawTrack.PosKeys[ix].X = 0.0f;
-								RawTrack.PosKeys[ix].Y = 0.0f;
-								RawTrack.RotKeys[ix] = FQuat4f(0.0f, 0.0f, 0.0f, 1.0f);
-							}
-						}
-
 						adc.SetBoneTrackKeys(BoneName, RawTrack.PosKeys, RawTrack.RotKeys, RawTrack.ScaleKeys);
 					}
 					else
@@ -1097,10 +995,6 @@ bool UVmdFactory::PrepareVMDBoneAnimData(
 		FName targetName = Skeleton->GetReferenceSkeleton().GetBoneName(BoneIndex);
 		OutBoneNames.Add(targetName);
 
-		FName* pn = NameMap.Find(targetName);
-		if (pn)
-			targetName = *pn;
-
 		if (ReNameTable)
 		{
 			// 如果指定了转换表的资源，则从表中获取转换名称
@@ -1153,9 +1047,6 @@ bool UVmdFactory::PrepareVMDBoneAnimData(
 			//            kybone.sortIndexList.Num());
 			// }
 
-			bool dbg = false;
-			if (targetName == L"右ひじ")
-				dbg = true;
 			// 事先针对各轨迹，在没有父Bone的情况下，在Local坐标下计算预定全部注册的帧（如果有更好的处理……讨论）
 			// 如果进入90度以上的轴旋转，则由于四元数的原因或处理有错误而进入多余的旋转。
 			// 通过上述方式，仅通过Z旋转（旋转运动），下半身和上半身的轴成为物理上不可能的旋转的组合。臭虫。
@@ -1546,7 +1437,6 @@ FTransform UVmdFactory::CalcGlbTransformFromBoneName(
 }
 bool UVmdFactory::ImportVmdFromFile(FString file, USkeletalMesh* SkeletalMesh)
 {
-	initMmdNameMap();
 	MMD4UE5::VmdMotionInfo vmdMotionInfo;
 
 	UVmdFactory* MyFactory = NewObject<UVmdFactory>();

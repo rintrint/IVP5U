@@ -13,7 +13,6 @@ Main implementation of FFbxImporter : import FBX data to Unreal
 #include "ImportUtils/SkelImport.h"
 // #include "FbxErrors.h"
 #include "VmdImporter.h"
-#include "Factory/VmdFactory.h"
 // #include "FbxOptionWindow.h"
 #include "VmdOptionWindow.h"
 // #include "FbxErrors.h"

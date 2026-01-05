@@ -20,7 +20,6 @@
 
 // Forward declaration
 class UInterpGroupInst;
-static TMap<FName, FName> NameMap;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogMMD4UE5_VMDFactory, Log, All)
 
