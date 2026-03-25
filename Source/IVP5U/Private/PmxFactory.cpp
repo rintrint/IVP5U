@@ -40,6 +40,8 @@
 
 ////////////
 
+#include "MMDNameUtils.h"
+
 #include "PmdImporter.h"
 #include "PmxImporter.h"
 #include "PmxImportUI.h"
@@ -1148,7 +1150,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 				MMD4UE5::PMX_MORPH* pmxMorphPtr = &(pmxMeshInfoPtr->morphList[NodeIndex]);
 				if (pmxMorphPtr->Type == 1 && pmxMorphPtr->Vertex.Num() > 0)
 				{
-					FString ShapeName = pmxMorphPtr->Name;
+					FString ShapeName = NormalizeBoneAndMorphName(pmxMorphPtr->Name);
 					MorphNameList.AddUnique(ShapeName);
 				}
 			}

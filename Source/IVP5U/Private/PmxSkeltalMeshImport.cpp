@@ -40,6 +40,7 @@
 
 ////////////
 
+#include "MMDNameUtils.h"
 #include "PmxFactory.h"
 
 #include "LODUtilities.h"
@@ -858,7 +859,7 @@ void UPmxFactory::ImportMorphTargetsInternal(
 		if (pmxMorphPtr->Type == 1 && pmxMorphPtr->Vertex.Num() > 0)
 		{ // 頂点Morph
 
-			FString ShapeName = pmxMorphPtr->Name;
+			FString ShapeName = NormalizeBoneAndMorphName(pmxMorphPtr->Name);
 			MMD4UE5::PMX_MORPH& ShapeArray = ShapeNameToShapeArray.FindOrAdd(ShapeName);
 			ShapeArray = *pmxMorphPtr;
 		}

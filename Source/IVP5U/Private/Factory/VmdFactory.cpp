@@ -3,6 +3,7 @@
 #include "Factory/VmdFactory.h"
 #include "../IVP5UPrivatePCH.h"
 
+#include "MMDNameUtils.h"
 #include "VmdImporter.h"
 
 #include "CoreMinimal.h"
@@ -662,6 +663,7 @@ bool UVmdFactory::PrepareMorphCurveData(
 	for (const TObjectPtr<UMorphTarget>& MorphTarget : MorphTargets)
 	{
 		MorphTargetMap.Add(MorphTarget->GetFName(), MorphTarget.Get());
+		MorphTargetMap.Add(FName(*NormalizeBoneAndMorphName(MorphTarget->GetFName().ToString())), MorphTarget.Get());
 	}
 
 	// 预处理重命名表
@@ -701,12 +703,13 @@ bool UVmdFactory::PrepareMorphCurveData(
 			FName Name = *vmdMotionInfo->keyFaceList[i].TrackName;
 			FName* MappedName = RenameMap.Find(Name);
 			FName TestName = MappedName ? *MappedName : Name;
+			FName NormalizedTestName = FName(*NormalizeBoneAndMorphName(TestName.ToString()));
 
 			if (!TestedMorphs.Contains(TestName))
 			{
 				TestedMorphs.Add(TestName);
 
-				if (!MorphTargetMap.Contains(TestName))
+				if (!MorphTargetMap.Contains(TestName) && !MorphTargetMap.Contains(NormalizedTestName))
 				{
 					UE_LOG(LogMMD4UE5_VMDFactory, Warning, TEXT("VMD表情在模型中未找到: [%s]"),
 						*vmdMotionInfo->keyFaceList[i].TrackName);
@@ -769,7 +772,10 @@ bool UVmdFactory::PrepareMorphCurveData(
 		}
 
 		// 检查该表情是否存在于模型中
+		FName NormalizedName = FName(*NormalizeBoneAndMorphName(Name.ToString()));
 		UMorphTarget* morphTargetPtr = MorphTargetMap.FindRef(Name);
+		if (!morphTargetPtr)
+			morphTargetPtr = MorphTargetMap.FindRef(NormalizedName);
 		if (!morphTargetPtr)
 		{
 			UE_LOG(LogMMD4UE5_VMDFactory, Warning,
@@ -779,7 +785,7 @@ bool UVmdFactory::PrepareMorphCurveData(
 		}
 
 		// 创建曲线标识符
-		FAnimationCurveIdentifier CurveId(Name, ERawCurveTrackTypes::RCT_Float);
+		FAnimationCurveIdentifier CurveId(NormalizedName, ERawCurveTrackTypes::RCT_Float);
 		if (!CurveId.IsValid())
 		{
 			UE_LOG(LogMMD4UE5_VMDFactory, Warning, TEXT("表情[%d]:[%s]曲线标识符无效"),

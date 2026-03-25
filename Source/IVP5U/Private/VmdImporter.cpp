@@ -2,6 +2,7 @@
 #include "VmdImporter.h"
 #include "IVP5UPrivatePCH.h"
 #include "MMDImportHelper.h"
+#include "MMDNameUtils.h"
 
 #include "Animation/AnimSequenceBase.h"
 
@@ -427,18 +428,19 @@ namespace MMD4UE5
 	// 优化：构建名称映射以加速查找
 	void VmdMotionInfo::BuildNameMaps()
 	{
-		// 构建骨骼名称映射
 		BoneNameToIndexMap.Empty(keyBoneList.Num());
 		for (int i = 0; i < keyBoneList.Num(); i++)
 		{
+			// Store both original and sanitized key
 			BoneNameToIndexMap.Add(keyBoneList[i].TrackName, i);
+			BoneNameToIndexMap.Add(NormalizeBoneAndMorphName(keyBoneList[i].TrackName), i);
 		}
 
-		// 构建表情名称映射
 		FaceNameToIndexMap.Empty(keyFaceList.Num());
 		for (int i = 0; i < keyFaceList.Num(); i++)
 		{
 			FaceNameToIndexMap.Add(keyFaceList[i].TrackName, i);
+			FaceNameToIndexMap.Add(NormalizeBoneAndMorphName(keyFaceList[i].TrackName), i);
 		}
 	}
 
@@ -449,44 +451,23 @@ namespace MMD4UE5
 	{
 		if (listType == EVMDKEYFRAMETYPE::EVMD_KEYBONE)
 		{
-			// 1. 直接查找
 			int32* FoundIndex = BoneNameToIndexMap.Find(targetName);
 			if (FoundIndex)
-			{
 				return *FoundIndex;
-			}
 
-			// 2. 尝试替换 "_" 为 "."
-			if (targetName.Contains(TEXT("_")))
-			{
-				FString modifiedName = targetName;
-				modifiedName.ReplaceInline(TEXT("_"), TEXT("."));
-
-				FoundIndex = BoneNameToIndexMap.Find(modifiedName);
-				if (FoundIndex)
-				{
-					return *FoundIndex;
-				}
-
-				// 3. 尝试替换 "_" 为 "+"
-				modifiedName = targetName;
-				modifiedName.ReplaceInline(TEXT("_"), TEXT("+"));
-
-				FoundIndex = BoneNameToIndexMap.Find(modifiedName);
-				if (FoundIndex)
-				{
-					return *FoundIndex;
-				}
-			}
+			FoundIndex = BoneNameToIndexMap.Find(NormalizeBoneAndMorphName(targetName));
+			if (FoundIndex)
+				return *FoundIndex;
 		}
 		else if (listType == EVMDKEYFRAMETYPE::EVMD_KEYFACE)
 		{
-			// 直接查找
 			int32* FoundIndex = FaceNameToIndexMap.Find(targetName);
 			if (FoundIndex)
-			{
 				return *FoundIndex;
-			}
+
+			FoundIndex = FaceNameToIndexMap.Find(NormalizeBoneAndMorphName(targetName));
+			if (FoundIndex)
+				return *FoundIndex;
 		}
 
 		return -1;
