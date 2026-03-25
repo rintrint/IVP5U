@@ -217,11 +217,8 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 						ImportUI->bIsObjImport = true; // obj mode
 						ImportUI->OriginalImportType = EPMXImportType::PMXIT_SkeletalMesh;
 						ImportUI->bImportMaterials = true;
-						ImportUI->bCreateMaterialInstanceMode = true;
-						ImportUI->bCreatePhysicsAsset = true;
 						ImportUI->bImportMorphTargets = true;
 						ImportUI->bImportTextures = true;
-						ImportUI->bUnlitMaterials = true;
 						ImportUI->SkeletalMeshImportData->bImportMorphTargets = true;
 
 						FString packpath = "/Game/" + filepath + "/" + filepath;
@@ -519,11 +516,8 @@ UObject* UPmxFactory::FactoryCreateBinary(
 	ImportUI->bIsObjImport = true; // obj mode
 	ImportUI->OriginalImportType = EPMXImportType::PMXIT_SkeletalMesh;
 	ImportUI->bImportMaterials = true;
-	ImportUI->bCreateMaterialInstanceMode = true;
-	ImportUI->bCreatePhysicsAsset = true;
 	ImportUI->bImportMorphTargets = true;
 	ImportUI->bImportTextures = true;
-	ImportUI->bUnlitMaterials = true;
 	ImportUI->SkeletalMeshImportData->bImportMorphTargets = true;
 	UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("!!!PMX Import :%s"), *(InParent->GetPathName()));
 

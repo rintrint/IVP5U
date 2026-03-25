@@ -25,6 +25,8 @@ Main implementation of FFbxImporter : import FBX data to Unreal
 #include "MMDSkeletalMeshImportData.h"
 #include "MMDStaticMeshImportData.h"
 
+#include "IVP5USettings.h"
+
 // DEFINE_LOG_CATEGORY(LogPmx);
 
 #define LOCTEXT_NAMESPACE "PmxMainImport"
@@ -43,7 +45,6 @@ PMXImportOptions* GetImportOptions(
 	EPMXImportType ImportType)
 {
 	bOutOperationCanceled = false;
-	ImportUI->bCreatePhysicsAsset = true;
 	if (bShowOptionDialog)
 	{
 		bOutImportAll = false;
@@ -346,6 +347,11 @@ UPmxImportUI::UPmxImportUI(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer) //, MMD2UE5NameTableRow(MMD2UE5NameTableRowDmmy)
 {
 	bCombineMeshes = true;
+
+	const UIVP5USettings* Settings = GetDefault<UIVP5USettings>();
+	bCreatePhysicsAsset = Settings->bCreatePhysicsAsset;
+	bCreateMaterialInstanceMode = Settings->bCreateMaterialInstanceMode;
+	bUnlitMaterials = Settings->bUnlitMaterials;
 
 	StaticMeshImportData = CreateDefaultSubobject<UMMDStaticMeshImportData>(TEXT("StaticMeshImportData"));
 	SkeletalMeshImportData = CreateDefaultSubobject<UMMDSkeletalMeshImportData>(TEXT("SkeletalMeshImportData"));

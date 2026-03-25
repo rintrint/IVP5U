@@ -14,13 +14,17 @@ public:
 	UPROPERTY(config, EditAnywhere, Category = Settings, meta = (ConfigRestartRequired = false))
 	int32 ImportPriority = 80;
 
+	/** Enable physics asset creation */
+	UPROPERTY(config, EditAnywhere, Category = Settings)
+	bool bCreatePhysicsAsset = true;
+
 	/** Enable material instance creation mode */
 	UPROPERTY(config, EditAnywhere, Category = Settings)
 	bool bCreateMaterialInstanceMode = true;
 
-	/** Enable physics asset creation */
+	/** create Unreal materials of Unlit Type */
 	UPROPERTY(config, EditAnywhere, Category = Settings)
-	bool bCreatePhysicsAsset = true;
+	bool bUnlitMaterials = true;
 
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent);
