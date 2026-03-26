@@ -830,6 +830,16 @@ void UPmxFactory::ImportMorphTargetsInternal(
 		if (pmxMorphPtr->Type == 1 && pmxMorphPtr->Vertex.Num() > 0)
 		{ // 頂点Morph
 			FString ShapeName = NormalizeBoneAndMorphName(pmxMorphPtr->Name);
+			{
+				FString UniqueName = ShapeName;
+				int32 i = 0;
+				while (ShapeNameToShapeArray.Contains(UniqueName))
+				{
+					++i;
+					UniqueName = ShapeName + FString::FromInt(i);
+				}
+				ShapeName = UniqueName;
+			}
 			MMD4UE5::PMX_MORPH& ShapeArray = ShapeNameToShapeArray.FindOrAdd(ShapeName);
 			ShapeArray = *pmxMorphPtr;
 		}
@@ -893,6 +903,18 @@ void UPmxFactory::ImportMorphTargetsInternal(
 		{
 			USkeleton* Skeleton = BaseSkelMesh->GetSkeleton();
 
+			// 清理舊的 morph curves（重新導入時避免殘留）
+			TArray<FName> ExistingCurveNames;
+			Skeleton->GetCurveMetaDataNames(ExistingCurveNames);
+			for (const FName& CurveName : ExistingCurveNames)
+			{
+				FCurveMetaData* CurveMetaData = Skeleton->GetCurveMetaData(CurveName);
+				if (CurveMetaData && CurveMetaData->Type.bMorphtarget)
+				{
+					Skeleton->RemoveCurveMetaData(CurveName);
+				}
+			}
+
 			// 為每個成功導入的 morph target 確保有對應的 curve
 			for (const FString& MorphName : BaseImportData.MorphTargetNames)
 			{
@@ -902,12 +924,9 @@ void UPmxFactory::ImportMorphTargetsInternal(
 					FoundCurveMetaData->Type.bMorphtarget = true;
 					continue;
 				}
-
-				// 如果沒有找到，創建新的 curve metadata
 				Skeleton->AccumulateCurveMetaData(*MorphName, false, true);
 			}
 
-			// 標記 Skeleton 需要保存
 			Skeleton->MarkPackageDirty();
 		}
 	}
