@@ -165,7 +165,6 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 				TArray<uint8> File_Result;
 				if (FFileHelper::LoadFileToArray(File_Result, *file))
 				{
-
 					const uint8* DataPtr = File_Result.GetData();
 					// UE_LOG(LogMMD4UE5_PMXFactory,Warning,TEXT("!!!%s"),*file);
 					UObject* NewObject = NULL;
@@ -349,7 +348,6 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 							}
 							else
 							{
-
 								if (importAssetTypeMMD == E_MMD_TO_UE5_SKELTON)
 								{
 									AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_InvalidBone", "Failed to find any bone hierarchy. Try disabling the \"Import As Skeletal\" option to import as a rigid mesh. ")), "FFbxErrors::SkeletalMesh_InvalidBone");
@@ -403,7 +401,6 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 
 bool UPmxFactory::ImportPmxFromFile(FString file)
 {
-
 	auto Factory = NewObject<UPmxFactory>();
 	return Factory->FImportPmxFromFile(file);
 }
@@ -527,7 +524,6 @@ UObject* UPmxFactory::FactoryCreateBinary(
 	{
 		Warn->BeginSlowTask(NSLOCTEXT("PmxFactory", "BeginImportingPmxMeshTask", "Importing Pmx mesh"), true);
 		{
-
 			// For animation and static mesh we assume there is at lease one interesting node by default
 			int32 InterestingNodeCount = 1;
 
@@ -995,7 +991,6 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 
 						for (auto rb : rbs)
 						{
-
 							if (rb.Mass < 0.001 || rb.RigidBodyGroupIndex < 3)
 							{
 								pbd->PhysicsType = PhysType_Kinematic;
@@ -1011,7 +1006,6 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 
 							if (rb.ShapeType == 0)
 							{
-
 								FKSphereElem ke(rb.Size.X);
 
 								ke.SetTransform(ft);
@@ -1021,7 +1015,6 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 							}
 							else if (rb.ShapeType == 1)
 							{
-
 								FKBoxElem ke(rb.Size.X, rb.Size.Z, rb.Size.Y);
 
 								// ft.SetRotation(qd);
@@ -1032,7 +1025,6 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 							}
 							else if (rb.ShapeType == 2)
 							{
-
 								FKSphylElem ke(rb.Size.X, rb.Size.Y);
 
 								ke.SetTransform(ft);
@@ -1054,7 +1046,6 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 
 					for (int i = 0; i < csn; i++)
 					{
-
 						FConstraintInstance& cs = NewPhysicsAsset->ConstraintSetup[i]->DefaultInstance;
 						// cs.ProfileInstance.AngularDrive.AngularDriveMode = EAngularDriveMode::TwistAndSwing;
 						cs.ProfileInstance.ConeLimit.Swing1Motion = EAngularConstraintMotion::ACM_Limited;
@@ -1200,7 +1191,6 @@ UMMDExtendAsset* UPmxFactory::CreateMMDExtendFromMMDModel(
 	NewMMDExtendAsset = CreateAsset<UMMDExtendAsset>(InParent->GetName(), ObjectName, true);
 	if (!NewMMDExtendAsset)
 	{
-
 		// same object exists, try to see if it's asset, if so, load
 		NewMMDExtendAsset = LoadObject<UMMDExtendAsset>(InParent, *ObjectName);
 

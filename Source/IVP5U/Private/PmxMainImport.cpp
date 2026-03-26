@@ -7,17 +7,13 @@ Main implementation of FFbxImporter : import FBX data to Unreal
 #include "IVP5UPrivatePCH.h"
 
 #include "CoreMinimal.h"
-// #include "FeedbackContextEditor.h"
 
 #include "Factories.h"
 #include "Engine.h"
 #include "ImportUtils/SkelImport.h"
-// #include "FbxErrors.h"
 #include "PmxImporter.h"
 #include "PmxFactory.h"
-// #include "FbxOptionWindow.h"
 #include "PmxOptionWindow.h"
-// #include "FbxErrors.h"
 #include "MainFrame.h"
 #include "EngineAnalytics.h"
 #include "Runtime/Analytics/Analytics/Public/Interfaces/IAnalyticsProvider.h"
@@ -181,9 +177,8 @@ void ApplyImportUIToImportOptions(
 	InOutImportOptions.bUsedAsFullName = ImportUI->bOverrideFullName;
 	InOutImportOptions.bConvertScene = ImportUI->bConvertScene;
 	InOutImportOptions.bImportAnimations = ImportUI->bImportAnimations;
-#if 1
 	InOutImportOptions.SkeletonForAnimation = ImportUI->Skeleton;
-#endif
+
 	if (ImportUI->MeshTypeToImport == PMXIT_StaticMesh)
 	{
 		UMMDStaticMeshImportData* StaticMeshData = ImportUI->StaticMeshImportData;

@@ -16,7 +16,6 @@ float3 Specular;
 
  
 	{
-
 		lightDir = normalize(lightDir);
 
 		//Intensity of the diffuse light. Saturate to keep within the 0-1 range.

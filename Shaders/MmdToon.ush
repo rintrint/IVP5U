@@ -27,7 +27,6 @@ int     ToonTexMode=1;
 
 if (TexMode != 0)
 {
-
     color *= texColor.rgb;
     if (TexMode == 2)
     {

@@ -237,7 +237,6 @@ bool UPmxFactory::ImportBone(
 	bool bDisableMissingBindPoseWarning,
 	bool& bUseTime0AsRefPose)
 {
-
 	bool GlobalLinkFoundFlag;
 
 	bool bAnyLinksNotInBindPose = false;
@@ -369,7 +368,6 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 	// const TArray<FbxSurfaceMaterial*>& FbxMaterials
 )
 {
-
 	TArray<UMaterialInterface*> Materials;
 
 #if 1 // test Material Textuere
@@ -451,8 +449,8 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 	{
 		ImportData.Points[ControlPointsIndex + ExistPointNum] = PmxMeshInfo->vertexList[ControlPointsIndex].Position;
 	}
-#if 1							  // vertex
-	bool OddNegativeScale = true; // false;// IsOddNegativeScale(TotalMatrix);
+#if 1 // vertex
+	bool OddNegativeScale = true; // IsOddNegativeScale(TotalMatrix);
 
 	int32 VertexIndex;
 	int32 TriangleCount = PmxMeshInfo->faseList.Num(); // Mesh->GetPolygonCount();
@@ -466,7 +464,6 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 
 	for (int32 TriangleIndex = ExistFaceNum, LocalIndex = 0; TriangleIndex < ExistFaceNum + TriangleCount; TriangleIndex++, LocalIndex++)
 	{
-
 		SkeletalMeshImportData::FTriangle& Triangle = ImportData.Faces[TriangleIndex];
 
 		//
@@ -547,7 +544,6 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 		// Some FBX meshes can have no UV sets, so also check the UniqueUVCount
 		for (UVLayerIndex = 0; UVLayerIndex < UniqueUVCount; UVLayerIndex++)
 		{
-
 			// Set all UV's to zero.  If we are here the mesh had no UV sets so we only need to do this for the
 			// first UV set which always exists.
 			TmpWedges[VertexIndex].UVs[UVLayerIndex].X = 0;
@@ -578,7 +574,6 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 		}
 	}
 #endif
-#if 1
 	// now we can work on a per-cluster basis with good ordering
 
 	// For mmd. skining
@@ -676,7 +671,6 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 			}
 		}
 	}
-#endif
 	else // for rigid mesh
 	{
 		// find the bone index
@@ -806,12 +800,10 @@ public:
 		return TEXT("FAsyncImportMorphTargetWork");
 	}
 
-#if 1
 	FORCEINLINE TStatId GetStatId() const
 	{
 		RETURN_QUICK_DECLARE_CYCLE_STAT(FAsyncImportMorphTargetWork, STATGROUP_ThreadPoolAsyncTasks);
 	}
-#endif
 
 private:
 	USkeletalMesh* TempSkeletalMesh;
@@ -837,7 +829,6 @@ void UPmxFactory::ImportMorphTargetsInternal(
 		MMD4UE5::PMX_MORPH* pmxMorphPtr = &(PmxMeshInfo.morphList[NodeIndex]);
 		if (pmxMorphPtr->Type == 1 && pmxMorphPtr->Vertex.Num() > 0)
 		{ // 頂点Morph
-
 			FString ShapeName = NormalizeBoneAndMorphName(pmxMorphPtr->Name);
 			MMD4UE5::PMX_MORPH& ShapeArray = ShapeNameToShapeArray.FindOrAdd(ShapeName);
 			ShapeArray = *pmxMorphPtr;
@@ -867,7 +858,6 @@ void UPmxFactory::ImportMorphTargetsInternal(
 
 		for (int i = 0; i < ShapeArray.Vertex.Num(); i++)
 		{
-
 			MMD4UE5::PMX_MORPH_VERTEX tempMorphVertex = ShapeArray.Vertex[i];
 			ModifiedPoints.Add(tempMorphVertex.Index);
 			ShapeImportData.Points[tempMorphVertex.Index] += tempMorphVertex.Offset;
@@ -887,7 +877,6 @@ void UPmxFactory::ImportMorphTargetsInternal(
 		// If we can build the skeletal mesh there is no need to build the morph target now, all the necessary build morph target data was copied before.
 		if (!BaseSkelMesh->HasMeshDescription(LODIndex))
 		{
-
 			FOverlappingThresholds hd;
 			// Build MorphTargets
 			FLODUtilities::BuildMorphTargets(

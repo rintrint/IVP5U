@@ -13,7 +13,6 @@
 
 namespace MMD4UE5
 {
-
 	struct VMD_HEADER
 	{
 		char header[30];	// Vocaloid Motion Data 0002

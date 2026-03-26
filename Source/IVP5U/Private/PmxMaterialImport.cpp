@@ -165,7 +165,6 @@ void UPmxMaterialImport::AssetsCreateTexture(
 	}
 }
 
-//-----
 UTexture* UPmxMaterialImport::ImportTexture(
 	// FbxFileTexture* FbxTexture,
 	FString InTextureFileName,
@@ -280,9 +279,6 @@ UTexture* UPmxMaterialImport::ImportTexture(
 	return UnrealTexture;
 }
 
-//--------------------------------------------------------------------
-//
-//-------------------------------------------------------------------------
 bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty(
 	MMD4UE5::PMX_MATERIAL& PmxMaterial,
 	UMaterial* UnrealMaterial,
@@ -294,7 +290,6 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty(
 {
 	bool bCreated = false;
 
-#if 1
 	int32 TextureCount = PmxMaterial.TextureIndex; // FbxProperty.GetSrcObjectCount<FbxTexture>();
 	if (TextureCount >= 0 && TextureCount < textureAssetList.Num())
 	{
@@ -415,17 +410,10 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty(
 		MaterialInput.MaskB = Output->MaskB;
 		MaterialInput.MaskA = Output->MaskA;
 	}
-#endif
-#if 0
-		}
-	}
-#endif
+
 	return bCreated;
 }
 
-//-------------------------------------------------------------------------
-//
-//-------------------------------------------------------------------------
 void UPmxMaterialImport::FixupMaterial(
 	MMD4UE5::PMX_MATERIAL& PmxMaterial,
 	UMaterial* UnrealMaterial)
@@ -732,9 +720,6 @@ void UPmxMaterialImport::CreateUnrealMaterial(
 	}
 }
 
-//--------------------------------------------------------------------
-//
-//-------------------------------------------------------------------------
 bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty_ForMmdAutoluminus(
 	MMD4UE5::PMX_MATERIAL& PmxMaterial,
 	UMaterial* UnrealMaterial,
@@ -746,7 +731,7 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty_ForMmdAutolu
 	TArray<UTexture*>& textureAssetList)
 {
 	bool bCreated = false;
-#if 1
+
 	int32 TextureCount = PmxMaterial.TextureIndex; // FbxProperty.GetSrcObjectCount<FbxTexture>();
 	if (TextureCount >= 0 && TextureCount < textureAssetList.Num())
 	{
@@ -875,13 +860,10 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty_ForMmdAutolu
 		MaterialInput.MaskB = Output->MaskB;
 		MaterialInput.MaskA = Output->MaskA;
 	}
-#endif
+
 	return bCreated;
 }
 
-//--------------------------------------------------------------------
-//
-//-------------------------------------------------------------------------
 UMaterialInterface* UPmxMaterialImport::DuplicateBaseMaterial(
 	FString ParentObjName,
 	EDuplicateBaseMatTypeIndex targetMatIndex)
@@ -1123,7 +1105,6 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Masked(
 	FStaticParameterSet StaticParams;
 
 	{
-
 		UTexture* ColorTex = nullptr;
 		int32 TextureCount = PmxMaterial.TextureIndex;
 
@@ -1524,5 +1505,3 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Luminous_Unlit(
 
 	return UnrealMaterial;
 }
-
-//-------------------------------------------------------------------------

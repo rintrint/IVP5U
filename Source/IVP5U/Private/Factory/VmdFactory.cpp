@@ -15,8 +15,6 @@
 #include "VmdImportUI.h"
 #include "RigEditor/IKRigController.h"
 
-#include "Factory/VmdImportOption.h"
-
 #include "Framework/Notifications/NotificationManager.h"
 #include "Widgets/Notifications/SNotificationList.h"
 
@@ -1463,7 +1461,6 @@ bool UVmdFactory::ImportVmdFromFile(FString file, USkeletalMesh* SkeletalMesh)
 			filepath = filepath.Left(indexs);
 			if (FPaths::FileExists(file))
 			{
-
 				if (FFileHelper::LoadFileToArray(File_Result, *file))
 				{
 					const uint8* DataPtr = File_Result.GetData();

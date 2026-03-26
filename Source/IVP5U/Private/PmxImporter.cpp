@@ -6,7 +6,6 @@
 #include "MMDImportHelper.h"
 namespace MMD4UE5
 {
-
 #define LOCTEXT_NAMESPACE "PMXLoader"
 
 	DEFINE_LOG_CATEGORY(LogMMD4UE5_PmxMeshInfo)
@@ -25,7 +24,6 @@ namespace MMD4UE5
 	{
 		Buffer = Buf;
 		UE_LOG(LogMMD4UE5_PmxMeshInfo, Log, TEXT("PMX Importer Class Start: PMXLoaderBinary"));
-		////////////////////////////////////////////
 
 		PMXEncodeType pmxEncodeType = PMXEncodeType_ERROR;
 		uint32 memcopySize = 0;
@@ -81,7 +79,7 @@ namespace MMD4UE5
 		this->modelCommentEng = PMXTexBufferToFString(&Buffer, pmxEncodeType);
 
 		modelNameJP = modelNameJP.Replace(TEXT("."), TEXT("_")); // [.] is broken filepath for UE5
-		////////////////////////////////////////////
+
 		{
 			// 統計
 			uint32 statics_bdef1 = 0;
@@ -229,7 +227,7 @@ namespace MMD4UE5
 				TEXT("PMX Import [Vertex:: statics bone type, sdef = %u] Complete"), statics_sdef);
 		}
 		UE_LOG(LogMMD4UE5_PmxMeshInfo, Log, TEXT("PMX Import [Vertex] Complete"));
-		////////////////////////////////////////////
+
 		{
 			/*
 			●面
@@ -256,9 +254,8 @@ namespace MMD4UE5
 			}
 		}
 		UE_LOG(LogMMD4UE5_PmxMeshInfo, Log, TEXT("PMX Import [FaceList] Complete"));
-		////////////////////////////////////////////
-		{
 
+		{
 			// 获取纹理数
 			uint32 PmxTextureNum = 0;
 			//
@@ -369,7 +366,6 @@ namespace MMD4UE5
 			}
 			UE_LOG(LogMMD4UE5_PmxMeshInfo, Log, TEXT("PMX Import [materialList] Complete"));
 		}
-		////////////////////////////////////////////
 
 		uint32 offsetBoneIndex = 1;
 		{
@@ -399,7 +395,6 @@ namespace MMD4UE5
 			uint32 PmxIKNum = 0;
 			for (uint32 i = 1; i < PmxBoneNum + offsetBoneIndex; i++)
 			{
-
 				boneList[i].Name = PMXTexBufferToFString(&Buffer, pmxEncodeType);
 				boneList[i].NameEng = PMXTexBufferToFString(&Buffer, pmxEncodeType);
 				//
@@ -465,7 +460,6 @@ namespace MMD4UE5
 
 				if (boneList[i].Flag_LocalAxis == 1)
 				{
-
 					//
 					memcopySize = sizeof(boneList[i].LocalAxisXVector);
 					FMemory::Memcpy(&boneList[i].LocalAxisXVector, Buffer, memcopySize);
@@ -814,9 +808,8 @@ namespace MMD4UE5
 				return false;
 			}
 		}
-		//////////////////////////////////////////////
-		UE_LOG(LogMMD4UE5_PmxMeshInfo, Log, TEXT("PMX Importer Class Complete: PMXLoaderBinary"));
 
+		UE_LOG(LogMMD4UE5_PmxMeshInfo, Log, TEXT("PMX Importer Class Complete: PMXLoaderBinary"));
 		Buf = Buffer;
 		return true;
 	}
@@ -824,11 +817,9 @@ namespace MMD4UE5
 	bool PmxMeshInfo::FixSortParentBoneIndex()
 	{
 		bool bRet = true;
-		//////////////////////////////////////////////
 		UE_LOG(LogMMD4UE5_PmxMeshInfo, Log, TEXT("PMX Importer Class Start: FixSortParentBoneIndex"));
 
-		/////
-		int32 i; // , j;
+		int32 i;
 		// 获取变形信息的数量
 		int32 boneNum = boneList.Num();
 
@@ -858,7 +849,6 @@ namespace MMD4UE5
 		{
 			UE_LOG(LogMMD4UE5_PmxMeshInfo, Error, TEXT("PMX Importer Class Error: FixSortParentBoneIndex NG?"));
 		}
-		//////////////////////////////////////////////
 		UE_LOG(LogMMD4UE5_PmxMeshInfo, Log, TEXT("PMX Importer Class Complete: FixSortParentBoneIndex"));
 		return bRet;
 	}

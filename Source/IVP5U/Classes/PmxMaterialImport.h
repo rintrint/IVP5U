@@ -4,7 +4,6 @@
 #include "Engine.h"
 #include "Factories/Factory.h"
 #include "PmxImporter.h"
-// #include "PmxMaterialImport.generated.h"
 
 DECLARE_LOG_CATEGORY_EXTERN(LogCategoryPMXMaterialImport, Log, All)
 

@@ -6,7 +6,6 @@
 
 namespace MMD4UE5
 {
-
 	DEFINE_LOG_CATEGORY(LogMMD4UE5_PmdMeshInfo)
 
 	PmdMeshInfo::PmdMeshInfo()
@@ -288,7 +287,6 @@ namespace MMD4UE5
 		}
 		/*
 		{
-
 			// テクスチャの数を取得
 			uint32 PmxTextureNum = 0;
 			//
@@ -463,7 +461,6 @@ namespace MMD4UE5
 				}
 				else
 				{
-
 					PMX_TEXTURE tempSphTex;
 					tempSphTex.TexturePath = tempShaPathStr;
 					pmxMaterialPtr.SphereTextureIndex
@@ -629,7 +626,6 @@ namespace MMD4UE5
 
 				if (pmxBonePtr.Flag_LocalAxis == 1)
 				{
-
 					//
 					memcopySize = sizeof(pmxBonePtr.LocalAxisXVector);
 					FMemory::Memcpy(&pmxBonePtr.LocalAxisXVector, Buffer, memcopySize);
@@ -652,7 +648,6 @@ namespace MMD4UE5
 #if 1
 				if (pmxBonePtr.Flag_IK == 1)
 				{
-
 					// search ik-list from pmd data.
 					PMD_IK* tempPmdIKPtr = NULL;
 					for (int32 listIKIndx = 0; listIKIndx < pmdMeshInfoPtr->ikData.Count; ++listIKIndx)
@@ -704,7 +699,6 @@ namespace MMD4UE5
 							}
 							else
 							{
-
 								pmxBonePtr.IKInfo.Link[j].RotLockFlag = 0;
 							}
 						}

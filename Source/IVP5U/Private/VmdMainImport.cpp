@@ -6,16 +6,12 @@ Main implementation of FFbxImporter : import FBX data to Unreal
 #include "IVP5UPrivatePCH.h"
 
 #include "CoreMinimal.h"
-// #include "FeedbackContextEditor.h"
 
 #include "Factories.h"
 #include "Engine.h"
 #include "ImportUtils/SkelImport.h"
-// #include "FbxErrors.h"
 #include "VmdImporter.h"
-// #include "FbxOptionWindow.h"
 #include "VmdOptionWindow.h"
-// #include "FbxErrors.h"
 #include "MainFrame.h"
 #include "EngineAnalytics.h"
 #include "Runtime/Analytics/Analytics/Public/Interfaces/IAnalyticsProvider.h"
@@ -172,7 +168,6 @@ void ApplyVMDImportUIToImportOptions(
 	UVmdImportUI* ImportUI,
 	VMDImportOptions& InOutImportOptions)
 {
-
 	check(ImportUI);
 
 	InOutImportOptions.SkeletonForAnimation = ImportUI->Skeleton;

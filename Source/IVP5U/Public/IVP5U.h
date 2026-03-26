@@ -6,7 +6,6 @@
 
 class IVP5U : public IModuleInterface
 {
-
 public:
 	static inline IVP5U& Get()
 	{
