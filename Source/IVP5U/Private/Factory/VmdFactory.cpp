@@ -53,6 +53,12 @@ UVmdFactory::UVmdFactory(const FObjectInitializer& ObjectInitializer)
 	bEditorImport = true;
 }
 
+bool UVmdFactory::FactoryCanImport(const FString& Filename)
+{
+	const FString Extension = FPaths::GetExtension(Filename);
+	return Extension.Equals(TEXT("vmd"), ESearchCase::IgnoreCase);
+}
+
 void UVmdFactory::PostInitProperties()
 {
 	Super::PostInitProperties();
@@ -312,8 +318,7 @@ UAnimSequence* UVmdFactory::ImportAnimations(
 		return NULL;
 	}
 
-	// 优化：使用字符串构建器而不是多次连接
-	FString SequenceName = FString::Printf(TEXT("%s_%s"), *Name, *Skeleton->GetName());
+	FString SequenceName = FString::Printf(TEXT("A_%s"), *Name);
 	SequenceName = ObjectTools::SanitizeObjectName(SequenceName);
 
 	// 优化：使用字符串视图避免不必要的复制

@@ -28,8 +28,10 @@ class IVP5U_API UVmdFactory : public UFactory
 {
 	GENERATED_UCLASS_BODY()
 
+	class UVmdImportUI* ImportUI;
 	// Begin UFactory Interface
 	virtual void PostInitProperties() override;
+	virtual bool FactoryCanImport(const FString& Filename) override;
 	virtual bool DoesSupportClass(UClass* Class) override;
 	virtual UClass* ResolveSupportedClass() override;
 	virtual UObject* FactoryCreateBinary(
@@ -43,6 +45,7 @@ class IVP5U_API UVmdFactory : public UFactory
 		const uint8* BufferEnd,
 		FFeedbackContext* Warn,
 		bool& bOutOperationCanceled) override;
+	// End UFactory Interface
 
 	/*Create AnimSequence from VMD data.（新建用父函数*/
 	UAnimSequence* ImportAnimations(
@@ -56,7 +59,6 @@ class IVP5U_API UVmdFactory : public UFactory
 		MMD4UE5::VmdMotionInfo* vmdMotionInfo,
 		VMDImportOptions* ImportOptions);
 	//////////////
-	class UVmdImportUI* ImportUI;
 
 	/*面向MMD的贝塞尔曲线的计算处理*/
 	float interpolateBezier(float x1, float y1, float x2, float y2, float x);

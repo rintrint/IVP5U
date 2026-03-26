@@ -6,53 +6,42 @@
 
 #include "CoreMinimal.h"
 #include "Factories.h"
-#include "BusyCursor.h"
 #include "SSkeletonWidget.h"
 
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "Engine/StaticMesh.h"
+#include "Engine/CurveTable.h"
 
 #include "Engine.h"
 #include "Editor.h"
-#include "TextureLayout.h"
 #include "ImportUtils/SkelImport.h"
 #include "ImportUtils/SkeletalMeshImportUtils.h"
-#include "AnimEncoding.h"
-#include "SSkeletonWidget.h"
 
-#include "AssetRegistry/AssetRegistryModule.h"
 #include "AssetNotifications.h"
-
 #include "ObjectTools.h"
 
-#include "ApexClothingUtils.h"
 #include "Developer/MeshUtilities/Public/MeshUtilities.h"
+#include "Developer/PhysicsUtilities/Public/PhysicsAssetUtils.h"
 
-#include "MessageLogModule.h"
 #include "ComponentReregisterContext.h"
 
 #include "PhysicsEngine/PhysicsAsset.h"
 #include "PhysicsEngine/PhysicsConstraintTemplate.h"
-#include "Developer/PhysicsUtilities/Public/PhysicsAssetUtils.h"
+#include "PhysicsEngine/SkeletalBodySetup.h"
 
 #include "Animation/Skeleton.h"
-#include "Engine/CurveTable.h"
 
 ////////////
 
 #include "MMDNameUtils.h"
-
 #include "PmdImporter.h"
 #include "PmxImporter.h"
 #include "PmxImportUI.h"
-
 #include "MMDSkeletalMeshImportData.h"
 #include "MMDStaticMeshImportData.h"
 
 #include "Components/SkeletalMeshComponent.h"
 #include "Rendering/SkeletalMeshModel.h"
-
-#include "PhysicsEngine/SkeletalBodySetup.h"
 
 #define LOCTEXT_NAMESPACE "PMXImpoter"
 
@@ -145,16 +134,14 @@ int32 UPmxFactory::GetPriority() const
 ////////////////////////////////////////////////
 // IVP5U Develop Temp Define
 //////////////////////////////////////////////
-// #define DEBUG_MMD_UE5_ORIGINAL_CODE	(1)
 #define DEBUG_MMD_PLUGIN_SKELTON (1)
-// #define DEBUG_MMD_PLUGIN_STATICMESH	(1)
-// #define DEBUG_MMD_PLUGIN_ANIMATION	(1)
 //////////////////////////////////////////////
 
 bool UPmxFactory::FImportPmxFromFile(FString file)
 {
-
 	FString filepath = file;
+	FName Name = "";
+	FName OutputName = "";
 	int32 indexs = -1;
 	if (filepath.FindLastChar('\\', indexs))
 	{
@@ -162,9 +149,10 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 		if (filepath.FindLastChar('.', indexs))
 		{
 			filepath = filepath.Left(indexs);
+			Name = FName(*filepath);
+			OutputName = FName(*FString::Printf(TEXT("SKM_%s"), *Name.ToString()));
 			if (FPaths::FileExists(file))
 			{
-
 				FString _path = filepath;
 				_path = FPaths::ProjectDir() + TEXT("Content/") + *_path;
 				_path = FPaths::ConvertRelativePathToFull(*_path);
@@ -224,7 +212,7 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 						FString packpath = "/Game/" + filepath + "/" + filepath;
 
 						UObject* InParent = CreatePackage(*packpath);
-						// UObject* InParent = LoadObject<UObject>(ParentPackage, *filepath);
+						// UObject* InParent = LoadObject<UObject>(ParentPackage, *Name.ToString());
 						// InParent->MarkPackageDirty();
 
 						PMXImportOptions* ImportOptions = GetImportOptions(
@@ -287,21 +275,18 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 									for (int32 i = 0; i < 1; i++)
 									{
 										int32 LODIndex = 0;
-	#ifdef DEBUG_MMD_UE5_ORIGINAL_CODE
 
-	#else
 										// for MMD?
 										int32 MaxLODLevel = 1;
 										FSkeletalMeshImportData smid;
 										USkeletalMesh* NewMesh = NULL;
 										if (LODIndex == 0)
 										{
-											FName OutputName = FName(*FString::Printf(TEXT("%s"), *filepath)); // FbxImporter->MakeNameForMesh(Name.ToString(), SkelMeshNodeArray[0]);
-
 											NewMesh = ImportSkeletalMesh(
 												InParent,
 												&pmxMeshInfoPtr, // SkelMeshNodeArray,
 												OutputName,
+												Name,
 												RF_Public | RF_Standalone | RF_MarkAsNative | RF_Transactional,
 												FPaths::GetBaseFilename(Filename),
 												&smid, // test for MMD,
@@ -335,7 +320,8 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 											CreateMMDExtendFromMMDModel(
 												InParent,
 												Cast<USkeletalMesh>(NewObject),
-												&pmxMeshInfoPtr);
+												&pmxMeshInfoPtr,
+												Name);
 										}
 
 										// end phese
@@ -349,9 +335,7 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 											GWarn->StatusUpdate(NodeIndex, 1, FText::Format(NSLOCTEXT("UnrealEd", "Importingf", "Importing ({NodeIndex} of {ArrayLength})"), Args));
 										}
 
-											//	MarkPackageDirty();
-
-	#endif
+										// MarkPackageDirty();
 									}
 
 									// if total nodes we found is 0, we didn't find anything.
@@ -411,7 +395,7 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 	}
 	else
 	{
-		UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("!!!PMX Import error::filepath error.%d,%s"), indexs, *filepath);
+		UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("!!!PMX Import error::filepath error.%d,%s"), indexs, *Name.ToString());
 	}
 
 	return false;
@@ -435,6 +419,8 @@ UObject* UPmxFactory::FactoryCreateBinary(
 	FFeedbackContext* Warn,
 	bool& bOutOperationCanceled)
 {
+	FName OutputName = "";
+	OutputName = FName(*FString::Printf(TEXT("SKM_%s"), *Name.ToString()));
 
 	// MMD Default
 	importAssetTypeMMD = E_MMD_TO_UE5_SKELTON;
@@ -577,22 +563,17 @@ UObject* UPmxFactory::FactoryCreateBinary(
 				{
 	#ifdef DEBUG_MMD_PLUGIN_SKELTON
 					int32 TotalNumNodes = 0;
-
 					// for (int32 i = 0; i < SkelMeshArray.Num(); i++)
 					for (int32 i = 0; i < 1 /*SkelMeshArray.Num()*/; i++)
 					{
 						int32 LODIndex = 0;
-		#ifdef DEBUG_MMD_UE5_ORIGINAL_CODE
 
-		#else
 						// for MMD?
 						int32 MaxLODLevel = 1;
 						FSkeletalMeshImportData smid;
 						USkeletalMesh* NewMesh = NULL;
 						if (LODIndex == 0 /*&& SkelMeshNodeArray.Num() != 0*/)
 						{
-							FName OutputName = FName(*FString::Printf(TEXT("%s"), *Name.ToString())); // FbxImporter->MakeNameForMesh(Name.ToString(), SkelMeshNodeArray[0]);
-
 							// UEnum* CompileModeEnum = GetStaticEnum <EObjectFlags>();
 
 							UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("!!!PMX Import :%s"), *OutputName.ToString());
@@ -601,6 +582,7 @@ UObject* UPmxFactory::FactoryCreateBinary(
 								InParent,
 								&pmxMeshInfoPtr, // SkelMeshNodeArray,
 								OutputName,
+								Name,
 								Flags,
 								// ImportUI->SkeletalMeshImportData,
 								FPaths::GetBaseFilename(Filename),
@@ -634,7 +616,8 @@ UObject* UPmxFactory::FactoryCreateBinary(
 							CreateMMDExtendFromMMDModel(
 								InParent,
 								Cast<USkeletalMesh>(NewObject),
-								&pmxMeshInfoPtr);
+								&pmxMeshInfoPtr,
+								Name);
 						}
 
 						// end phese
@@ -647,7 +630,6 @@ UObject* UPmxFactory::FactoryCreateBinary(
 							Args.Add(TEXT("ArrayLength"), 1); // SkelMeshArray.Num());
 							GWarn->StatusUpdate(NodeIndex, 1 /*SkelMeshArray.Num()*/, FText::Format(NSLOCTEXT("UnrealEd", "Importingf", "Importing ({NodeIndex} of {ArrayLength})"), Args));
 						}
-		#endif
 					}
 
 					// if total nodes we found is 0, we didn't find anything.
@@ -698,10 +680,9 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 	UObject* InParent,
 	MMD4UE5::PmxMeshInfo* pmxMeshInfoPtr,
 	const FName& Name,
+	const FName& BaseName,
 	EObjectFlags Flags,
-	// UFbxSkeletalMeshImportData* TemplateImportData,
 	FString Filename,
-	// TArray<FbxShape*> *FbxShapeArray,
 	FSkeletalMeshImportData* OutData,
 	bool bCreateRenderData)
 {
@@ -711,14 +692,16 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 	// bool bCreateRenderData = true;
 	struct ExistingSkelMeshData* ExistSkelMeshDataPtr = NULL;
 
-	if (true /*!FbxShapeArray*/)
+	FString FolderPath = FPackageName::GetLongPackagePath(InParent->GetOutermost()->GetName());
+	FString NewPackagePath = FString::Printf(TEXT("%s/%s"), *FolderPath, *Name.ToString());
+	UPackage* SkelMeshPackage = CreatePackage(*NewPackagePath);
+	SkelMeshPackage->FullyLoad();
 	{
-		UObject* ExistingObject = FindObject<UObject>(InParent, *Name.ToString());
+		UObject* ExistingObject = FindObject<UObject>(SkelMeshPackage, *Name.ToString());
 		USkeletalMesh* ExistingSkelMesh = Cast<USkeletalMesh>(ExistingObject);
 
 		if (ExistingSkelMesh)
 		{
-
 			ExistingSkelMesh->PreEditChange(NULL);
 			// ExistSkelMeshDataPtr = SaveExistingSkelMeshData(ExistingSkelMesh);
 		}
@@ -731,7 +714,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 	}
 
 	// [from USkeletalMeshFactory::FactoryCreateBinary]
-	USkeletalMesh* SkeletalMesh = NewObject<USkeletalMesh>(InParent, Name, Flags);
+	USkeletalMesh* SkeletalMesh = NewObject<USkeletalMesh>(SkelMeshPackage, Name, Flags | RF_Public | RF_Standalone);
 
 	SkeletalMesh->PreEditChange(NULL);
 
@@ -953,7 +936,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		{
 			if (SkeletalMesh->GetPhysicsAsset() == NULL)
 			{
-				FString ObjectName = FString::Printf(TEXT("%s_PhysicsAsset"), *SkeletalMesh->GetName());
+				FString ObjectName = FString::Printf(TEXT("PA_%s"), *BaseName.ToString());
 				UPhysicsAsset* NewPhysicsAsset = CreateAsset<UPhysicsAsset>(InParent->GetName(), ObjectName, true);
 				if (!NewPhysicsAsset)
 				{
@@ -1092,7 +1075,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		// Skeleton = ImportOptions->SkeletonForAnimation;
 		if (Skeleton == NULL)
 		{
-			FString ObjectName = FString::Printf(TEXT("%s_Skeleton"), *SkeletalMesh->GetName());
+			FString ObjectName = FString::Printf(TEXT("SK_%s"), *BaseName.ToString());
 			Skeleton = CreateAsset<USkeleton>(InParent->GetName(), ObjectName, true);
 			if (!Skeleton)
 			{
@@ -1190,7 +1173,8 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 UMMDExtendAsset* UPmxFactory::CreateMMDExtendFromMMDModel(
 	UObject* InParent,
 	USkeletalMesh* SkeletalMesh, // issue #2: fix param use skeleton mesh
-	MMD4UE5::PmxMeshInfo* PmxMeshInfo)
+	MMD4UE5::PmxMeshInfo* PmxMeshInfo,
+	const FName& BaseName)
 {
 	UMMDExtendAsset* NewMMDExtendAsset = NULL;
 	check(SkeletalMesh->GetSkeleton());
@@ -1202,13 +1186,12 @@ UMMDExtendAsset* UPmxFactory::CreateMMDExtendFromMMDModel(
 
 	// issue #2 : Fix MMDExtend IK Index
 	const FReferenceSkeleton ReferenceSkeleton = SkeletalMesh->GetSkeleton()->GetReferenceSkeleton();
-	const FName& Name = FName(*SkeletalMesh->GetName());
 
 	// MMD Extend asset
 
 	// TBD::アセット生成関数で既存アセット時の判断ができていないと思われる。
 	// 場合によってはVMDFactoryのアセット生成処理を元に再設計すること
-	FString ObjectName = FString::Printf(TEXT("%s_MMDExtendAsset"), *Name.ToString());
+	FString ObjectName = FString::Printf(TEXT("MMDExtend_%s"), *BaseName.ToString());
 	NewMMDExtendAsset = CreateAsset<UMMDExtendAsset>(InParent->GetName(), ObjectName, true);
 	if (!NewMMDExtendAsset)
 	{
@@ -1224,7 +1207,7 @@ UMMDExtendAsset* UPmxFactory::CreateMMDExtendFromMMDModel(
 					FText::Format(LOCTEXT("CouldNotCreateMMDExtendAsset",
 									  "Could not create MMD Extend Asset ('{0}') for '{1}'"),
 						FText::FromString(ObjectName),
-						FText::FromString(Name.ToString()))),
+						FText::FromString(BaseName.ToString()))),
 				"FFbxErrors::SkeletalMesh_FailedToCreatePhyscisAsset");
 		}
 		else

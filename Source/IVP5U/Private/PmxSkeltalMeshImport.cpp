@@ -4,39 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "Factories.h"
-#include "BusyCursor.h"
-#include "SSkeletonWidget.h"
-
-// #include "FbxImporter.h"
 
 #include "Misc/FbxErrors.h"
 #include "AssetRegistry/AssetRegistryModule.h"
-#include "Engine/StaticMesh.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Rendering/SkeletalMeshModel.h"
 
-/////////////////////////
-
 #include "Engine.h"
-#include "TextureLayout.h"
 #include "ImportUtils/SkelImport.h"
-// #include "FbxImporter.h"
-#include "AnimEncoding.h"
-#include "SSkeletonWidget.h"
 
-#include "AssetRegistry/AssetRegistryModule.h"
-#include "AssetNotifications.h"
-
-#include "ObjectTools.h"
-
-#include "ApexClothingUtils.h"
 #include "Developer/MeshUtilities/Public/MeshUtilities.h"
 
 #include "Animation/MorphTarget.h"
 #include "ComponentReregisterContext.h"
-
-#include "Animation/Skeleton.h"
-#include "Engine/CurveTable.h"
 
 ////////////
 

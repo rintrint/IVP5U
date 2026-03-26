@@ -11,8 +11,6 @@
 // MMD的运动数据（VMD）格式也是2（显示・IK）
 // http://blog.goo.ne.jp/torisu_tetosuki/e/2a2cb5c2de7563c5e6f20b19e1fe6139
 
-// #define uint8 (unsigned char)
-
 namespace MMD4UE5
 {
 

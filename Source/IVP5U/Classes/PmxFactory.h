@@ -8,8 +8,6 @@
 #include "Runtime/Core/Public/Logging/TokenizedMessage.h"
 #include "Factories.h"
 #include "EditorReimportHandler.h"
-#include "BusyCursor.h"
-#include "SSkeletonWidget.h"
 #include "ImportUtils/SkelImport.h"
 #include "PmxImporter.h"
 #include "PmxImportUI.h"
@@ -66,6 +64,7 @@ class IVP5U_API UPmxFactory : public UFactory, public FReimportHandler // public
 		UObject* InParent,
 		MMD4UE5::PmxMeshInfo* pmxMeshInfoPtr,
 		const FName& Name,
+		const FName& BaseName,
 		EObjectFlags Flags,
 		// UFbxSkeletalMeshImportData* TemplateImportData,
 		FString Filename,
@@ -133,7 +132,8 @@ class IVP5U_API UPmxFactory : public UFactory, public FReimportHandler // public
 	UMMDExtendAsset* CreateMMDExtendFromMMDModel(
 		UObject* InParent,
 		USkeletalMesh* SkeletalMesh, // issue #2: fix param use skeleton mesh
-		MMD4UE5::PmxMeshInfo* PmxMeshInfo);
+		MMD4UE5::PmxMeshInfo* PmxMeshInfo,
+		const FName& BaseName);
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "IVP5U")

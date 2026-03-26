@@ -13,8 +13,6 @@
 // Copy From DxLib DxModelLoader4.h
 // DX Library Copyright (C) 2001-2008 Takumi Yamada.
 
-// #define uint8 (unsigned char)
-
 namespace MMD4UE5
 {
 
