@@ -505,7 +505,7 @@ UObject* UPmxFactory::FactoryCreateBinary(
 	ImportUI->bImportMorphTargets = true;
 	ImportUI->bImportTextures = true;
 	ImportUI->SkeletalMeshImportData->bImportMorphTargets = true;
-	UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("!!!PMX Import :%s"), *(InParent->GetPathName()));
+	UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("!!!PMX Import :%s"), *(InParent->GetPathName()));
 
 	PMXImportOptions* ImportOptions = GetImportOptions(
 		PmxImporter,
@@ -576,7 +576,7 @@ UObject* UPmxFactory::FactoryCreateBinary(
 						{
 							// UEnum* CompileModeEnum = GetStaticEnum <EObjectFlags>();
 
-							UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("!!!PMX Import :%s"), *OutputName.ToString());
+							UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("!!!PMX Import :%s"), *OutputName.ToString());
 
 							NewMesh = ImportSkeletalMesh(
 								InParent,
@@ -791,7 +791,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		SkeletalMesh->Rename(NULL, GetTransientPackage());
 		return NULL;
 	}
-	UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("Bones digested - %i  Depth of hierarchy - %i"), SkeletalMesh->GetRefSkeleton().GetNum(), SkeletalDepth);
+	UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("Bones digested - %i  Depth of hierarchy - %i"), SkeletalMesh->GetRefSkeleton().GetNum(), SkeletalDepth);
 
 	// process bone influences from import data
 	SkeletalMeshImportUtils::ProcessImportMeshInfluences(*SkelMeshImportDataPtr, L"MMDMeshName");

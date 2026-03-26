@@ -24,6 +24,7 @@ namespace MMD4UE5
 		const uint8* BufferEnd)
 	{
 		Buffer = Buf;
+		UE_LOG(LogMMD4UE5_PmxMeshInfo, Log, TEXT("PMX Importer Class Start: PMXLoaderBinary"));
 		////////////////////////////////////////////
 
 		PMXEncodeType pmxEncodeType = PMXEncodeType_ERROR;
@@ -33,11 +34,11 @@ namespace MMD4UE5
 		FMemory::Memcpy(this->magic, Buffer, sizeof(this->magic));
 		if (this->magic[0] == 'P' && this->magic[1] == 'M' && this->magic[2] == 'X')
 		{
-			UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX Import START /Correct Magic[PMX]"));
+			UE_LOG(LogMMD4UE5_PmxMeshInfo, Log, TEXT("PMX Import START"));
 		}
 		else
 		{
-			UE_LOG(LogMMD4UE5_PmxMeshInfo, Error, TEXT("PMX Import FALSE/Return /UnCorrect Magic[PMX]"));
+			UE_LOG(LogMMD4UE5_PmxMeshInfo, Error, TEXT("PMX Import FALSE - UnCorrect Magic"));
 			return false;
 		}
 		Buffer += sizeof(this->magic);
@@ -218,16 +219,16 @@ namespace MMD4UE5
 				FMemory::Memcpy(&pmxVertexPtr.ToonEdgeScale, Buffer, memcopySize);
 				Buffer += memcopySize;
 			}
-			UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning,
+			UE_LOG(LogMMD4UE5_PmxMeshInfo, Log,
 				TEXT("PMX Import [Vertex:: statics bone type, bdef1 = %u] Complete"), statics_bdef1);
-			UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning,
+			UE_LOG(LogMMD4UE5_PmxMeshInfo, Log,
 				TEXT("PMX Import [Vertex:: statics bone type, bdef2 = %u] Complete"), statics_bdef2);
-			UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning,
+			UE_LOG(LogMMD4UE5_PmxMeshInfo, Log,
 				TEXT("PMX Import [Vertex:: statics bone type, bdef3 = %u] Complete"), statics_bdef4);
-			UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning,
+			UE_LOG(LogMMD4UE5_PmxMeshInfo, Log,
 				TEXT("PMX Import [Vertex:: statics bone type, sdef = %u] Complete"), statics_sdef);
 		}
-		UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX Import [Vertex] Complete"));
+		UE_LOG(LogMMD4UE5_PmxMeshInfo, Log, TEXT("PMX Import [Vertex] Complete"));
 		////////////////////////////////////////////
 		{
 			/*
@@ -254,7 +255,7 @@ namespace MMD4UE5
 				}
 			}
 		}
-		UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX Import [FaceList] Complete"));
+		UE_LOG(LogMMD4UE5_PmxMeshInfo, Log, TEXT("PMX Import [FaceList] Complete"));
 		////////////////////////////////////////////
 		{
 
@@ -273,7 +274,7 @@ namespace MMD4UE5
 			{
 				textureList[i].TexturePath = PMXTexBufferToFString(&Buffer, pmxEncodeType);
 			}
-			UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX Import [textureList] Complete"));
+			UE_LOG(LogMMD4UE5_PmxMeshInfo, Log, TEXT("PMX Import [textureList] Complete"));
 		}
 		{
 			// 获取材质数量
@@ -366,7 +367,7 @@ namespace MMD4UE5
 				FMemory::Memcpy(&materialList[i].MaterialFaceNum, Buffer, memcopySize);
 				Buffer += memcopySize;
 			}
-			UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX Import [materialList] Complete"));
+			UE_LOG(LogMMD4UE5_PmxMeshInfo, Log, TEXT("PMX Import [materialList] Complete"));
 		}
 		////////////////////////////////////////////
 
@@ -551,7 +552,7 @@ namespace MMD4UE5
 					}
 				}
 			}
-			UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX Import [BoneList] Complete"));
+			UE_LOG(LogMMD4UE5_PmxMeshInfo, Log, TEXT("PMX Import [BoneList] Complete"));
 		}
 		{
 			int32 i, j;
@@ -711,7 +712,7 @@ namespace MMD4UE5
 						break;
 				}
 			}
-			UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX Import [MorphList] Complete"));
+			UE_LOG(LogMMD4UE5_PmxMeshInfo, Log, TEXT("PMX Import [MorphList] Complete"));
 		}
 
 		{ // Displayframe
@@ -814,7 +815,7 @@ namespace MMD4UE5
 			}
 		}
 		//////////////////////////////////////////////
-		UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX Importer Class Complete: PMXLoaderBinary"));
+		UE_LOG(LogMMD4UE5_PmxMeshInfo, Log, TEXT("PMX Importer Class Complete: PMXLoaderBinary"));
 
 		Buf = Buffer;
 		return true;
@@ -824,7 +825,7 @@ namespace MMD4UE5
 	{
 		bool bRet = true;
 		//////////////////////////////////////////////
-		UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX Importer Class Start: FixSortParentBoneIndex"));
+		UE_LOG(LogMMD4UE5_PmxMeshInfo, Log, TEXT("PMX Importer Class Start: FixSortParentBoneIndex"));
 
 		/////
 		int32 i; // , j;
@@ -858,7 +859,7 @@ namespace MMD4UE5
 			UE_LOG(LogMMD4UE5_PmxMeshInfo, Error, TEXT("PMX Importer Class Error: FixSortParentBoneIndex NG?"));
 		}
 		//////////////////////////////////////////////
-		UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX Importer Class Complete: FixSortParentBoneIndex"));
+		UE_LOG(LogMMD4UE5_PmxMeshInfo, Log, TEXT("PMX Importer Class Complete: FixSortParentBoneIndex"));
 		return bRet;
 	}
 

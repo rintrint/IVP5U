@@ -31,11 +31,11 @@ namespace MMD4UE5
 		// PMDファイルかどうかを確認
 		if (header.Magic[0] == 'P' && header.Magic[1] == 'm' && header.Magic[2] == 'd')
 		{
-			UE_LOG(LogMMD4UE5_PmdMeshInfo, Warning, TEXT("PMX Import START /Correct Magic[PMX]"));
+			UE_LOG(LogMMD4UE5_PmdMeshInfo, Log, TEXT("PMD Import START"));
 		}
 		else
 		{
-			UE_LOG(LogMMD4UE5_PmdMeshInfo, Error, TEXT("PMX Import FALSE/Return /UnCorrect Magic[PMX]"));
+			UE_LOG(LogMMD4UE5_PmdMeshInfo, Error, TEXT("PMD Import FALSE - UnCorrect Magic"));
 			return false;
 		}
 		// バージョン１以外は読み込めない

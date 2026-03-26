@@ -35,11 +35,11 @@ namespace MMD4UE5
 			// 确定是否为VMD文件的临时版本
 			if (readData.vmdHeader.header[0] == 'V' && readData.vmdHeader.header[1] == 'o' && readData.vmdHeader.header[2] == 'c')
 			{
-				UE_LOG(LogMMD4UE5_VmdMotionInfo, Log, TEXT("VMD Import START /Correct Magic[Vocaloid Motion Data 0002]"));
+				UE_LOG(LogMMD4UE5_VmdMotionInfo, Log, TEXT("VMD Import START"));
 			}
 			else
 			{
-				// UE_LOG(LogMMD4UE5_PmdMeshInfo, Error, TEXT("PMX Import FALSE/Return /UnCorrect Magic[PMX]"));
+				UE_LOG(LogMMD4UE5_VmdMotionInfo, Error, TEXT("VMD Import FALSE - UnCorrect Magic"));
 				return false;
 			}
 			Buffer += memcopySize;
