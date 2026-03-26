@@ -9,11 +9,12 @@ Support UE5.5, 5.6, 5.7
 | UE5.6     | IVP5U_UE5.6 |
 | UE5.7     | main分支    |
 
-建议搭配VRM4U使用(最佳组合):
+可以搭配VRM4U使用:
 
-- **VRM4U**:导入PMX
-- **IVP5U**:导入VMD
+- **VRM4U**: 导入PMX/VRM，VRM4U导入PMX速度较慢但选项较多
+- **IVP5U**: 导入PMX/VMD，IVP5U导入PMX速度很快但选项很少
 
+使用前请注意:  
 PMX需要先在MMD Tools中使用模型调试面板修复过  
 VMD需要先在MMDBridge中使用mmdbridge_vmd_mode2.py烘焙过  
 详细教程请看[这篇](https://www.bilibili.com/opus/1102730546871533640)或[这篇](https://github.com/rintrint/mmdbridge/blob/master/docs/how_to_use.md)  
@@ -45,6 +46,7 @@ Project Settings开启Support 16-bit Bone Index
 未重启就导入VMD会导致动画鬼畜，原因不明，不重启有时还会导致UE5卡死  
 
 设置Movie Pipeline CLI Encoder  
+(这个可以根据自己需求自定义，问AI即可，AI对ffmpeg很熟悉)  
 
 ```text
 ffmpeg.exe
