@@ -9,6 +9,7 @@
 #include "SSkeletonWidget.h"
 
 #include "AssetRegistry/AssetRegistryModule.h"
+#include "MeshDescription.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/CurveTable.h"
 
@@ -284,7 +285,7 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 										{
 											NewMesh = ImportSkeletalMesh(
 												InParent,
-												&pmxMeshInfoPtr, // SkelMeshNodeArray,
+												&pmxMeshInfoPtr,
 												OutputName,
 												Name,
 												RF_Public | RF_Standalone | RF_MarkAsNative | RF_Transactional,
@@ -303,7 +304,6 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 											ImportOptions->bImportMaterials = 0;
 
 											ImportFbxMorphTarget(
-												// SkelMeshNodeArray,
 												pmxMeshInfoPtr,
 												NewMesh,
 												InParent,
@@ -572,7 +572,7 @@ UObject* UPmxFactory::FactoryCreateBinary(
 						int32 MaxLODLevel = 1;
 						FSkeletalMeshImportData smid;
 						USkeletalMesh* NewMesh = NULL;
-						if (LODIndex == 0 /*&& SkelMeshNodeArray.Num() != 0*/)
+						if (LODIndex == 0)
 						{
 							// UEnum* CompileModeEnum = GetStaticEnum <EObjectFlags>();
 
@@ -580,7 +580,7 @@ UObject* UPmxFactory::FactoryCreateBinary(
 
 							NewMesh = ImportSkeletalMesh(
 								InParent,
-								&pmxMeshInfoPtr, // SkelMeshNodeArray,
+								&pmxMeshInfoPtr,
 								OutputName,
 								Name,
 								Flags,
@@ -599,7 +599,6 @@ UObject* UPmxFactory::FactoryCreateBinary(
 							ImportOptions->bImportMaterials = 0;
 
 							ImportFbxMorphTarget(
-								// SkelMeshNodeArray,
 								pmxMeshInfoPtr,
 								NewMesh,
 								InParent,
@@ -800,7 +799,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 	// Dirty the DDC Key for any imported Skeletal Mesh
 	SkeletalMesh->InvalidateDeriveDataCacheGUID();
 
-	// 1. 先重置並新增 LOD 0 的「設定資訊」 (LODInfo)
+	// Setup LOD Info
 	SkeletalMesh->SetNumSourceModels(0);
 	FSkeletalMeshLODInfo& NewLODInfo = SkeletalMesh->AddLODInfo();
 	NewLODInfo.ReductionSettings.NumOfTrianglesPercentage = 1.0f;
@@ -808,14 +807,19 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 	NewLODInfo.ReductionSettings.MaxDeviationPercentage = 0.0f;
 	NewLODInfo.LODHysteresis = 0.02f;
 
-	// 2. 再為 LOD 0 新增「幾何數據」的儲存空間 (LODModel)
+	// Setup LOD Model
 	FSkeletalMeshModel* ImportedResource = SkeletalMesh->GetImportedModel();
 	check(ImportedResource->LODModels.Num() == 0);
 	ImportedResource->LODModels.Empty();
 	ImportedResource->LODModels.Add(new FSkeletalMeshLODModel());
 
-	// 3. 現在 LODInfo 和 LODModels 都已準備好，可以安全地提交 MeshDescription
-	SkeletalMesh->CommitMeshDescription(0);
+	// Bridge legacy ImportData to MeshDescription API
+	FMeshDescription* MeshDescription = SkeletalMesh->CreateMeshDescription(0);
+	if (MeshDescription)
+	{
+		SkelMeshImportDataPtr->GetMeshDescription(SkeletalMesh, nullptr, *MeshDescription);
+		SkeletalMesh->CommitMeshDescription(0);
+	}
 
 	UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("ImportSkeletalMesh: Added new LODModel. Total LOD count is now: %d. The only valid index should be 0."), ImportedResource->LODModels.Num());
 	FSkeletalMeshLODModel& LODModel = ImportedResource->LODModels[0];
@@ -915,6 +919,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		SkeletalMesh->GetAssetImportData()->Update(UFactory::CurrentFilename);
 
 		SkeletalMesh->CalculateInvRefMatrices();
+		SkeletalMesh->Build();
 		SkeletalMesh->PostEditChange();
 		SkeletalMesh->MarkPackageDirty();
 

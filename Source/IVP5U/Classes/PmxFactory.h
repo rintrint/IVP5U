@@ -109,7 +109,6 @@ class IVP5U_API UPmxFactory : public UFactory, public FReimportHandler // public
 	///////////////////////////////
 
 	void ImportMorphTargetsInternal(
-		// TArray<FbxNode*>& SkelMeshNodeArray,
 		MMD4UE5::PmxMeshInfo& PmxMeshInfo,
 		USkeletalMesh* BaseSkelMesh,
 		UObject* InParent,
@@ -118,7 +117,6 @@ class IVP5U_API UPmxFactory : public UFactory, public FReimportHandler // public
 	///////////////////////////////
 	// Import Morph target
 	void ImportFbxMorphTarget(
-		// TArray<FbxNode*> &SkelMeshNodeArray,
 		MMD4UE5::PmxMeshInfo& PmxMeshInfo,
 		USkeletalMesh* BaseSkelMesh,
 		UObject* InParent,

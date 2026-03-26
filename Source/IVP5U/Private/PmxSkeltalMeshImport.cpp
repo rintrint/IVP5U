@@ -822,7 +822,6 @@ private:
 };
 
 void UPmxFactory::ImportMorphTargetsInternal(
-	// TArray<FbxNode*>& SkelMeshNodeArray,
 	MMD4UE5::PmxMeshInfo& PmxMeshInfo,
 	USkeletalMesh* BaseSkelMesh,
 	UObject* InParent,
@@ -925,9 +924,10 @@ void UPmxFactory::ImportMorphTargetsInternal(
 	}
 }
 
-// Import hh target
+/**
+ * Import Morph Targets for the skeletal mesh
+ */
 void UPmxFactory::ImportFbxMorphTarget(
-	// TArray<FbxNode*> &SkelMeshNodeArray,
 	MMD4UE5::PmxMeshInfo& PmxMeshInfo,
 	USkeletalMesh* BaseSkelMesh,
 	UObject* InParent,
@@ -935,17 +935,31 @@ void UPmxFactory::ImportFbxMorphTarget(
 	int32 LODIndex,
 	FSkeletalMeshImportData& ImportData)
 {
-	bool bHasMorph = false;
 	if (PmxMeshInfo.morphList.Num() > 0)
 	{
 		ImportMorphTargetsInternal(
-			// SkelMeshNodeArray,
 			PmxMeshInfo,
 			BaseSkelMesh,
 			InParent,
 			Filename,
-			LODIndex, ImportData);
-		BaseSkelMesh->CommitMeshDescription(LODIndex);
+			LODIndex,
+			ImportData);
+
+		// Use modern MeshDescription API to save Morph Target data, avoiding deprecation warning
+		FMeshDescription* MeshDescription = BaseSkelMesh->GetMeshDescription(LODIndex);
+		if (!MeshDescription)
+		{
+			MeshDescription = BaseSkelMesh->CreateMeshDescription(LODIndex);
+		}
+
+		if (MeshDescription)
+		{
+			// Convert legacy FSkeletalMeshImportData to the new FMeshDescription
+			ImportData.GetMeshDescription(BaseSkelMesh, nullptr, *MeshDescription);
+
+			// Safely commit the populated MeshDescription
+			BaseSkelMesh->CommitMeshDescription(LODIndex);
+		}
 	}
 }
 
