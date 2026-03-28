@@ -1,18 +1,20 @@
 # IVP5U (New IM4U)
 
 Import VMD/PMX into UE5  
-Support UE5.5, 5.6, 5.7
+支持UE5.7  
+
+* 推荐使用UE5.7以获得完整支持和Bug修复
 
 | UE5版本   | 插件版本     |
 |-----------|-------------|
-| UE5.5     | IVP5U_UE5.5 |
-| UE5.6     | IVP5U_UE5.6 |
 | UE5.7     | main分支    |
+| UE5.6     | IVP5U_UE5.6 |
+| UE5.5     | IVP5U_UE5.5 |
 
 可以搭配VRM4U使用:
 
-- **VRM4U**: 导入PMX/VRM，VRM4U导入PMX速度较慢但选项较多
-- **IVP5U**: 导入PMX/VMD，IVP5U导入PMX速度很快但选项很少
+* **VRM4U**: 导入PMX/VRM，VRM4U导入PMX速度较慢但选项较多
+* **IVP5U**: 导入PMX/VMD，IVP5U导入PMX速度很快但选项很少
 
 使用前请注意:  
 PMX需要先在MMD Tools中使用模型调试面板修复过  
@@ -38,42 +40,61 @@ MMDBridge教程
 
 ## 注意事项
 
-Project Settings开启Support 16-bit Bone Index  
-未开启会导致模型直接不显示，变成空气  
-默认的8-bit Bone Index仅支持256根骨骼，MMD模型容易超过  
+修改UE5项目设置:
 
-使用VRM4U导入模型后，需要重启UE5  
-未重启就导入VMD会导致动画鬼畜，原因不明，不重启有时还会导致UE5卡死  
+* 开启支持16位骨骼索引 - 支持超过256根骨骼的模型(MMD模型基本都会超过)
+* 开启光线追踪阴影 - 解决阴影有锯齿的问题
+* Substrate GBuffer格式: Adaptive GBuffer
+* 关闭自动曝光
+* 关闭动态模煳
 
-设置Movie Pipeline CLI Encoder  
-(这个可以根据自己需求自定义，问AI即可，AI对ffmpeg很熟悉)  
+导入模型后建议先存档并重启UE5  
+未重启就导入VMD会导致动画鬼畜，有时还会导致UE5卡死或闪退  
 
-```text
-ffmpeg.exe
-Run 'MovieRenderPipeline.DumpCLIEncoderCodecs' in Console to see available codecs.
-av1_nvenc
-libopus
-mp4
--hide_banner -y -loglevel error -init_hw_device vulkan -thread_queue_size 32768 {VideoInputs} {AudioInputs} -acodec {AudioCodec} -vcodec {VideoCodec} {Quality} -vf "libplacebo=colorspace=bt709:color_primaries=bt709:color_trc=iec61966-2-1:range=tv:format=yuv444p16le" -pix_fmt yuv420p -g 60 -c:a libopus -b:a 512k -ar 48000 -movflags +faststart -flags +cgop -coder cabac {AdditionalLocalArgs} "{OutputPath}"
--r {FrameRate} -f concat -safe 0 -i "{InputFile}"
--f concat -safe 0 -i "{InputFile}"
--qp 60
--qp 50
--qp 40
--qp 30
-```
+## UE5输出视频
 
 ffmpeg下载(二选一)，并设置环境变数  
 <https://github.com/BtbN/FFmpeg-Builds/releases> 选择ffmpeg-master-latest-win64-gpl-shared.zip  
 <https://www.gyan.dev/ffmpeg/builds> 选择ffmpeg-git-full.7z  
 
-## 插件的行为
+设置Movie Pipeline CLI Encoder  
+![Movie_Pipeline_CLI_Encoder](docs/images/Movie_Pipeline_CLI_Encoder.png)
 
-骨骼关键帧全部导入  
-表情关键帧如果只有一个且值为0，则跳过，其馀全部导入  
+这个可以根据自己需求自定义，问AI即可，AI对ffmpeg很熟悉  
+
+```text
+ffmpeg.exe
+Run 'MovieRenderPipeline.DumpCLIEncoderCodecs' in Console to see available codecs.
+hevc_nvenc
+aac
+mp4
+-hide_banner -y -loglevel error -init_hw_device vulkan -thread_queue_size 32768 {VideoInputs} {AudioInputs} -c:v {VideoCodec} -c:a {AudioCodec} {Quality} -vf "libplacebo=colorspace=bt709:color_primaries=bt709:color_trc=iec61966-2-1:range=tv:format=yuv444p16le" -pix_fmt yuv420p -g 60 -b:a 320k -ar 48000 -movflags +faststart -flags +cgop -coder cabac {AdditionalLocalArgs} "{OutputPath}"
+-r {FrameRate} -f concat -safe 0 -i "{InputFile}"
+-f concat -safe 0 -i "{InputFile}"
+-qp 30
+-qp 25
+-qp 20
+-qp 15
+```
+
+也可以使用cmd指令手动编码视频，示范如下  
+
+```text
+ffmpeg -hide_banner -y -init_hw_device vulkan -thread_queue_size 32768 -r 60 -i NewLevelSequence.%4d.exr -i NewLevelSequence.wav -c:v hevc_nvenc -c:a aac -qp 20 -vf "libplacebo=colorspace=bt709:color_primaries=bt709:color_trc=iec61966-2-1:range=tv:format=yuv444p16le" -pix_fmt yuv420p -g 60 -b:a 320k -ar 48000 -movflags +faststart -flags +cgop -coder cabac "qp 20.mp4"
+```
+
+渲染时开启抗锯齿选项将重载抗锯齿打勾，将抗锯齿方法设为无来关闭抗锯齿  
+将空间採样数提高到8以上来解决锯齿和闪烁  
+採样数越高画质越高，这会显着增加渲染时间  
+![Pending_MoviePipelinePrimaryConfig](docs/images/Pending_MoviePipelinePrimaryConfig.png)
+
+后期处理体积(Post Process Volume):  
+勾选无限范围  
+可以些微拉高对比  
+可以拉高Lumen的质量  
 
 ## Reference
 
-- <https://github.com/bm9/IM4U>
-- <https://github.com/axilesoft/IM-for-UE5>
-- <https://github.com/NaN-Name-bilbil/IVP5U>
+* <https://github.com/bm9/IM4U>
+* <https://github.com/axilesoft/IM-for-UE5>
+* <https://github.com/NaN-Name-bilbil/IVP5U>
