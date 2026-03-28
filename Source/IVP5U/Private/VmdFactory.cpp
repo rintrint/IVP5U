@@ -1,7 +1,7 @@
 // Copyright 2023 NaN_Name. All Rights Reserved.
 
-#include "Factory/VmdFactory.h"
-#include "../IVP5UPrivatePCH.h"
+#include "VmdFactory.h"
+#include "IVP5UPrivatePCH.h"
 
 #include "MMDNameUtils.h"
 #include "VmdImporter.h"
