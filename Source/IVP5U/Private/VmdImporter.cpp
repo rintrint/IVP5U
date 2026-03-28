@@ -38,7 +38,7 @@ namespace MMD4UE5
 			}
 			else
 			{
-				UE_LOG(LogMMD4UE5_VmdMotionInfo, Error, TEXT("VMD Import FALSE - UnCorrect Magic"));
+				UE_LOG(LogMMD4UE5_VmdMotionInfo, Error, TEXT("VMD Import FAILED - Incorrect Magic"));
 				return false;
 			}
 			Buffer += memcopySize;

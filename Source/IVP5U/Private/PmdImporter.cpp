@@ -34,7 +34,7 @@ namespace MMD4UE5
 		}
 		else
 		{
-			UE_LOG(LogMMD4UE5_PmdMeshInfo, Error, TEXT("PMD Import FALSE - UnCorrect Magic"));
+			UE_LOG(LogMMD4UE5_PmdMeshInfo, Error, TEXT("PMD Import FAILED - Incorrect Magic"));
 			return false;
 		}
 		// バージョン１以外は読み込めない

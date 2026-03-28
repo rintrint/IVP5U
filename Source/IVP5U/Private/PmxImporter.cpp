@@ -36,7 +36,7 @@ namespace MMD4UE5
 		}
 		else
 		{
-			UE_LOG(LogMMD4UE5_PmxMeshInfo, Error, TEXT("PMX Import FALSE - UnCorrect Magic"));
+			UE_LOG(LogMMD4UE5_PmxMeshInfo, Error, TEXT("PMX Import FAILED - Incorrect Magic"));
 			return false;
 		}
 		Buffer += sizeof(this->magic);
@@ -70,7 +70,7 @@ namespace MMD4UE5
 		}
 		else
 		{
-			UE_LOG(LogMMD4UE5_PmxMeshInfo, Error, TEXT("PMX Import FALSE/Return /UnCorrect EncodeType"));
+			UE_LOG(LogMMD4UE5_PmxMeshInfo, Error, TEXT("PMX Import FAILED - Incorrect EncodeType"));
 			return false;
 		}
 		this->modelNameJP = PMXTexBufferToFString(&Buffer, pmxEncodeType);
@@ -210,7 +210,7 @@ namespace MMD4UE5
 				}
 				else
 				{
-					UE_LOG(LogMMD4UE5_PmxMeshInfo, Error, TEXT("PMX Import FALSE/Return /UnCorrect EncodeType"));
+					UE_LOG(LogMMD4UE5_PmxMeshInfo, Error, TEXT("PMX Import FAILED - Incorrect EncodeType"));
 				}
 				// 边缘倍率材质相对于边缘尺寸的倍率值
 				memcopySize = sizeof(pmxVertexPtr.ToonEdgeScale);
