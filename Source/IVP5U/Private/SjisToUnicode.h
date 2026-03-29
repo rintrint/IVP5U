@@ -1,7 +1,5 @@
 // Copyright(c) 2016-2017 benikabocha.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
-//
-// Copyright 2015-2026 IVP5U contributors
 
 #ifndef SABA_MODEL_MMD_SJISTOUNICODE_H_
 #define SABA_MODEL_MMD_SJISTOUNICODE_H_

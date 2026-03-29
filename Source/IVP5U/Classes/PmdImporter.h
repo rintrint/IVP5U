@@ -252,13 +252,11 @@ namespace MMD4UE5
 		PMD_READ_IK_INFO	*Prev;					// リストの前のデータへのアドレス
 		PMD_READ_IK_INFO	*Next;					// リストの次のデータへのアドレス
 	};
-	//////////////////////////////////////////////////////////////
 
 	struct PMX_BONE_HIERARCKY
 	{
 	};
 #endif
-	//////////////////////////////////////////////////////////////
 
 	DECLARE_LOG_CATEGORY_EXTERN(LogMMD4UE5_PmdMeshInfo, Log, All)
 
@@ -269,14 +267,13 @@ namespace MMD4UE5
 		PmdMeshInfo();
 		~PmdMeshInfo();
 
-		///////////////////////////////////////
 		bool PMDLoaderBinary(
 			const uint8*& Buffer,
 			const uint8* BufferEnd);
-		//////////////////////////////////////////
+
 		bool ConvertToPmxFormat(
 			PmxMeshInfo* pmxImportPtr);
-		//////////////////////////////////////////
+
 		PMD_HEADER header;
 		PMD_VERTEX_DATA vertexData;
 		TArray<PMD_VERTEX> vertexList;

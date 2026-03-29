@@ -160,7 +160,7 @@ namespace MMD4UE5
 				}
 			}
 		}
-		//////////////////////////////
+
 		if (!ConvertVMDFromReadData(&readData))
 		{
 			// convert err
@@ -178,11 +178,10 @@ namespace MMD4UE5
 		{
 			return false;
 		}
-		////////////////////////////
+
 		ModelName = ConvertMMDSJISToFString(
 			(uint8*)&(readData->vmdHeader.modelName),
 			sizeof(readData->vmdHeader.modelName));
-		///////////////////////////////
 
 		int arrayIndx = -1;
 		FString trackName;
@@ -191,7 +190,6 @@ namespace MMD4UE5
 		TMap<FString, int32> boneTrackNameMap;
 		TMap<FString, int32> faceTrackNameMap;
 
-		//////////////////////////////////
 		{
 			// Keys
 			TArray<VmdKeyTrackList> tempKeyBoneList;
@@ -204,7 +202,7 @@ namespace MMD4UE5
 			{
 				// get ptr
 				VMD_KEY* vmdKeyPtr = &(readData->vmdKeyList[i]);
-				//
+
 				trackName = ConvertMMDSJISToFString(
 					(uint8*)&(vmdKeyPtr->Name),
 					sizeof(vmdKeyPtr->Name));
@@ -227,9 +225,7 @@ namespace MMD4UE5
 				}
 
 				check(vmdKeyTrackPtr);
-				///
 				arrayIndx = vmdKeyTrackPtr->keyList.Add(*vmdKeyPtr);
-				//
 				vmdKeyTrackPtr->maxFrameCount = FMath::Max(vmdKeyPtr->Frame, vmdKeyTrackPtr->maxFrameCount);
 				vmdKeyTrackPtr->minFrameCount = FMath::Min(vmdKeyPtr->Frame, vmdKeyTrackPtr->minFrameCount);
 			}
@@ -269,7 +265,7 @@ namespace MMD4UE5
 			{
 				// get ptr
 				VMD_FACE_KEY* vmdFacePtr = &(readData->vmdFaceList[i]);
-				//
+
 				trackName = ConvertMMDSJISToFString(
 					(uint8*)&(vmdFacePtr->Name),
 					sizeof(vmdFacePtr->Name));
@@ -292,9 +288,7 @@ namespace MMD4UE5
 				}
 
 				check(vmdFaceTrackPtr);
-				///
 				arrayIndx = vmdFaceTrackPtr->keyList.Add(*vmdFacePtr);
-				//
 				vmdFaceTrackPtr->maxFrameCount = FMath::Max(vmdFacePtr->Frame, vmdFaceTrackPtr->maxFrameCount);
 				vmdFaceTrackPtr->minFrameCount = FMath::Min(vmdFacePtr->Frame, vmdFaceTrackPtr->minFrameCount);
 			}
@@ -344,11 +338,9 @@ namespace MMD4UE5
 			{
 				// get ptr
 				vmdCamKeyPtr = &(readData->vmdCameraList[i]);
-				//
+
 				check(vmdCamKeyTrackPtr);
-				///
 				arrayIndx = vmdCamKeyTrackPtr->keyList.Add(*vmdCamKeyPtr);
-				//
 				vmdCamKeyTrackPtr->maxFrameCount = FMath::Max(vmdCamKeyPtr->Frame, vmdCamKeyTrackPtr->maxFrameCount);
 				vmdCamKeyTrackPtr->minFrameCount = FMath::Min(vmdCamKeyPtr->Frame, vmdCamKeyTrackPtr->minFrameCount);
 			}

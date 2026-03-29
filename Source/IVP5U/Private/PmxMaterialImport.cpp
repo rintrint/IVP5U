@@ -455,7 +455,6 @@ void UPmxMaterialImport::FixupMaterial(
 		UnrealMaterial->GetEditorOnlyData()->BaseColor.MaskA = Output->MaskA;
 	}
 
-	//////////////////////////
 	// add a basic diffuse color if no texture is linked to diffuse
 	if (UnrealMaterial->GetEditorOnlyData()->AmbientOcclusion.Expression == NULL)
 	{
@@ -1065,7 +1064,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst(
 	return NewMIC;
 }
 
-//--------------------------------------------------------------------
+//-------------------------------------------------------------------------
 // Create Material Inst. for Masked Mat
 //-------------------------------------------------------------------------
 UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Masked(
@@ -1194,7 +1193,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Masked(
 	return UnrealMaterial;
 }
 
-//--------------------------------------------------------------------
+//-------------------------------------------------------------------------
 // Create Material Inst. for Masked Mat Unlit
 //-------------------------------------------------------------------------
 UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Masked_Unlit(
@@ -1291,7 +1290,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Masked_Unlit(
 	return UnrealMaterial;
 }
 
-//--------------------------------------------------------------------
+//-------------------------------------------------------------------------
 // Create Material Inst. for Luminous Mat
 //-------------------------------------------------------------------------
 UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Luminous(
@@ -1398,7 +1397,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Luminous(
 	return UnrealMaterial;
 }
 
-//--------------------------------------------------------------------
+//-------------------------------------------------------------------------
 // Create Material Inst. for Luminous Mat Unlit
 //-------------------------------------------------------------------------
 UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Luminous_Unlit(

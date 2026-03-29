@@ -79,7 +79,7 @@ public:
 	{
 		InParent = InParentPtr;
 	}
-	//////////////////////////////////////
+
 	void AssetsCreateTexture(
 		UObject* InParentx,
 		// EObjectFlags Flags,
@@ -87,22 +87,19 @@ public:
 		FString CurPath,
 		FString filePath,
 		TArray<UTexture*>& textureAssetList);
-	///////////////////////////////////////
+
 	UTexture* ImportTexture(
 		// FbxFileTexture* FbxTexture,
 		FString InTextureFileName,
 		bool bSetupAsNormalMap);
-	///////////////////////////////////////
+
 	/*void AssetsCreateUnrealMaterial(
 		UObject * InParent,
 		FString MaterialName,
 		TArray<UMaterialInterface*>& OutMaterials
 		);
 		*/
-	/////////////////////////////////////
-	//-------------------------------------------------------------------------
-	//
-	//-------------------------------------------------------------------------
+
 	void CreateUnrealMaterial(
 		FString ParentObjName,
 		// UObject * InParent,
@@ -111,15 +108,11 @@ public:
 		bool bMaterialUnlit,
 		TArray<UMaterialInterface*>& OutMaterials,
 		TArray<UTexture*>& textureAssetList);
-	//-------------------------------------------------------------------------
-	//
-	//-------------------------------------------------------------------------
+
 	void FixupMaterial(
 		MMD4UE5::PMX_MATERIAL& PmxMaterial,
 		UMaterial* UnrealMaterial);
-	//-------------------------------------------------------------------------
-	//
-	//-------------------------------------------------------------------------
+
 	bool CreateAndLinkExpressionForMaterialProperty(
 		MMD4UE5::PMX_MATERIAL& PmxMaterial,
 		UMaterial* UnrealMaterial,
@@ -129,9 +122,6 @@ public:
 		const FVector2D& Location,
 		TArray<UTexture*>& textureAssetList);
 
-	//-------------------------------------------------------------------------
-	//
-	//-------------------------------------------------------------------------
 	bool CreateAndLinkExpressionForMaterialProperty_ForMmdAutoluminus(
 		MMD4UE5::PMX_MATERIAL& PmxMaterial,
 		UMaterial* UnrealMaterial,

@@ -95,7 +95,7 @@ namespace MMD4UE5
 			for (uint32 VertexIndex = 0; VertexIndex < PmxVertexNum; ++VertexIndex)
 			{
 				PMX_VERTEX& pmxVertexPtr = vertexList[VertexIndex];
-				///
+
 				// 位置(x,y,z)
 				memcopySize = sizeof(pmxVertexPtr.Position);
 				FMemory::Memcpy(&pmxVertexPtr.Position, Buffer, memcopySize);
@@ -118,7 +118,6 @@ namespace MMD4UE5
 				// 追加UV(x,y,z,w)  PMXヘッダの追加UV数による	n:追加UV数 0～4
 				for (int ExUVNum = 0; ExUVNum < this->baseHeader.UVNum; ++ExUVNum)
 				{
-					//
 					memcopySize = sizeof(pmxVertexPtr.AddUV[ExUVNum]);
 					FMemory::Memcpy(&pmxVertexPtr.AddUV[ExUVNum], Buffer, memcopySize);
 					Buffer += memcopySize;
@@ -127,7 +126,7 @@ namespace MMD4UE5
 				memcopySize = sizeof(pmxVertexPtr.WeightType);
 				FMemory::Memcpy(&pmxVertexPtr.WeightType, Buffer, memcopySize);
 				Buffer += memcopySize;
-				//
+
 				if (pmxVertexPtr.WeightType == 0)
 				{
 					statics_bdef1++;
@@ -144,11 +143,11 @@ namespace MMD4UE5
 					pmxVertexPtr.BoneIndex[0]++;
 					pmxVertexPtr.BoneIndex[1] = MMDExtendBufferSizeToUint32(&Buffer, this->baseHeader.BoneIndexSize);
 					pmxVertexPtr.BoneIndex[1]++;
-					//
+
 					memcopySize = sizeof(pmxVertexPtr.BoneWeight[0]);
 					FMemory::Memcpy(&pmxVertexPtr.BoneWeight[0], Buffer, memcopySize);
 					Buffer += memcopySize;
-					//
+
 					pmxVertexPtr.BoneWeight[1] = 1.0f - pmxVertexPtr.BoneWeight[0];
 				}
 				else if (pmxVertexPtr.WeightType == 2)
@@ -165,7 +164,6 @@ namespace MMD4UE5
 					pmxVertexPtr.BoneIndex[3]++;
 					for (int bw = 0; bw < 4; ++bw)
 					{
-						//
 						memcopySize = sizeof(pmxVertexPtr.BoneWeight[bw]);
 						FMemory::Memcpy(&pmxVertexPtr.BoneWeight[bw], Buffer, memcopySize);
 						Buffer += memcopySize;
@@ -179,7 +177,7 @@ namespace MMD4UE5
 					pmxVertexPtr.BoneIndex[0]++;
 					pmxVertexPtr.BoneIndex[1] = MMDExtendBufferSizeToUint32(&Buffer, this->baseHeader.BoneIndexSize);
 					pmxVertexPtr.BoneIndex[1]++;
-					//
+
 					memcopySize = sizeof(pmxVertexPtr.BoneWeight[0]);
 					FMemory::Memcpy(&pmxVertexPtr.BoneWeight[0], Buffer, memcopySize);
 					Buffer += memcopySize;
@@ -187,21 +185,18 @@ namespace MMD4UE5
 
 					for (int bw = 0; bw < 1; ++bw)
 					{
-						//
 						memcopySize = sizeof(pmxVertexPtr.SDEF_C);
 						FMemory::Memcpy(&pmxVertexPtr.SDEF_C, Buffer, memcopySize);
 						Buffer += memcopySize;
 					}
 					for (int bw = 0; bw < 1; ++bw)
 					{
-						//
 						memcopySize = sizeof(pmxVertexPtr.SDEF_R0);
 						FMemory::Memcpy(&pmxVertexPtr.SDEF_R0, Buffer, memcopySize);
 						Buffer += memcopySize;
 					}
 					for (int bw = 0; bw < 1; ++bw)
 					{
-						//
 						memcopySize = sizeof(pmxVertexPtr.SDEF_R1);
 						FMemory::Memcpy(&pmxVertexPtr.SDEF_R1, Buffer, memcopySize);
 						Buffer += memcopySize;
@@ -245,7 +240,6 @@ namespace MMD4UE5
 			for (uint32 FaceIndex = 0; FaceIndex < PmxFaceNum; ++FaceIndex)
 			{
 				PMX_FACE& pmxFaseListPtr = faseList[FaceIndex];
-				//
 				for (int SubNum = 0; SubNum < 3; ++SubNum)
 				{
 					pmxFaseListPtr.VertexIndex[SubNum] = MMDExtendBufferSizeToUint32(&Buffer, this->baseHeader.VertexIndexSize);
@@ -257,7 +251,7 @@ namespace MMD4UE5
 		{
 			// 获取纹理数
 			uint32 PmxTextureNum = 0;
-			//
+
 			memcopySize = sizeof(PmxTextureNum);
 			FMemory::Memcpy(&PmxTextureNum, Buffer, memcopySize);
 			Buffer += memcopySize;
@@ -275,7 +269,7 @@ namespace MMD4UE5
 		{
 			// 获取材质数量
 			uint32 PmxMaterialNum = 0;
-			//
+
 			memcopySize = sizeof(PmxMaterialNum);
 			FMemory::Memcpy(&PmxMaterialNum, Buffer, memcopySize);
 			Buffer += memcopySize;
@@ -396,20 +390,20 @@ namespace MMD4UE5
 			{
 				boneList[i].Name = PMXTexBufferToFString(&Buffer, pmxEncodeType);
 				boneList[i].NameEng = PMXTexBufferToFString(&Buffer, pmxEncodeType);
-				//
+
 				memcopySize = sizeof(boneList[i].Position);
 				FMemory::Memcpy(&boneList[i].Position, Buffer, memcopySize);
 				boneList[i].Position = ConvertVectorAsixToUE5FromMMD(boneList[i].Position) * modelScale;
 				Buffer += memcopySize;
 
 				boneList[i].ParentBoneIndex = MMDExtendBufferSizeToInt32(&Buffer, this->baseHeader.BoneIndexSize) + offsetBoneIndex;
-				//
+
 				memcopySize = sizeof(boneList[i].TransformLayer);
 				FMemory::Memcpy(&boneList[i].TransformLayer, Buffer, memcopySize);
 				Buffer += memcopySize;
 
 				uint16 Flag;
-				//
+
 				memcopySize = sizeof(Flag);
 				FMemory::Memcpy(&Flag, Buffer, memcopySize);
 				Buffer += memcopySize;
@@ -429,7 +423,6 @@ namespace MMD4UE5
 
 				if (boneList[i].Flag_LinkDest == 0)
 				{
-					//
 					memcopySize = sizeof(boneList[i].OffsetPosition);
 					FMemory::Memcpy(&boneList[i].OffsetPosition, Buffer, memcopySize);
 					boneList[i].OffsetPosition = ConvertVectorAsixToUE5FromMMD(boneList[i].OffsetPosition) * modelScale;
@@ -443,7 +436,7 @@ namespace MMD4UE5
 				if (boneList[i].Flag_AddRot == 1 || boneList[i].Flag_AddMov == 1)
 				{
 					boneList[i].AddParentBoneIndex = MMDExtendBufferSizeToUint32(&Buffer, this->baseHeader.BoneIndexSize);
-					//
+
 					memcopySize = sizeof(boneList[i].AddRatio);
 					FMemory::Memcpy(&boneList[i].AddRatio, Buffer, memcopySize);
 					Buffer += memcopySize;
@@ -451,7 +444,6 @@ namespace MMD4UE5
 
 				if (boneList[i].Flag_LockAxis == 1)
 				{
-					//
 					memcopySize = sizeof(boneList[i].LockAxisVector);
 					FMemory::Memcpy(&boneList[i].LockAxisVector, Buffer, memcopySize);
 					Buffer += memcopySize;
@@ -459,12 +451,10 @@ namespace MMD4UE5
 
 				if (boneList[i].Flag_LocalAxis == 1)
 				{
-					//
 					memcopySize = sizeof(boneList[i].LocalAxisXVector);
 					FMemory::Memcpy(&boneList[i].LocalAxisXVector, Buffer, memcopySize);
 					Buffer += memcopySize;
 
-					//
 					memcopySize = sizeof(boneList[i].LocalAxisZVector);
 					FMemory::Memcpy(&boneList[i].LocalAxisZVector, Buffer, memcopySize);
 					Buffer += memcopySize;
@@ -472,7 +462,6 @@ namespace MMD4UE5
 
 				if (boneList[i].Flag_OutParentTransform == 1)
 				{
-					//
 					memcopySize = sizeof(boneList[i].OutParentTransformKey);
 					FMemory::Memcpy(&boneList[i].OutParentTransformKey, Buffer, memcopySize);
 					Buffer += memcopySize;
@@ -483,19 +472,17 @@ namespace MMD4UE5
 					PmxIKNum++;
 
 					boneList[i].IKInfo.TargetBoneIndex = MMDExtendBufferSizeToUint32(&Buffer, this->baseHeader.BoneIndexSize) + offsetBoneIndex;
-					//
+
 					memcopySize = sizeof(boneList[i].IKInfo.LoopNum);
 					FMemory::Memcpy(&boneList[i].IKInfo.LoopNum, Buffer, memcopySize);
 					Buffer += memcopySize;
 
-					//
 					memcopySize = sizeof(boneList[i].IKInfo.RotLimit);
 					FMemory::Memcpy(&boneList[i].IKInfo.RotLimit, Buffer, memcopySize);
 					Buffer += memcopySize;
 					// fix to Dig From rad(pmx) for vmd ik
 					boneList[i].IKInfo.RotLimit = FMath::RadiansToDegrees(boneList[i].IKInfo.RotLimit);
 
-					//
 					memcopySize = sizeof(boneList[i].IKInfo.LinkNum);
 					FMemory::Memcpy(&boneList[i].IKInfo.LinkNum, Buffer, memcopySize);
 					Buffer += memcopySize;
@@ -507,7 +494,7 @@ namespace MMD4UE5
 					for (int32 j = 0; j < boneList[i].IKInfo.LinkNum; j++)
 					{
 						boneList[i].IKInfo.Link[j].BoneIndex = MMDExtendBufferSizeToUint32(&Buffer, this->baseHeader.BoneIndexSize) + offsetBoneIndex;
-						//
+
 						memcopySize = sizeof(boneList[i].IKInfo.Link[j].RotLockFlag);
 						FMemory::Memcpy(&boneList[i].IKInfo.Link[j].RotLockFlag, Buffer, memcopySize);
 						Buffer += memcopySize;
@@ -515,7 +502,7 @@ namespace MMD4UE5
 						if (boneList[i].IKInfo.Link[j].RotLockFlag == 1)
 						{
 							FVector3f tempVecRot;
-							//
+
 							memcopySize = sizeof(boneList[i].IKInfo.Link[j].RotLockMin);
 							FMemory::Memcpy(&boneList[i].IKInfo.Link[j].RotLockMin[0], Buffer, memcopySize);
 							Buffer += memcopySize;
@@ -528,7 +515,7 @@ namespace MMD4UE5
 							boneList[i].IKInfo.Link[j].RotLockMin[0] = FMath::RadiansToDegrees(tempVecRot.X);
 							boneList[i].IKInfo.Link[j].RotLockMin[1] = FMath::RadiansToDegrees(tempVecRot.Y);
 							boneList[i].IKInfo.Link[j].RotLockMin[2] = FMath::RadiansToDegrees(tempVecRot.Z);
-							//
+
 							memcopySize = sizeof(boneList[i].IKInfo.Link[j].RotLockMax);
 							FMemory::Memcpy(&boneList[i].IKInfo.Link[j].RotLockMax[0], Buffer, memcopySize);
 							Buffer += memcopySize;
@@ -552,7 +539,6 @@ namespace MMD4UE5
 			// 获取变形信息的数量
 			int32 PmxMorphNum = 0;
 
-			//
 			memcopySize = sizeof(PmxMorphNum);
 			FMemory::Memcpy(&PmxMorphNum, Buffer, memcopySize);
 			Buffer += memcopySize;
@@ -567,15 +553,14 @@ namespace MMD4UE5
 				morphList[i].Name = PMXTexBufferToFString(&Buffer, pmxEncodeType);
 				morphList[i].NameEng = PMXTexBufferToFString(&Buffer, pmxEncodeType);
 
-				//
 				memcopySize = sizeof(morphList[i].ControlPanel);
 				FMemory::Memcpy(&morphList[i].ControlPanel, Buffer, memcopySize);
 				Buffer += memcopySize;
-				//
+
 				memcopySize = sizeof(morphList[i].Type);
 				FMemory::Memcpy(&morphList[i].Type, Buffer, memcopySize);
 				Buffer += memcopySize;
-				//
+
 				memcopySize = sizeof(morphList[i].DataNum);
 				FMemory::Memcpy(&morphList[i].DataNum, Buffer, memcopySize);
 				Buffer += memcopySize;
@@ -589,7 +574,7 @@ namespace MMD4UE5
 						{
 							morphList[i].Group[j].Index =
 								MMDExtendBufferSizeToUint32(&Buffer, this->baseHeader.MorphIndexSize);
-							//
+
 							memcopySize = sizeof(morphList[i].Group[j].Ratio);
 							FMemory::Memcpy(&morphList[i].Group[j].Ratio, Buffer, memcopySize);
 							Buffer += memcopySize;
@@ -604,7 +589,7 @@ namespace MMD4UE5
 						{
 							morphList[i].Vertex[j].Index =
 								MMDExtendBufferSizeToUint32(&Buffer, this->baseHeader.VertexIndexSize);
-							//
+
 							memcopySize = sizeof(morphList[i].Vertex[j].Offset);
 							FMemory::Memcpy(&morphList[i].Vertex[j].Offset, Buffer, memcopySize);
 							morphList[i].Vertex[j].Offset = ConvertVectorAsixToUE5FromMMD(morphList[i].Vertex[j].Offset) * modelScale;
@@ -619,12 +604,12 @@ namespace MMD4UE5
 						{
 							morphList[i].Bone[j].Index =
 								MMDExtendBufferSizeToUint32(&Buffer, this->baseHeader.BoneIndexSize) + offsetBoneIndex;
-							//
+
 							memcopySize = sizeof(morphList[i].Bone[j].Offset);
 							FMemory::Memcpy(&morphList[i].Bone[j].Offset, Buffer, memcopySize);
 							morphList[i].Bone[j].Offset = ConvertVectorAsixToUE5FromMMD(morphList[i].Bone[j].Offset) * modelScale;
 							Buffer += memcopySize;
-							//
+
 							memcopySize = sizeof(morphList[i].Bone[j].Quat);
 							FMemory::Memcpy(&morphList[i].Bone[j].Quat, Buffer, memcopySize);
 							Buffer += memcopySize;
@@ -642,7 +627,7 @@ namespace MMD4UE5
 						{
 							morphList[i].UV[j].Index =
 								MMDExtendBufferSizeToUint32(&Buffer, this->baseHeader.VertexIndexSize);
-							//
+
 							memcopySize = sizeof(morphList[i].UV[j].Offset);
 							FMemory::Memcpy(&morphList[i].UV[j].Offset, Buffer, memcopySize);
 							Buffer += memcopySize;
@@ -656,48 +641,43 @@ namespace MMD4UE5
 						{
 							morphList[i].Material[j].Index =
 								MMDExtendBufferSizeToUint32(&Buffer, this->baseHeader.MaterialIndexSize);
-							//
+
 							memcopySize = sizeof(morphList[i].Material[j].CalcType);
 							FMemory::Memcpy(&morphList[i].Material[j].CalcType, Buffer, memcopySize);
 							Buffer += memcopySize;
 
-							//
 							memcopySize = sizeof(morphList[i].Material[j].Diffuse);
 							FMemory::Memcpy(&morphList[i].Material[j].Diffuse, Buffer, memcopySize);
 							Buffer += memcopySize;
-							//
+
 							memcopySize = sizeof(morphList[i].Material[j].Specular);
 							FMemory::Memcpy(&morphList[i].Material[j].Specular, Buffer, memcopySize);
 							Buffer += memcopySize;
-							//
+
 							memcopySize = sizeof(morphList[i].Material[j].SpecularPower);
 							FMemory::Memcpy(&morphList[i].Material[j].SpecularPower, Buffer, memcopySize);
 							Buffer += memcopySize;
-							//
+
 							memcopySize = sizeof(morphList[i].Material[j].Ambient);
 							FMemory::Memcpy(&morphList[i].Material[j].Ambient, Buffer, memcopySize);
 							Buffer += memcopySize;
 
-							//
 							memcopySize = sizeof(morphList[i].Material[j].EdgeColor);
 							FMemory::Memcpy(&morphList[i].Material[j].EdgeColor, Buffer, memcopySize);
 							Buffer += memcopySize;
 
-							//
 							memcopySize = sizeof(morphList[i].Material[j].EdgeSize);
 							FMemory::Memcpy(&morphList[i].Material[j].EdgeSize, Buffer, memcopySize);
 							Buffer += memcopySize;
 
-							//
 							memcopySize = sizeof(morphList[i].Material[j].TextureScale);
 							FMemory::Memcpy(&morphList[i].Material[j].TextureScale, Buffer, memcopySize);
 							Buffer += memcopySize;
 
-							//
 							memcopySize = sizeof(morphList[i].Material[j].SphereTextureScale);
 							FMemory::Memcpy(&morphList[i].Material[j].SphereTextureScale, Buffer, memcopySize);
 							Buffer += memcopySize;
-							//
+
 							memcopySize = sizeof(morphList[i].Material[j].ToonTextureScale);
 							FMemory::Memcpy(&morphList[i].Material[j].ToonTextureScale, Buffer, memcopySize);
 							Buffer += memcopySize;

@@ -368,7 +368,6 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 	TArray<UMaterialInterface*> Materials;
 
 #if 1 // test Material Textuere
-	////////
 	TArray<UTexture*> textureAssetList;
 	if (ImportUI->bImportTextures)
 	{
@@ -422,9 +421,7 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 	///////////////////////////////////////////
 #endif
 
-	//
 	//	store the UVs in arrays for fast access in the later looping of triangles
-	//
 	uint32 UniqueUVCount = UVSets.Num();
 
 	UniqueUVCount = FMath::Min<uint32>(UniqueUVCount, MAX_TEXCOORDS);
@@ -498,9 +495,7 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 			}
 		}
 
-		//
 		// material index
-		//
 		Triangle.MatIndex = 0; // default value
 
 		if (true)
@@ -534,9 +529,7 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 			TmpWedges[UnrealVertexIndex].Color = FColor::White;
 		}
 
-		//
 		// uvs
-		//
 		uint32 UVLayerIndex;
 		// Some FBX meshes can have no UV sets, so also check the UniqueUVCount
 		for (UVLayerIndex = 0; UVLayerIndex < UniqueUVCount; UVLayerIndex++)
@@ -547,9 +540,7 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 			TmpWedges[VertexIndex].UVs[UVLayerIndex].Y = 0;
 		}
 
-		//
 		// basic wedges matching : 3 unique per face. TODO Can we do better ?
-		//
 		for (VertexIndex = 0; VertexIndex < 3; VertexIndex++)
 		{
 			int32 w;
@@ -627,7 +618,6 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 					// Ref:：各软件的SDEF变形差异-FC2
 					//  http://mikudan.blog120.fc2.com/blog-entry-339.html
 
-					/////////////////////////////////////
 					for (multiBone = 0; multiBone < 2; ++multiBone)
 					{
 						ImportData.Influences.AddUninitialized();
@@ -692,9 +682,7 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 		}
 	}
 	/*
-	//
 	// clean up
-	//
 	if (UniqueUVCount > 0)
 	{
 		delete[] LayerElementUV;
@@ -967,8 +955,6 @@ void UPmxFactory::ImportFbxMorphTarget(
 		}
 	}
 }
-
-//////////////////////////////
 
 void UPmxFactory::AddTokenizedErrorMessage(
 	TSharedRef<FTokenizedMessage> ErrorMsg,

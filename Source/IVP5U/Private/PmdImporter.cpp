@@ -19,8 +19,6 @@ namespace MMD4UE5
 		const uint8*& Buffer,
 		const uint8* BufferEnd)
 	{
-		////////////////////////////////////////////
-
 		uint32 memcopySize = 0;
 
 		memcopySize = sizeof(header);
@@ -170,12 +168,9 @@ namespace MMD4UE5
 		// 拡張仕様(ToonTexture)
 		// 拡張仕様(物理：剛体)
 		// 拡張仕様(物理：Joint)
-		//////////////////////////////////////////////
 		UE_LOG(LogMMD4UE5_PmdMeshInfo, Warning, TEXT("PMX Importer Class Complete"));
 		return true;
 	}
-
-	/////////////////////////////////////
 
 	bool PmdMeshInfo::ConvertToPmxFormat(
 		PmxMeshInfo* pmxMeshInfoPtr)
@@ -200,7 +195,7 @@ namespace MMD4UE5
 			{
 				PMD_VERTEX& pmdVertexPtr = vertexList[VertexIndex];
 				PMX_VERTEX& pmxVertexPtr = pmxMeshInfoPtr->vertexList[VertexIndex];
-				///
+
 				// 位置(x,y,z)
 				memcopySize = sizeof(pmxVertexPtr.Position);
 				FMemory::Memcpy(&pmxVertexPtr.Position, pmdVertexPtr.Position, memcopySize);
@@ -226,13 +221,13 @@ namespace MMD4UE5
 				if (pmdVertexPtr.BoneNo[0] != pmdVertexPtr.BoneNo[1]
 					|| (pmdVertexPtr.BoneNo[1] == 0 && pmdVertexPtr.BoneWeight == 100))
 				{
-					//bdef1
+					// bdef1
 					pmxVertexPtr.WeightType = 0;
 					pmxVertexPtr.BoneIndex[0] = pmdVertexPtr.BoneNo[0]+1;
 					pmxVertexPtr.BoneIndex[1] = pmdVertexPtr.BoneNo[1]+1;
 					pmxVertexPtr.BoneWeight[0] = pmdVertexPtr.BoneWeight/100.0f;
 					pmxVertexPtr.BoneWeight[1] = (100 - pmdVertexPtr.BoneWeight)/100.0f;
-					//
+
 					statics_bdef1++;
 				}
 				else*/
@@ -246,7 +241,7 @@ namespace MMD4UE5
 					pmxVertexPtr.BoneIndex[1] = pmdVertexPtr.BoneNo[1] + 1;
 					pmxVertexPtr.BoneWeight[0] = pmdVertexPtr.BoneWeight / 100.0f;
 					pmxVertexPtr.BoneWeight[1] = (100 - pmdVertexPtr.BoneWeight) / 100.0f;
-					//
+
 					statics_bdef2++;
 				}
 				// エッジ倍率  材質のエッジサイズに対しての倍率値
@@ -275,7 +270,7 @@ namespace MMD4UE5
 			{
 				PMD_FACE& pmdFaceListPtr = faceList[FaceIndex];
 				PMX_FACE& pmxFaseListPtr = pmxMeshInfoPtr->faseList[FaceIndex];
-				//
+
 				for (int SubNum = 0; SubNum < 3; ++SubNum)
 				{
 					pmxFaseListPtr.VertexIndex[SubNum] = pmdFaceListPtr.VertexIndx[SubNum];
@@ -287,7 +282,7 @@ namespace MMD4UE5
 		{
 			// テクスチャの数を取得
 			uint32 PmxTextureNum = 0;
-			//
+
 			memcopySize = sizeof(PmxTextureNum);
 			FMemory::Memcpy(&PmxTextureNum, Buffer, memcopySize);
 			Buffer += memcopySize;
@@ -308,7 +303,7 @@ namespace MMD4UE5
 			TArray<FString> tempTexPathList;
 			// マテリアルの数を取得
 			uint32 PmxMaterialNum = 0;
-			//
+
 			PmxMaterialNum = materialData.Count;
 
 			// マテリアルデータを格納するメモリ領域の確保
@@ -518,14 +513,13 @@ namespace MMD4UE5
 
 				pmxBonePtr.Name = ConvertMMDSJISToFString((uint8*)&(pmdBonePtr.Name), sizeof(pmdBonePtr.Name));
 				pmxBonePtr.NameEng = pmxBonePtr.Name;
-				//
+
 				memcopySize = sizeof(pmxBonePtr.Position);
 				FMemory::Memcpy(&pmxBonePtr.Position, pmdBonePtr.HeadPos, memcopySize);
 				pmxBonePtr.Position = ConvertVectorAsixToUE5FromMMD(pmxBonePtr.Position) * modelScale;
 
 				pmxBonePtr.ParentBoneIndex = pmdBonePtr.Parent + offsetBoneIndx;
 
-				//
 				if (pmdBonePtr.TailPosBone != -1)
 				{
 					pmxBonePtr.LinkBoneIndex = pmdBonePtr.TailPosBone + offsetBoneIndx;
@@ -566,13 +560,12 @@ namespace MMD4UE5
 						break;
 				}
 #if 0
-				//
 				memcopySize = sizeof(pmxBonePtr.TransformLayer);
 				FMemory::Memcpy(&pmxBonePtr.TransformLayer, Buffer, memcopySize);
 				Buffer += memcopySize;
 
 				uint16 Flag;
-				//
+
 				memcopySize = sizeof(Flag);
 				FMemory::Memcpy(&Flag, Buffer, memcopySize);
 				Buffer += memcopySize;
@@ -592,7 +585,6 @@ namespace MMD4UE5
 
 				if (pmxBonePtr.Flag_LinkDest == 0)
 				{
-					//
 					memcopySize = sizeof(pmxBonePtr.OffsetPosition);
 					FMemory::Memcpy(&pmxBonePtr.OffsetPosition, Buffer, memcopySize);
 					pmxBonePtr.OffsetPosition = ConvertVectorAsixToUE5FromMMD(pmxBonePtr.OffsetPosition) *modelScale;
@@ -608,7 +600,7 @@ namespace MMD4UE5
 				{
 					pmxBonePtr.AddParentBoneIndex
 						= PMXExtendBufferSizeToUint32(&Buffer, this->baseHeader.BoneIndexSize);
-					//
+
 					memcopySize = sizeof(pmxBonePtr.AddRatio);
 					FMemory::Memcpy(&pmxBonePtr.AddRatio, Buffer, memcopySize);
 					Buffer += memcopySize;
@@ -616,7 +608,6 @@ namespace MMD4UE5
 
 				if (pmxBonePtr.Flag_LockAxis == 1)
 				{
-					//
 					memcopySize = sizeof(pmxBonePtr.LockAxisVector);
 					FMemory::Memcpy(&pmxBonePtr.LockAxisVector, Buffer, memcopySize);
 					Buffer += memcopySize;
@@ -624,12 +615,10 @@ namespace MMD4UE5
 
 				if (pmxBonePtr.Flag_LocalAxis == 1)
 				{
-					//
 					memcopySize = sizeof(pmxBonePtr.LocalAxisXVector);
 					FMemory::Memcpy(&pmxBonePtr.LocalAxisXVector, Buffer, memcopySize);
 					Buffer += memcopySize;
 
-					//
 					memcopySize = sizeof(pmxBonePtr.LocalAxisZVector);
 					FMemory::Memcpy(&pmxBonePtr.LocalAxisZVector, Buffer, memcopySize);
 					Buffer += memcopySize;
@@ -637,7 +626,6 @@ namespace MMD4UE5
 
 				if (pmxBonePtr.Flag_OutParentTransform == 1)
 				{
-					//
 					memcopySize = sizeof(pmxBonePtr.OutParentTransformKey);
 					FMemory::Memcpy(&pmxBonePtr.OutParentTransformKey, Buffer, memcopySize);
 					Buffer += memcopySize;
@@ -660,13 +648,8 @@ namespace MMD4UE5
 						PmxIKNum++;
 
 						pmxBonePtr.IKInfo.TargetBoneIndex = tempPmdIKPtr->TargetBone + offsetBoneIndx;
-						//
 						pmxBonePtr.IKInfo.LoopNum = tempPmdIKPtr->Iterations; // const 40?
-
-						//
 						pmxBonePtr.IKInfo.RotLimit = tempPmdIKPtr->RotLimit;
-
-						//
 						pmxBonePtr.IKInfo.LinkNum = tempPmdIKPtr->ChainLength;
 						if (pmxBonePtr.IKInfo.LinkNum >= PMX_MAX_IKLINKNUM)
 						{
@@ -690,7 +673,7 @@ namespace MMD4UE5
 								pmxBonePtr.IKInfo.Link[j].RotLockMin[0] = -180; // x
 								pmxBonePtr.IKInfo.Link[j].RotLockMin[1] = 0;	// y
 								pmxBonePtr.IKInfo.Link[j].RotLockMin[2] = 0;	// z
-								//
+
 								pmxBonePtr.IKInfo.Link[j].RotLockMax[0] = -0.5; // x
 								pmxBonePtr.IKInfo.Link[j].RotLockMax[1] = 0;	// y
 								pmxBonePtr.IKInfo.Link[j].RotLockMax[2] = 0;	// z
@@ -752,17 +735,14 @@ namespace MMD4UE5
 				{
 					// target morph ptr 参照
 					targetPmdMorphPtr = &pmdMeshInfoPtr->skinList[pmdMorphIndexList[i]];
-					//
+
 					pmxMeshInfoPtr->morphList[i].Name = ConvertMMDSJISToFString(
 						(uint8*)&(targetPmdMorphPtr->Name),
 						sizeof(targetPmdMorphPtr->Name));
 					pmxMeshInfoPtr->morphList[i].NameEng = pmxMeshInfoPtr->morphList[i].Name;
 
-					//
 					pmxMeshInfoPtr->morphList[i].ControlPanel = targetPmdMorphPtr->SkinType;
-					//
 					pmxMeshInfoPtr->morphList[i].Type = 1; // 頂点固定
-					//
 					pmxMeshInfoPtr->morphList[i].DataNum = targetPmdMorphPtr->VertexCount;
 
 					switch (pmxMeshInfoPtr->morphList[i].Type)
@@ -775,7 +755,7 @@ namespace MMD4UE5
 							{
 								pmxMeshInfoPtr->morphList[i].Vertex[j].Index =
 									basePmdMorphPtr->Vertex[targetPmdMorphPtr->Vertex[j].TargetVertexIndex].TargetVertexIndex;
-								//
+
 								tempVec.X = targetPmdMorphPtr->Vertex[j].Position[0];
 								tempVec.Y = targetPmdMorphPtr->Vertex[j].Position[1];
 								tempVec.Z = targetPmdMorphPtr->Vertex[j].Position[2];

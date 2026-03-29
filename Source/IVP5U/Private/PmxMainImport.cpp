@@ -249,7 +249,7 @@ void ApplyImportUIToImportOptions(
 }
 
 TSharedPtr<FPmxImporter> FPmxImporter::StaticInstance;
-////////////////////////////////////////////
+
 FPmxImporter::FPmxImporter()
 	: /* Scene(NULL)
 	 , */
@@ -280,17 +280,11 @@ FPmxImporter::FPmxImporter()
 	FMemory::Memzero(*ImportOptions);
 }
 
-//-------------------------------------------------------------------------
-//
-//-------------------------------------------------------------------------
 FPmxImporter::~FPmxImporter()
 {
 	CleanUp();
 }
 
-//-------------------------------------------------------------------------
-//
-//-------------------------------------------------------------------------
 FPmxImporter* FPmxImporter::GetInstance()
 {
 	if (!StaticInstance.IsValid())
@@ -305,9 +299,6 @@ void FPmxImporter::DeleteInstance()
 	StaticInstance.Reset();
 }
 
-//-------------------------------------------------------------------------
-//
-//-------------------------------------------------------------------------
 void FPmxImporter::CleanUp()
 {
 #if 0
@@ -333,8 +324,6 @@ PMXImportOptions* FPmxImporter::GetImportOptions() const
 {
 	return ImportOptions;
 }
-
-///////////////////////////////////////////////////////////////////////////
 
 UPmxImportUI::UPmxImportUI(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer) //, MMD2UE5NameTableRow(MMD2UE5NameTableRowDmmy)

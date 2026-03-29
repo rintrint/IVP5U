@@ -189,7 +189,7 @@ void ApplyVMDImportUIToImportOptions(
 }
 
 TSharedPtr<FVmdImporter> FVmdImporter::StaticInstance;
-////////////////////////////////////////////
+
 FVmdImporter::FVmdImporter()
 	: /* Scene(NULL)
 	 , */
@@ -199,17 +199,11 @@ FVmdImporter::FVmdImporter()
 	FMemory::Memzero(*ImportOptions);
 }
 
-//-------------------------------------------------------------------------
-//
-//-------------------------------------------------------------------------
 FVmdImporter::~FVmdImporter()
 {
 	CleanUp();
 }
 
-//-------------------------------------------------------------------------
-//
-//-------------------------------------------------------------------------
 FVmdImporter* FVmdImporter::GetInstance()
 {
 	if (!StaticInstance.IsValid())
@@ -224,9 +218,6 @@ void FVmdImporter::DeleteInstance()
 	StaticInstance.Reset();
 }
 
-//-------------------------------------------------------------------------
-//
-//-------------------------------------------------------------------------
 void FVmdImporter::CleanUp()
 {
 #if 0
@@ -252,8 +243,6 @@ VMDImportOptions* FVmdImporter::GetImportOptions() const
 {
 	return ImportOptions;
 }
-
-///////////////////////////////////////////////////////////////////////////
 
 UVmdImportUI::UVmdImportUI(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer) //, MMD2UE5NameTableRow(MMD2UE5NameTableRowDmmy)

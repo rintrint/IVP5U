@@ -97,7 +97,6 @@ class UMMDExtendAsset : public UObject
 	GENERATED_UCLASS_BODY()
 
 public:
-	////////////////////////////////////
 	// mmd target model name
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Header)
 	FString ModelName;
@@ -105,7 +104,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Header, meta = (MultiLine = "true"))
 	FText ModelComment;
 
-	////////////////////////////////////
 	// MMD-IK-Info is used to generate the AnimSequence form VMD file.
 	UPROPERTY(EditAnywhere, Category = IK)
 	TArray<FMMD_IKInfo> IkInfoList;

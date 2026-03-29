@@ -74,9 +74,6 @@ namespace MMD4UE5
 		return NewString;
 	}
 
-	/////////////////////////////////////
-	//
-	//////////////////////////////////////
 	uint32 MMDImportHelper::MMDExtendBufferSizeToUint32(
 		const uint8** buffer,
 		const uint8 blockSize)

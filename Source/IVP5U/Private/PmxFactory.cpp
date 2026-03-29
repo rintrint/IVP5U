@@ -33,8 +33,6 @@
 
 #include "Animation/Skeleton.h"
 
-////////////
-
 #include "MMDNameUtils.h"
 #include "PmdImporter.h"
 #include "PmxImporter.h"
@@ -133,7 +131,7 @@ int32 UPmxFactory::GetPriority() const
 	return CurrentImportPriority;
 }
 
-////////////////////////////////////////////////
+//////////////////////////////////////////////
 // IVP5U Develop Temp Define
 //////////////////////////////////////////////
 #define DEBUG_MMD_PLUGIN_SKELTON (1)
@@ -671,7 +669,6 @@ UObject* UPmxFactory::FactoryCreateBinary(
 	return NewObject;
 }
 
-//////////////////////////////////////////////////////////////////////
 USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 	UObject* InParent,
 	MMD4UE5::PmxMeshInfo* pmxMeshInfoPtr,
@@ -1175,7 +1172,7 @@ UMMDExtendAsset* UPmxFactory::CreateMMDExtendFromMMDModel(
 		// mapping
 		NewMMDExtendAsset->ModelName = PmxMeshInfo->modelNameJP;
 		NewMMDExtendAsset->ModelComment = FText::FromString(PmxMeshInfo->modelCommentJP);
-		//
+
 		for (int boneIdx = 0; boneIdx < PmxMeshInfo->boneList.Num(); ++boneIdx)
 		{
 			// check IK bone
@@ -1221,10 +1218,8 @@ UMMDExtendAsset* UPmxFactory::CreateMMDExtendFromMMDModel(
 				NewMMDExtendAsset->IkInfoList.Add(addMMDIkInfo);
 			}
 		}
-		//
 		NewMMDExtendAsset->MarkPackageDirty();
 	}
-
 	return NewMMDExtendAsset;
 }
 

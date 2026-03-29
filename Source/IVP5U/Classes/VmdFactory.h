@@ -59,7 +59,6 @@ class IVP5U_API UVmdFactory : public UFactory
 		UMMDExtendAsset* mmdExtend,
 		MMD4UE5::VmdMotionInfo* vmdMotionInfo,
 		VMDImportOptions* ImportOptions);
-	//////////////
 
 	/*面向MMD的贝塞尔曲线的计算处理*/
 	float interpolateBezier(float x1, float y1, float x2, float y2, float x);

@@ -21,7 +21,6 @@
 
 DEFINE_LOG_CATEGORY(LogMMD4UE5_VMDFactory)
 
-/////////////////////////////////////////////////////////
 // prototype ::from dxlib
 // 创建以X轴为中心的旋转矩阵
 void CreateRotationXMatrix(FMatrix* Out, float Angle);
@@ -34,7 +33,6 @@ void CheckLimitAngle(
 	FVector* outAngle, // target angle ( in and out param)
 	bool subIndexJdg   //(ik link index < ik loop temp):: linkBoneIndex < ikt
 );
-///////////////////////////////////////////////////////
 
 UVmdFactory::UVmdFactory(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -137,7 +135,6 @@ UObject* UVmdFactory::FactoryCreateBinary(
 			(vmdMotionInfo.maxFrame + 1) / 30.0f); // 假设VMD帧率为30fps
 	}
 
-	/////////////////////////////////////////
 	UAnimSequence* LastCreatedAnim = NULL;
 	USkeleton* Skeleton = NULL;
 	USkeletalMesh* SkeletalMesh = NULL;
@@ -231,7 +228,6 @@ UObject* UVmdFactory::FactoryCreateBinary(
 			if (preParamChk)
 			{
 				UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("参数检查通过，开始导入动画"));
-				////////////////////////////////////
 				if (!ImportOptions->AnimSequenceAsset)
 				{
 					// 根据之前从VMD文件读取的数据添加动画序列，这是第二个主要瓶颈，导致点击对话框的Import后有一段延迟，直到导入成功
@@ -558,9 +554,7 @@ UAnimSequence* UVmdFactory::AddtionalMorphCurveImportToAnimations(
 
 	Skeleton = exsistAnimSequ->GetSkeleton();
 
-	///////////////////////////////////
 	// 准备变形曲线数据，然后执行AnimDataController操作
-	//////////////////////
 	if (exsistAnimSequ)
 	{
 		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("准备导入变形曲线"));
@@ -608,9 +602,7 @@ UAnimSequence* UVmdFactory::AddtionalMorphCurveImportToAnimations(
 		}
 	}
 
-	/////////////////////////////////////////
 	// end process
-	////////////////////////////////////////
 	if (exsistAnimSequ)
 	{
 		// 标记包为脏
@@ -1265,7 +1257,6 @@ bool UVmdFactory::PrepareVMDBoneAnimData(
 	return true;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////
 // 创建以X轴为中心的旋转矩阵
 void CreateRotationXMatrix(FMatrix* Out, float Angle)
 {
@@ -1305,7 +1296,6 @@ void MV1LoadModelToVMD_CreateMultiplyMatrixRotOnly(FMatrix* Out, FMatrix* In1, F
 	Out->M[2][2] = In1->M[2][0] * In2->M[0][2] + In1->M[2][1] * In2->M[1][2] + In1->M[2][2] * In2->M[2][2];
 }
 
-/////////////////////////////////////
 // 判定角度限制的共同函数（subIndexJdg的判定比较不明…）
 void CheckLimitAngle(
 	const FVector& RotMin,
@@ -1334,8 +1324,6 @@ void CheckLimitAngle(
 		*RotMax.ToString());
 #endif
 }
-
-//////////////////////////////////////////////////////////////////////////////////////
 
 /*****************
  * 从MMD侧的名称检索并取得TableRow的UE侧名称

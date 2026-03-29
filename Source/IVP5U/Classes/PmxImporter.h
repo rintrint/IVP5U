@@ -10,7 +10,6 @@
 
 #include "MMDStaticMeshImportData.h"
 
-/////////////////////////////////////////////////
 // Copy From DxLib DxModelLoader4.h
 // DX Library Copyright (C) 2001-2008 Takumi Yamada.
 
@@ -260,7 +259,6 @@ namespace MMD4UE5
 		float SpringPosition[3]; // バネ定数-移動
 		float SpringRotation[3]; // バネ定数-回転
 	};
-	//////////////////////////////////////////////////////////////
 
 	struct PMX_BONE_HIERARCHY
 	{
@@ -269,11 +267,9 @@ namespace MMD4UE5
 		bool fixFlag_Parent;
 		// bool	fixFlag_Target;
 	};
-	//////////////////////////////////////////////////////////////
 
 	DECLARE_LOG_CATEGORY_EXTERN(LogMMD4UE5_PmxMeshInfo, Log, All)
 
-	////////////////////////////////////////////////////////////////////
 	// Inport用 meta data 格納クラス
 	class PmxMeshInfo : public MMDImportHelper
 	{
@@ -291,7 +287,6 @@ namespace MMD4UE5
 		PmxMeshInfo();
 		~PmxMeshInfo();
 
-		///////////////////////////////////////
 		bool PMXLoaderBinary(
 			const uint8*& Buffer,
 			const uint8* BufferEnd);
@@ -312,7 +307,7 @@ namespace MMD4UE5
 					list.Add(rigidList[i]);
 			return list;
 		}
-		///////////////////////////////////////
+
 		const uint8* Buffer;
 		char magic[4];
 		float formatVer;
@@ -321,7 +316,7 @@ namespace MMD4UE5
 		FString modelNameEng;
 		FString modelCommentJP;
 		FString modelCommentEng;
-		//
+
 		TArray<PMX_VERTEX> vertexList;
 		TArray<PMX_FACE> faseList;
 
@@ -335,9 +330,9 @@ namespace MMD4UE5
 
 } // namespace MMD4UE5
 
-///////////////////////////////////////////////////////////////////
-//	Compy Refafct FBImporter.h
-/////////////////////////////////////////////
+//////////////////////////////////////
+// Compy Refafct FBImporter.h
+//////////////////////////////////////
 
 struct PMXImportOptions
 {
