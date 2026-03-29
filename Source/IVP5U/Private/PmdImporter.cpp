@@ -131,7 +131,7 @@ namespace MMD4UE5
 				FMemory::Memcpy(&ikList[i].Iterations, Buffer, memcopySize);
 				Buffer += memcopySize;
 				// fix : pmd rotlimit (1.0 == 4.0 rad) -> dig
-				ikList[i].RotLimit = FMath::RadiansToDegrees(ikList[i].RotLimit * 4.0);
+				ikList[i].RotLimit = FMath::RadiansToDegrees(ikList[i].RotLimit * 4.0f);
 
 				uint8 tempChainLength = ikList[i].ChainLength; // Byte ChainLength;
 				ikList[i].ChainBoneIndexs.AddZeroed(tempChainLength);

@@ -841,7 +841,7 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty_ForMmdAutolu
 				// MulExpression->B.Expression = MyColorExpression;
 				MulExpression_3->B.Expression = MyConstExpression;
 
-				MyConstExpression->R = PmxMaterial.SpecularPower - 100.;
+				MyConstExpression->R = PmxMaterial.SpecularPower - 100.0f;
 				MyConstExpression->MaterialExpressionEditorX = -500;
 				MyConstExpression->MaterialExpressionEditorY = 500;
 

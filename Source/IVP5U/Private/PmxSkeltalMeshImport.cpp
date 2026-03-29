@@ -515,7 +515,7 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 				facecount++;
 				facecount++;
 				facecount++;
-				Triangle.MatIndex = matIndx;
+				Triangle.MatIndex = static_cast<uint16>(matIndx);
 				if (facecount >= PmxMeshInfo->materialList[matIndx].MaterialFaceNum)
 				{
 					matIndx++;
@@ -530,7 +530,7 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 			// If there are odd number negative scale, invert the vertex order for triangles
 			int32 UnrealVertexIndex = OddNegativeScale ? 2 - VertexIndex : VertexIndex;
 
-			TmpWedges[UnrealVertexIndex].MatIndex = Triangle.MatIndex;
+			TmpWedges[UnrealVertexIndex].MatIndex = static_cast<uint8>(Triangle.MatIndex);
 			TmpWedges[UnrealVertexIndex].VertexIndex = PmxMeshInfo->faseList[LocalIndex].VertexIndex[VertexIndex];
 			// = ExistPointNum + Mesh->GetPolygonVertex(LocalIndex, VertexIndex);
 			// Initialize all colors to white.

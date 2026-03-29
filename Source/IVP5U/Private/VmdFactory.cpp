@@ -529,9 +529,9 @@ float UVmdFactory::interpolateBezier(float x1, float y1, float x2, float y2, flo
 		if (FGenericPlatformMath::Abs(ft) < 0.0001)
 			break;
 		if (ft > 0)
-			t -= 1.0 / (float)(4 << i);
+			t -= 1.0f / (float)(4 << i);
 		else // ft < 0
-			t += 1.0 / (float)(4 << i);
+			t += 1.0f / (float)(4 << i);
 		s = 1 - t;
 	}
 	return (3 * s * s * t * y1) + (3 * s * t * t * y2) + (t * t * t);
@@ -880,7 +880,7 @@ bool UVmdFactory::PrepareVMDBoneAnimData(
 			TEXT("PrepareVMDBoneAnimData : Target MMDExtendAsset is null."));
 	}
 
-	float ResampleRate = 30.f;
+	uint32 ResampleRate = 30;
 
 	auto& adc = DestSeq->GetController();
 	adc.InitializeModel();

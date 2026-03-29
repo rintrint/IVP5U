@@ -18,24 +18,22 @@ namespace UnrealBuildTool.Rules
 
         public IVP5U(ReadOnlyTargetRules Target) : base(Target)
         {
-            // string LibName;
-            if ((Target.Platform == UnrealTargetPlatform.Win64))
-            {
-            }
+            // --- Warning level ---
+            CppCompileWarningSettings.UnsafeTypeCastWarningLevel = WarningLevel.Error;
 
+            // --- Include paths ---
             PublicIncludePaths.AddRange(
                 new string[] {
-                    // ... add public include paths required here ...
                 }
             );
 
             PrivateIncludePaths.AddRange(
                 new string[] {
                     "IVP5U/Private",
-                    // ... add other private include paths required here ...
                 }
             );
 
+            // --- Dependencies ─---
             PublicDependencyModuleNames.AddRange(
                 new string[]
                 {
@@ -49,14 +47,12 @@ namespace UnrealBuildTool.Rules
                     "RHI",
                     "RenderCore",
                     "IKRig",
-                    // ... add other public dependencies that you statically link with here ...
                 }
             );
 
             PrivateDependencyModuleNames.AddRange(
                 new string[]
                 {
-                    // ... add private dependencies that you statically link with here ...
                 }
             );
 
@@ -64,7 +60,6 @@ namespace UnrealBuildTool.Rules
                 new string[]
                 {
                     "AssetRegistry",
-                    // ... add any modules that your module loads dynamically here ...
                 }
             );
 
