@@ -1,7 +1,6 @@
 // Copyright 2015-2026 IVP5U contributors
 
 #include "MMDSkeletalMeshImportData.h"
-#include "IVP5UPrivatePCH.h"
 #include "CoreMinimal.h"
 
 UMMDSkeletalMeshImportData::UMMDSkeletalMeshImportData(const FObjectInitializer& ObjectInitializer)

@@ -1,8 +1,8 @@
 // Copyright 2015-2026 IVP5U contributors
 
 #include "MMDImportHelper.h"
-#include "IVP5UPrivatePCH.h"
 #include "SjisToUnicode.h"
+
 namespace MMD4UE5
 {
 	FVector3f MMDImportHelper::ConvertVectorAsixToUE5FromMMD(

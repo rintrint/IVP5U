@@ -1,7 +1,5 @@
 // Copyright 2015-2026 IVP5U contributors
 
-#include "IVP5UPrivatePCH.h"
-
 #include "CoreMinimal.h"
 #include "Factories.h"
 
@@ -18,12 +16,11 @@
 #include "Animation/MorphTarget.h"
 #include "ComponentReregisterContext.h"
 
-////////////
-
 #include "MMDNameUtils.h"
 #include "PmxFactory.h"
 
 #include "LODUtilities.h"
+
 #define LOCTEXT_NAMESPACE "PMXSkeltalMeshImpoter"
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // FMorphMeshRawSource is removed after version 4.16. So added for only this plugin here.

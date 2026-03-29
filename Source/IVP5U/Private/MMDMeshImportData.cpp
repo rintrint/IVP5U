@@ -1,7 +1,6 @@
 // Copyright 2015-2026 IVP5U contributors
 
 #include "MMDMeshImportData.h"
-#include "IVP5UPrivatePCH.h"
 #include "CoreMinimal.h"
 
 UMMDMeshImportData::UMMDMeshImportData(const FObjectInitializer& ObjectInitializer)

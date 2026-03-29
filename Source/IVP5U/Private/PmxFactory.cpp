@@ -4,7 +4,6 @@
 
 #include "PmxFactory.h"
 #include "IVP5USettings.h"
-#include "IVP5UPrivatePCH.h"
 
 #include "CoreMinimal.h"
 #include "Factories.h"

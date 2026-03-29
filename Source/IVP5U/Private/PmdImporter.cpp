@@ -1,7 +1,6 @@
 // Copyright 2015-2026 IVP5U contributors
 
 #include "PmdImporter.h"
-#include "IVP5UPrivatePCH.h"
 #include "MMDImportHelper.h"
 
 namespace MMD4UE5

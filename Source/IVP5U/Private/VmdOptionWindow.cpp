@@ -1,7 +1,6 @@
 // Copyright 2015-2026 IVP5U contributors
 
 #include "VmdOptionWindow.h"
-#include "IVP5UPrivatePCH.h"
 
 #include "CoreMinimal.h"
 #include "Editor/ContentBrowser/Public/ContentBrowserModule.h"

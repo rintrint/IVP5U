@@ -1,8 +1,6 @@
 // Copyright 2015-2026 IVP5U contributors
 
 #include "MMDExtendFactory.h"
-#include "IVP5UPrivatePCH.h"
-
 #include "MMDExtendAsset.h"
 
 UMMDExtendFactory::UMMDExtendFactory(const FObjectInitializer& ObjectInitializer)

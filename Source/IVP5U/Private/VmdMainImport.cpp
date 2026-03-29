@@ -4,8 +4,6 @@
 Main implementation of FFbxImporter : import FBX data to Unreal
 =============================================================================*/
 
-#include "IVP5UPrivatePCH.h"
-
 #include "CoreMinimal.h"
 
 #include "Factories.h"

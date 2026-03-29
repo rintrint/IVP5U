@@ -1,7 +1,6 @@
 // Copyright 2015-2026 IVP5U contributors
 
 #include "IVP5U.h"
-#include "IVP5UPrivatePCH.h"
 #include "IVP5USettings.h"
 #include "ISettingsModule.h"
 
