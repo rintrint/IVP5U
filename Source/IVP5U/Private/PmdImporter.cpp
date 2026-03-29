@@ -22,7 +22,6 @@ namespace MMD4UE5
 		////////////////////////////////////////////
 
 		uint32 memcopySize = 0;
-		float modelScale = 8.0f;
 
 		memcopySize = sizeof(header);
 		FMemory::Memcpy(&header, Buffer, memcopySize);

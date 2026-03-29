@@ -27,7 +27,6 @@ namespace MMD4UE5
 		VmdReadMotionData readData;
 		{
 			uint32 memcopySize = 0;
-			float modelScale = 8.0f;
 
 			memcopySize = sizeof(readData.vmdHeader);
 			FMemory::Memcpy(&readData.vmdHeader, Buffer, memcopySize);
