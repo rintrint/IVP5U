@@ -1,7 +1,7 @@
 // Copyright(c) 2016-2017 benikabocha.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 //
-// Copyright 2023 NaN_Name, Inc. All Rights Reserved.
+// Copyright 2015-2026 IVP5U contributors
 
 // CP932 (Microsoft Shift-JIS) to Unicode conversion tables
 // This implementation supports the full CP932 character set including:

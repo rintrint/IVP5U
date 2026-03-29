@@ -1,5 +1,7 @@
-// Copyright 2023 NaN_Name, Inc. All Rights Reserved.
+// Copyright 2015-2026 IVP5U contributors
+
 // see S:\UE5SRC\EpicUE5\UE_5.0\Engine\Source\Editor\UnrealEd\Private\Fbx\FbxSkeletalMeshImport.cpp
+
 #include "PmxFactory.h"
 #include "IVP5USettings.h"
 #include "IVP5UPrivatePCH.h"

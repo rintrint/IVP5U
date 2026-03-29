@@ -1,6 +1,7 @@
-// Copyright 2023 NaN_Name, Inc. All Rights Reserved.
+// Copyright 2015-2026 IVP5U contributors
 
 #pragma once
+
 #include "PmxImportUI.generated.h"
 
 /** Import mesh type */

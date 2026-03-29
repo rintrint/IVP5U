@@ -1,4 +1,4 @@
-// Copyright 2023 NaN_Name, Inc. All Rights Reserved.
+// Copyright 2015-2026 IVP5U contributors
 
 /*=============================================================================
 Main implementation of FFbxImporter : import FBX data to Unreal

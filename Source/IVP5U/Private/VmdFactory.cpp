@@ -1,4 +1,4 @@
-// Copyright 2023 NaN_Name. All Rights Reserved.
+// Copyright 2015-2026 IVP5U contributors
 
 #include "VmdFactory.h"
 #include "IVP5UPrivatePCH.h"

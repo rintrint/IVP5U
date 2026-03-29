@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright 2015-2026 IVP5U contributors
 
 #include "MMDImportHelper.h"
 

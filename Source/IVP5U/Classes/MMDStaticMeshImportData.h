@@ -1,10 +1,11 @@
-// Copyright 2023 NaN_Name, Inc. All Rights Reserved.
+// Copyright 2015-2026 IVP5U contributors
 
 /**
  * Import data and options used when importing a static mesh from MMD
  */
 
 #pragma once
+
 #include "Engine/StaticMesh.h"
 #include "MMDMeshImportData.h"
 #include "MMDStaticMeshImportData.generated.h"
