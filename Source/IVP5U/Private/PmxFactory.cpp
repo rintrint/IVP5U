@@ -11,6 +11,7 @@
 
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "MeshDescription.h"
+#include "SkeletalMeshAttributes.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/CurveTable.h"
 
@@ -1044,9 +1045,9 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 						cs.SetDisableCollision(true);
 					}
 
-					// NewPhysicsAsset->MarkPackageDirty();
 					// NewPhysicsAsset->PreEditChange(NULL);
 					// NewPhysicsAsset->PostEditChange();
+					// NewPhysicsAsset->MarkPackageDirty();
 				}
 			}
 		}
@@ -1098,8 +1099,8 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		}
 
 		SkeletalMesh->SetSkeleton(Skeleton);
-		SkeletalMesh->MarkPackageDirty();
 		SkeletalMesh->PostEditChange();
+		SkeletalMesh->MarkPackageDirty();
 	}
 	return SkeletalMesh;
 }

@@ -635,7 +635,6 @@ void UPmxMaterialImport::CreateUnrealMaterial(
 		// let the material update itself if necessary
 		UnrealMaterial->PreEditChange(NULL);
 		UnrealMaterial->PostEditChange();
-
 		UnrealMaterial->MarkPackageDirty();
 		// ImportedMaterialData.AddImportedMaterial( FbxMaterial, *UnrealMaterial );
 

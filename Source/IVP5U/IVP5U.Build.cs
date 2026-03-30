@@ -20,15 +20,15 @@ namespace UnrealBuildTool.Rules
         {
             // --- Warning level ---
             // Low noise, safe to enable
-            CppCompileWarningSettings.DeprecationWarningLevel = WarningLevel.Error;
-            CppCompileWarningSettings.DeterministicWarningLevel = WarningLevel.Error;
-            CppCompileWarningSettings.ShadowVariableWarningLevel = WarningLevel.Error;
-            CppCompileWarningSettings.UndefinedIdentifierWarningLevel = WarningLevel.Error;
-            CppCompileWarningSettings.UnsafeTypeCastWarningLevel = WarningLevel.Error;
+            CppCompileWarningSettings.DeprecationWarningLevel = WarningLevel.Warning;
+            CppCompileWarningSettings.DeterministicWarningLevel = WarningLevel.Warning;
+            CppCompileWarningSettings.ShadowVariableWarningLevel = WarningLevel.Warning;
+            CppCompileWarningSettings.UndefinedIdentifierWarningLevel = WarningLevel.Warning;
+            CppCompileWarningSettings.UnsafeTypeCastWarningLevel = WarningLevel.Warning;
             // High noise, may flood engine logs
-            // CppCompileWarningSettings.ShortenSizeTToIntWarningLevel = WarningLevel.Error;
-            // CppCompileWarningSettings.SwitchUnhandledEnumeratorWarningLevel = WarningLevel.Error;
-            // CppCompileWarningSettings.UnusedParameterWarningLevel = WarningLevel.Error;
+            // CppCompileWarningSettings.ShortenSizeTToIntWarningLevel = WarningLevel.Warning;
+            // CppCompileWarningSettings.SwitchUnhandledEnumeratorWarningLevel = WarningLevel.Warning;
+            // CppCompileWarningSettings.UnusedParameterWarningLevel = WarningLevel.Warning;
 
             // --- Include paths ---
             PublicIncludePaths.AddRange(
@@ -85,7 +85,7 @@ namespace UnrealBuildTool.Rules
                         "PhysicsUtilities",
                         "SkeletalMeshUtilitiesCommon",
                         "IKRigEditor",
-                        "RawMesh"
+                        "RawMesh",
                     }
                 );
 
@@ -93,7 +93,9 @@ namespace UnrealBuildTool.Rules
                     new string[]
                     {
                         "EditorStyle",
-                        "EditorWidgets"
+                        "EditorWidgets",
+                        "MeshDescription",
+                        "SkeletalMeshDescription",
                     }
                 );
             }

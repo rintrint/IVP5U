@@ -454,25 +454,25 @@ UAnimSequence* UVmdFactory::ImportAnimations(
 			UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("完成执行AnimDataController操作，耗时: %.3f秒"), FPlatformTime::Seconds() - StartTime);
 		}
 
-		// 导入成功时更新预览网格
-		if ((importSuccessFlag) && (SkeletalMesh))
+		// Finalize: mark dirty and update preview mesh
+		LastCreatedAnim->Modify();
+
+		if (SkeletalMesh)
 		{
-			LastCreatedAnim->SetPreviewMesh(SkeletalMesh);
+			if (importSuccessFlag)
+			{
+				LastCreatedAnim->SetPreviewMesh(SkeletalMesh);
+			}
+
+			Skeleton->SetPreviewMesh(SkeletalMesh);
+			Skeleton->PostEditChange();
+			Skeleton->MarkPackageDirty();
+
+			SkeletalMesh->MarkPackageDirty();
 		}
 
-		// 标记包为脏
-		MarkPackageDirty();
-		SkeletalMesh->MarkPackageDirty();
-
-		// 确保初始化正确
-		LastCreatedAnim->Modify();
 		LastCreatedAnim->PostEditChange();
-		LastCreatedAnim->SetPreviewMesh(SkeletalMesh);
 		LastCreatedAnim->MarkPackageDirty();
-
-		// 设置骨架预览网格
-		Skeleton->SetPreviewMesh(SkeletalMesh);
-		Skeleton->PostEditChange();
 	}
 
 	return LastCreatedAnim;
@@ -605,21 +605,21 @@ UAnimSequence* UVmdFactory::AddtionalMorphCurveImportToAnimations(
 	// end process
 	if (exsistAnimSequ)
 	{
-		// 标记包为脏
-		exsistAnimSequ->MarkPackageDirty();
+		exsistAnimSequ->Modify();
 
 		if (SkeletalMesh)
 		{
 			exsistAnimSequ->SetPreviewMesh(SkeletalMesh);
-			SkeletalMesh->MarkPackageDirty();
 
 			Skeleton->SetPreviewMesh(SkeletalMesh);
 			Skeleton->PostEditChange();
+			Skeleton->MarkPackageDirty();
+
+			SkeletalMesh->MarkPackageDirty();
 		}
 
-		// 确保初始化正确
-		exsistAnimSequ->Modify();
 		exsistAnimSequ->PostEditChange();
+		exsistAnimSequ->MarkPackageDirty();
 	}
 
 	return exsistAnimSequ;
