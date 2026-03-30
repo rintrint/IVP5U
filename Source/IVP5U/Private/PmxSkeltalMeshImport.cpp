@@ -248,13 +248,11 @@ bool UPmxFactory::ImportBone(
 
 		// get the link parent and children
 		int32 ParentIndex = INDEX_NONE; // base value for root if no parent found
-		/*FbxNode* LinkParent = Link->GetParent();*/
 		int32 LinkParent = PmxMeshInfo->boneList[LinkIndex].ParentBoneIndex;
 		if (LinkIndex)
 		{
 			for (int32 ll = 0; ll < LinkIndex; ++ll) // <LinkIndex because parent is guaranteed to be before child in sortedLink
 			{
-				/*FbxNode* Otherlink = SortedLinks[ll];*/
 				if (ll == LinkParent)
 				{
 					ParentIndex = ll;
@@ -282,13 +280,9 @@ bool UPmxFactory::ImportBone(
 
 		GlobalLinkFoundFlag = false;
 
-		// ImportData.RefBonesBinary.AddZeroed();
-		//  set bone
+		// set bone
 		SkeletalMeshImportData::FBone& Bone = ImportData.RefBonesBinary[LinkIndex];
 		FString BoneName;
-
-		/*const char* LinkName = Link->GetName();
-		BoneName = ANSI_TO_TCHAR(MakeName(LinkName));*/
 
 		BoneName = PmxMeshInfo->boneList[LinkIndex].Name;
 		Bone.Name = BoneName;
@@ -788,8 +782,6 @@ void UPmxFactory::ImportMorphTargetsInternal(
 	const FString& InFilename,
 	int32 LODIndex, FSkeletalMeshImportData& BaseImportData)
 {
-	/*FbxString ShapeNodeName;
-	TMap<FString, TArray<FbxShape*>> ShapeNameToShapeArray;*/
 	TMap<FString, MMD4UE5::PMX_MORPH> ShapeNameToShapeArray;
 
 	for (int32 NodeIndex = 0; NodeIndex < PmxMeshInfo.morphList.Num(); NodeIndex++)

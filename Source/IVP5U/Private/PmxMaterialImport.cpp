@@ -81,7 +81,6 @@ void UPmxMaterialImport::AssetsCreateTexture(
 		}
 		if (!ExistingTexture)
 		{
-			// 重复创建
 		}
 		else
 		{
@@ -154,9 +153,7 @@ void UPmxMaterialImport::AssetsCreateTexture(
 			}
 
 			ExistImages.Add(ImagePaths[i], ImportedTexture);
-
 			TextureFact->RemoveFromRoot();
-			/**/
 		}
 
 		textureAssetList.Add(ImportedTexture);
