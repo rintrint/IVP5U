@@ -937,7 +937,7 @@ void UPmxFactory::ImportFbxMorphTarget(
 			Filename,
 			LODIndex,
 			ImportData);
-		BaseSkelMesh->CommitMeshDescription(LODIndex);
+		// BaseSkelMesh->CommitMeshDescription(LODIndex);
 	}
 }
 
