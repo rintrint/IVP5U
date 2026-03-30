@@ -293,24 +293,6 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 											NewObject = NewMesh;
 										}
 
-										// import morph target
-										if (NewMesh && ImportUI->SkeletalMeshImportData->bImportMorphTargets)
-										{
-											UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("!!!PMX Import :bImportMorphTargets"));
-											// Disable material importing when importing morph targets
-											uint32 bImportMaterials = ImportOptions->bImportMaterials;
-											ImportOptions->bImportMaterials = 0;
-
-											ImportFbxMorphTarget(
-												pmxMeshInfoPtr,
-												NewMesh,
-												InParent,
-												Filename,
-												LODIndex, smid);
-
-											ImportOptions->bImportMaterials = !!bImportMaterials;
-										}
-
 										// add self
 										if (NewObject)
 										{
@@ -581,23 +563,6 @@ UObject* UPmxFactory::FactoryCreateBinary(
 							NewObject = NewMesh;
 						}
 
-						// import morph target
-						if (NewMesh && ImportUI->SkeletalMeshImportData->bImportMorphTargets)
-						{
-							// Disable material importing when importing morph targets
-							uint32 bImportMaterials = ImportOptions->bImportMaterials;
-							ImportOptions->bImportMaterials = 0;
-
-							ImportFbxMorphTarget(
-								pmxMeshInfoPtr,
-								NewMesh,
-								InParent,
-								Filename,
-								LODIndex, smid);
-
-							ImportOptions->bImportMaterials = !!bImportMaterials;
-						}
-
 						// add self
 						if (NewObject)
 						{
@@ -743,6 +708,16 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		}
 	}
 
+	// ==============================================================================
+	// 【核心修復 1】：強制修補匯入資料的 UV 通道數與最大材質索引，否則建立 MeshDescription 必閃退！
+	// ==============================================================================
+	// Pass the number of texture coordinate sets to the LODModel.  Ensure there is at least one UV coord
+	SkelMeshImportDataPtr->NumTexCoords = FMath::Max<uint32>(1, SkelMeshImportDataPtr->NumTexCoords);
+	if (SkelMeshImportDataPtr->Materials.Num() > 0)
+	{
+		SkelMeshImportDataPtr->MaxMaterialIndex = SkelMeshImportDataPtr->Materials.Num() - 1;
+	}
+
 	// process materials from import data
 	ProcessImportMeshMaterials(SkeletalMesh->GetMaterials(), *SkelMeshImportDataPtr);
 
@@ -776,9 +751,6 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 	ImportedResource->LODModels.Empty();
 	ImportedResource->LODModels.Add(new FSkeletalMeshLODModel());
 
-	// SkeletalMesh->CommitMeshDescription(0);
-	// SkeletalMesh->SaveLODImportedData(0, *SkelMeshImportDataPtr);
-
 	UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("ImportSkeletalMesh: Added new LODModel. Total LOD count is now: %d. The only valid index should be 0."), ImportedResource->LODModels.Num());
 	FSkeletalMeshLODModel& LODModel = ImportedResource->LODModels[0];
 
@@ -806,8 +778,8 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 	// allocated, and potentially accessing the UStaticMesh.
 	SkeletalMesh->ReleaseResourcesFence.Wait();
 
-	// Pass the number of texture coordinate sets to the LODModel.  Ensure there is at least one UV coord
-	LODModel.NumTexCoords = FMath::Max<uint32>(1, SkelMeshImportDataPtr->NumTexCoords);
+	LODModel.NumTexCoords = SkelMeshImportDataPtr->NumTexCoords;
+
 	{
 		TArray<FVector3f> LODPoints;
 		TArray<SkeletalMeshImportData::FMeshWedge> LODWedges;
@@ -852,17 +824,74 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 			SkeletalMesh->GetLODInfo(0)->LODMaterialMap.Add(SectionIndex);
 		}
 
-		if (ExistSkelMeshDataPtr)
+		// ==============================================================================
+		// 【核心修復 2】：Skeleton 必須在 SaveLODImportedData 以及 PostEditChange 之前建立並綁定！
+		// ==============================================================================
+		// see if we have skeleton set up
+		// if creating skeleton, create skeleeton
+		USkeleton* Skeleton = NULL;
+		FString SkelObjectName = FString::Printf(TEXT("SK_%s"), *BaseName.ToString());
+		Skeleton = CreateAsset<USkeleton>(InParent->GetName(), SkelObjectName, true);
+		if (!Skeleton)
 		{
-			// RestoreExistingSkelMeshData(ExistSkelMeshDataPtr, SkeletalMesh);
+			// same object exists, try to see if it's skeleton, if so, load
+			Skeleton = LoadObject<USkeleton>(InParent, *SkelObjectName);
+
+			// if not skeleton, we're done, we can't create skeleton with same name
+			// @todo in the future, we'll allow them to rename
+			if (!Skeleton)
+			{
+				AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, FText::Format(LOCTEXT("FbxSkeletaLMeshimport_SkeletonRecreateError", "'{0}' already exists. It fails to recreate it."), FText::FromString(SkelObjectName))), "FFbxErrors::SkeletalMesh_SkeletonRecreateError");
+				return SkeletalMesh;
+			}
 		}
+
+		// merge bones to the selected skeleton
+		if (!Skeleton->MergeAllBonesToBoneTree(SkeletalMesh))
+		{
+			if (EAppReturnType::Yes == FMessageDialog::Open(EAppMsgType::YesNo, LOCTEXT("SkeletonFailed_BoneMerge", "FAILED TO MERGE BONES:\n\n This could happen if significant hierarchical change has been made\n - i.e. inserting bone between nodes\n Would you like to regenerate Skeleton from this mesh? \n\n ***WARNING: THIS WILL REQUIRE RECOMPRESS ALL ANIMATION DATA AND POTENTIALLY INVALIDATE***\n")))
+			{
+				if (Skeleton->RecreateBoneTree(SkeletalMesh))
+				{
+					FAssetNotifications::SkeletonNeedsToBeSaved(Skeleton);
+				}
+			}
+		}
+		else
+		{
+			/*
+			// ask if they'd like to update their position form this mesh
+			if ( ImportOptions->SkeletonForAnimation && ImportOptions->bUpdateSkeletonReferencePose )
+			{
+				Skeleton->UpdateReferencePoseFromMesh(SkeletalMesh);
+				FAssetNotifications::SkeletonNeedsToBeSaved(Skeleton);
+			}
+			*/
+		}
+		SkeletalMesh->SetSkeleton(Skeleton);
+
+		// ==============================================================================
+		// 【核心修復 3】：將匯入 Morph Target 移動到這裡！這時還沒有 MeshDescription，能正確將資料附加到 LODModel！
+		// ==============================================================================
+		if (ImportUI->SkeletalMeshImportData->bImportMorphTargets)
+		{
+			ImportFbxMorphTarget(*pmxMeshInfoPtr, SkeletalMesh, InParent, Filename, 0, *SkelMeshImportDataPtr);
+		}
+
+		// ==============================================================================
+		// 【核心修復 4】：等到所有資料 (基礎網格 + 形變目標) 都寫入 SkelMeshImportDataPtr 後，才呼叫 SaveLOD 寫入 UE5 描述！
+		// ==============================================================================
+		PRAGMA_DISABLE_DEPRECATION_WARNINGS
+		SkeletalMesh->SaveLODImportedData(0, *SkelMeshImportDataPtr);
+		PRAGMA_ENABLE_DEPRECATION_WARNINGS
+		// SkeletalMesh->CommitMeshDescription(0);
 
 		// Store the current file path and timestamp for re-import purposes
 		SkeletalMesh->GetAssetImportData()->Update(UFactory::CurrentFilename);
 		SkeletalMesh->CalculateInvRefMatrices();
 		SkeletalMesh->Build();
-		// SkeletalMesh->CommitMeshDescription(0);
-		// SkeletalMesh->SaveLODImportedData(0, *SkelMeshImportDataPtr);
+
+		// 最後觸發畫面更新，縮圖生成器因為有了合法的 Skeleton 跟 MeshDescription 將完美運作
 		SkeletalMesh->PostEditChange();
 		SkeletalMesh->MarkPackageDirty();
 
@@ -877,41 +906,32 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		}
 	}
 
-	if (InParent != GetTransientPackage())
+	// ==============================================================================
+	// 建立剛體與物理資產
+	// ==============================================================================
+	if (InParent != GetTransientPackage() && ImportUI->bCreatePhysicsAsset)
 	{
-		// Create PhysicsAsset if requested and if physics asset is null
-		if (ImportUI->bCreatePhysicsAsset)
+		if (SkeletalMesh->GetPhysicsAsset() == NULL)
 		{
-			if (SkeletalMesh->GetPhysicsAsset() == NULL)
+			FString PhysObjectName = FString::Printf(TEXT("PA_%s"), *BaseName.ToString());
+			UPhysicsAsset* NewPhysicsAsset = CreateAsset<UPhysicsAsset>(InParent->GetName(), PhysObjectName, true);
+			if (NewPhysicsAsset)
 			{
-				FString ObjectName = FString::Printf(TEXT("PA_%s"), *BaseName.ToString());
-				UPhysicsAsset* NewPhysicsAsset = CreateAsset<UPhysicsAsset>(InParent->GetName(), ObjectName, true);
-				if (!NewPhysicsAsset)
+				FPhysAssetCreateParams NewBodyData;
+				NewBodyData.bDisableCollisionsByDefault = true;
+				NewBodyData.MinBoneSize = 2;
+				FText CreationErrorMessage;
+				bool bSuccess = FPhysicsAssetUtils::CreateFromSkeletalMesh(NewPhysicsAsset, SkeletalMesh, NewBodyData, CreationErrorMessage);
+				if (!bSuccess)
 				{
-					AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Warning, FText::Format(LOCTEXT("FbxSkeletaLMeshimport_CouldNotCreatePhysicsAsset", "Could not create Physics Asset ('{0}') for '{1}'"), FText::FromString(ObjectName), FText::FromString(SkeletalMesh->GetName()))), "FFbxErrors::SkeletalMesh_FailedToCreatePhyscisAsset");
+					AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Warning, CreationErrorMessage), "FFbxErrors::SkeletalMesh_FailedToCreatePhyscisAsset");
+					// delete the asset since we could not have create physics asset
+					TArray<UObject*> ObjectsToDelete;
+					ObjectsToDelete.Add(NewPhysicsAsset);
+					ObjectTools::DeleteObjects(ObjectsToDelete, false);
 				}
 				else
 				{
-					FPhysAssetCreateParams NewBodyData;
-					// PmxPhysicsParam pmxpm;
-					NewBodyData.bDisableCollisionsByDefault = true;
-					NewBodyData.MinBoneSize = 2;
-					// NewBodyData.pMmdParam = &pmxpm;
-					FText CreationErrorMessage;
-					bool bSuccess = FPhysicsAssetUtils::CreateFromSkeletalMesh(
-						NewPhysicsAsset,
-						SkeletalMesh,
-						NewBodyData,
-						CreationErrorMessage);
-					if (!bSuccess)
-					{
-						AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Warning, CreationErrorMessage), "FFbxErrors::SkeletalMesh_FailedToCreatePhyscisAsset");
-						// delete the asset since we could not have create physics asset
-						TArray<UObject*> ObjectsToDelete;
-						ObjectsToDelete.Add(NewPhysicsAsset);
-						ObjectTools::DeleteObjects(ObjectsToDelete, false);
-					}
-
 					int bdn = NewPhysicsAsset->SkeletalBodySetups.Num();
 					for (int i = 0; i < bdn; i++)
 					{
@@ -993,56 +1013,6 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 				}
 			}
 		}
-
-		// see if we have skeleton set up
-		// if creating skeleton, create skeleeton
-		USkeleton* Skeleton = NULL;
-		// Skeleton = ImportOptions->SkeletonForAnimation;
-		if (Skeleton == NULL)
-		{
-			FString ObjectName = FString::Printf(TEXT("SK_%s"), *BaseName.ToString());
-			Skeleton = CreateAsset<USkeleton>(InParent->GetName(), ObjectName, true);
-			if (!Skeleton)
-			{
-				// same object exists, try to see if it's skeleton, if so, load
-				Skeleton = LoadObject<USkeleton>(InParent, *ObjectName);
-
-				// if not skeleton, we're done, we can't create skeleton with same name
-				// @todo in the future, we'll allow them to rename
-				if (!Skeleton)
-				{
-					AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, FText::Format(LOCTEXT("FbxSkeletaLMeshimport_SkeletonRecreateError", "'{0}' already exists. It fails to recreate it."), FText::FromString(ObjectName))), "FFbxErrors::SkeletalMesh_SkeletonRecreateError");
-					return SkeletalMesh;
-				}
-			}
-		}
-
-		// merge bones to the selected skeleton
-		if (!Skeleton->MergeAllBonesToBoneTree(SkeletalMesh))
-		{
-			if (EAppReturnType::Yes == FMessageDialog::Open(EAppMsgType::YesNo, LOCTEXT("SkeletonFailed_BoneMerge", "FAILED TO MERGE BONES:\n\n This could happen if significant hierarchical change has been made\n - i.e. inserting bone between nodes\n Would you like to regenerate Skeleton from this mesh? \n\n ***WARNING: THIS WILL REQUIRE RECOMPRESS ALL ANIMATION DATA AND POTENTIALLY INVALIDATE***\n")))
-			{
-				if (Skeleton->RecreateBoneTree(SkeletalMesh))
-				{
-					FAssetNotifications::SkeletonNeedsToBeSaved(Skeleton);
-				}
-			}
-		}
-		else
-		{
-			/*
-			// ask if they'd like to update their position form this mesh
-			if ( ImportOptions->SkeletonForAnimation && ImportOptions->bUpdateSkeletonReferencePose )
-			{
-				Skeleton->UpdateReferencePoseFromMesh(SkeletalMesh);
-				FAssetNotifications::SkeletonNeedsToBeSaved(Skeleton);
-			}
-			*/
-		}
-
-		SkeletalMesh->SetSkeleton(Skeleton);
-		SkeletalMesh->PostEditChange();
-		SkeletalMesh->MarkPackageDirty();
 	}
 	return SkeletalMesh;
 }

@@ -928,8 +928,10 @@ void UPmxFactory::ImportFbxMorphTarget(
 			Filename,
 			LODIndex,
 			ImportData);
+		PRAGMA_DISABLE_DEPRECATION_WARNINGS
+		BaseSkelMesh->SaveLODImportedData(LODIndex, ImportData);
+		PRAGMA_ENABLE_DEPRECATION_WARNINGS
 		// BaseSkelMesh->CommitMeshDescription(LODIndex);
-		// BaseSkelMesh->SaveLODImportedData(LODIndex, ImportData);
 	}
 }
 
