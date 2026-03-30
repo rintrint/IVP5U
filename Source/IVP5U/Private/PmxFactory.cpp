@@ -506,11 +506,11 @@ UObject* UPmxFactory::FactoryCreateBinary(
 
 			if (importAssetTypeMMD == E_MMD_TO_UE5_SKELTON)
 			{
-	#ifdef DEBUG_MMD_PLUGIN_SKELTON
+#ifdef DEBUG_MMD_PLUGIN_SKELTON
 
 				InterestingNodeCount = 1; // test ? not Anime?
 
-	#endif
+#endif
 			}
 			else if (importAssetTypeMMD == E_MMD_TO_UE5_STATICMESH)
 			{
@@ -534,7 +534,7 @@ UObject* UPmxFactory::FactoryCreateBinary(
 				}
 				else if (importAssetTypeMMD == E_MMD_TO_UE5_SKELTON) // skeletal mesh
 				{
-	#ifdef DEBUG_MMD_PLUGIN_SKELTON
+#ifdef DEBUG_MMD_PLUGIN_SKELTON
 					int32 TotalNumNodes = 0;
 					// for (int32 i = 0; i < SkelMeshArray.Num(); i++)
 					for (int32 i = 0; i < 1 /*SkelMeshArray.Num()*/; i++)
@@ -591,7 +591,7 @@ UObject* UPmxFactory::FactoryCreateBinary(
 					{
 						AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoMeshFoundOnRoot", "Could not find any valid mesh on the root hierarchy. If you have mesh in the sub hierarchy, please enable option of [Import Meshes In Bone Hierarchy] when import.")), "FFbxErrors::SkeletalMesh_NoMeshFoundOnRoot");
 					}
-	#endif
+#endif
 				}
 			}
 			else

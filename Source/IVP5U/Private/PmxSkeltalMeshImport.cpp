@@ -434,7 +434,7 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 	{
 		ImportData.Points[ControlPointsIndex + ExistPointNum] = PmxMeshInfo->vertexList[ControlPointsIndex].Position;
 	}
-#if 1 // vertex
+#if 1							  // vertex
 	bool OddNegativeScale = true; // IsOddNegativeScale(TotalMatrix);
 
 	int32 VertexIndex;
@@ -618,7 +618,7 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 					}
 				}
 				break;
-	#if 0 // for pmx ver 2.1 formnat
+#if 0 // for pmx ver 2.1 formnat
 			case 4:
 				// 制限事項：QDEF
 				// QDEFに関して、MMDでの仕様を調べる事。
@@ -632,7 +632,7 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 				}
 			}
 			break;
-	#endif
+#endif
 				default:
 				{
 					// 異常系

@@ -433,6 +433,7 @@ public:
 	 * @return FBXImportOptions
 	 */
 	IVP5U_API PMXImportOptions* GetImportOptions() const;
+
 public:
 	PMXImportOptions* ImportOptions;
 

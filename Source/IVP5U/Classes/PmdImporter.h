@@ -112,7 +112,7 @@ namespace MMD4UE5
 	struct PMD_IK_DATA
 	{
 		uint16 Count; // IK数据数
-		/* 这里有PMD_IK仅存在Count数 */
+					  /* 这里有PMD_IK仅存在Count数 */
 	};
 
 	// 表情顶点信息

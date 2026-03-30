@@ -22,10 +22,10 @@ DEFINE_LOG_CATEGORY(LogMMDCameraImporter);
 // ReSharper disable once CppClassNeedsConstructorBecauseOfUninitializedMember
 class SMovieSceneImportVmdSettings final : public SCompoundWidget, public FGCObject
 {
-	SLATE_BEGIN_ARGS(SMovieSceneImportVmdSettings) { }
-		SLATE_ARGUMENT(FString, ImportFilename)
-		SLATE_ARGUMENT(UMovieSceneSequence*, Sequence)
-		SLATE_ARGUMENT(ISequencer*, Sequencer)
+	SLATE_BEGIN_ARGS(SMovieSceneImportVmdSettings) {}
+	SLATE_ARGUMENT(FString, ImportFilename)
+	SLATE_ARGUMENT(UMovieSceneSequence*, Sequence)
+	SLATE_ARGUMENT(ISequencer*, Sequencer)
 	SLATE_END_ARGS()
 
 	void Construct(const FArguments& InArgs)
@@ -46,23 +46,20 @@ class SMovieSceneImportVmdSettings final : public SCompoundWidget, public FGCObj
 		ChildSlot
 			[
 				SNew(SVerticalBox)
-
 				+ SVerticalBox::Slot()
-			[
-				DetailView.ToSharedRef()
-			]
-
-		+ SVerticalBox::Slot()
-			.AutoHeight()
-			.HAlign(HAlign_Right)
-			.Padding(5.f)
-			[
-				SNew(SButton)
-				.ContentPadding(FMargin(10, 5))
-			.Text(LOCTEXT("ImportVMDButtonText", "Import"))
-			.OnClicked(this, &SMovieSceneImportVmdSettings::OnImportVmdClicked)
-			]
-
+				[
+					DetailView.ToSharedRef()
+				]
+				+ SVerticalBox::Slot()
+				.AutoHeight()
+				.HAlign(HAlign_Right)
+				.Padding(5.f)
+				[
+					SNew(SButton)
+					.ContentPadding(FMargin(10, 5))
+					.Text(LOCTEXT("ImportVMDButtonText", "Import"))
+					.OnClicked(this, &SMovieSceneImportVmdSettings::OnImportVmdClicked)
+				]
 			];
 
 		ImportFilename = InArgs._ImportFilename;
@@ -82,9 +79,8 @@ class SMovieSceneImportVmdSettings final : public SCompoundWidget, public FGCObj
 	{
 		return TEXT("SMovieSceneImportVmdSettings");
 	}
-	
-private:
 
+private:
 	FReply OnImportVmdClicked()
 	{
 		const UMmdUserImportVmdSettings* ImportVmdSettings = GetMutableDefault<UMmdUserImportVmdSettings>();
@@ -104,7 +100,6 @@ private:
 		}
 
 		const FScopedTransaction Transaction(LOCTEXT("ImportVMDTransaction", "Import VMD"));
-		
 		const FVmdParseResult ParseResult = VmdImporter.ParseVmdFile();
 
 		if (!ParseResult.bIsSuccess)
@@ -148,8 +143,7 @@ void FMmdCameraImporterModule::StartupModule()
 	PluginCommands->MapAction(
 		FMmdCameraImporterCommands::Get().ImportVmd,
 		FExecuteAction::CreateRaw(this, &FMmdCameraImporterModule::ImportVmd),
-		FCanExecuteAction::CreateLambda([] { return true; })
-	);
+		FCanExecuteAction::CreateLambda([] { return true; }));
 
 	ISequencerModule& SequencerModule = FModuleManager::LoadModuleChecked<ISequencerModule>("Sequencer");
 	const FOnSequencerCreated::FDelegate OnSequencerCreated =
@@ -185,8 +179,8 @@ void FMmdCameraImporterModule::RegisterMenus()
 
 	const FName SequencerToolbarStyleName = "SequencerToolbar";
 
-	UToolMenu *SequencerMenu = UToolMenus::Get()->ExtendMenu("Sequencer.MainToolBar");
-	FToolMenuSection &Section = SequencerMenu->FindOrAddSection("MmdCameraImporterExtensions");
+	UToolMenu* SequencerMenu = UToolMenus::Get()->ExtendMenu("Sequencer.MainToolBar");
+	FToolMenuSection& Section = SequencerMenu->FindOrAddSection("MmdCameraImporterExtensions");
 	FToolMenuEntry Entry = FToolMenuEntry::InitToolBarButton(FMmdCameraImporterCommands::Get().ImportVmd);
 	Entry.StyleNameOverride = SequencerToolbarStyleName;
 	Entry.SetCommandList(PluginCommands);
@@ -223,8 +217,7 @@ bool FMmdCameraImporterModule::ImportVmdWithDialog(UMovieSceneSequence* InSequen
 			TEXT(""),
 			*ExtensionStr,
 			EFileDialogFlags::None,
-			OpenFileNames
-		);
+			OpenFileNames);
 	}
 	if (!bOpen)
 	{
@@ -240,17 +233,17 @@ bool FMmdCameraImporterModule::ImportVmdWithDialog(UMovieSceneSequence* InSequen
 
 	// Create the window to choose our options
 	const TSharedRef<SWindow> Window = SNew(SWindow)
-		.Title(TitleText)
-		.HasCloseButton(true)
-		.SizingRule(ESizingRule::UserSized)
-		.ClientSize(FVector2D(480.0f, 690.0f))
-		.AutoCenter(EAutoCenter::PreferredWorkArea)
-		.SupportsMinimize(false);
+										   .Title(TitleText)
+										   .HasCloseButton(true)
+										   .SizingRule(ESizingRule::UserSized)
+										   .ClientSize(FVector2D(480.0f, 690.0f))
+										   .AutoCenter(EAutoCenter::PreferredWorkArea)
+										   .SupportsMinimize(false);
 
 	const TSharedRef<SMovieSceneImportVmdSettings> DialogWidget = SNew(SMovieSceneImportVmdSettings)
-		.ImportFilename(OpenFileNames[0])
-		.Sequence(InSequence)
-		.Sequencer(&InSequencer);
+																	  .ImportFilename(OpenFileNames[0])
+																	  .Sequence(InSequence)
+																	  .Sequencer(&InSequencer);
 	Window->SetContent(DialogWidget);
 
 	FSlateApplication::Get().AddWindow(Window);
