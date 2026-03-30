@@ -862,6 +862,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		TArray<FName> WarningNames;
 		// Create actual rendering data.
 
+		// Build render geometry
 		if (!MeshUtilities.BuildSkeletalMesh(
 				ImportedResource->LODModels[0], "MMDMeshName",
 				SkeletalMesh->GetRefSkeleton(),
@@ -871,28 +872,17 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 				LODPoints,
 				LODPointToRawMap))
 		{
-			if (WarningNames.Num() == WarningMessages.Num())
-			{
-				// temporary hack of message/names, should be one token or a struct
-				for (int32 MessageIdx = 0; MessageIdx < WarningMessages.Num(); ++MessageIdx)
-				{
-					AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, WarningMessages[MessageIdx]), WarningNames[MessageIdx]);
-				}
-			}
-
+			// error handling
 			SkeletalMesh->MarkAsGarbage();
 			return NULL;
 		}
-		else if (WarningMessages.Num() > 0)
+
+		// Build succeeded (with or without warnings)
+		if (WarningMessages.Num() > 0 && WarningNames.Num() == WarningMessages.Num())
 		{
-			// temporary hack of message/names, should be one token or a struct
-			if (WarningNames.Num() == WarningMessages.Num())
+			for (int32 MessageIdx = 0; MessageIdx < WarningMessages.Num(); ++MessageIdx)
 			{
-				// temporary hack of message/names, should be one token or a struct
-				for (int32 MessageIdx = 0; MessageIdx < WarningMessages.Num(); ++MessageIdx)
-				{
-					AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Warning, WarningMessages[MessageIdx]), WarningNames[MessageIdx]);
-				}
+				AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Warning, WarningMessages[MessageIdx]), WarningNames[MessageIdx]);
 			}
 		}
 
@@ -905,13 +895,11 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 
 		if (ExistSkelMeshDataPtr)
 		{
-			//			RestoreExistingSkelMeshData(ExistSkelMeshDataPtr, SkeletalMesh);
+			// RestoreExistingSkelMeshData(ExistSkelMeshDataPtr, SkeletalMesh);
 		}
 
 		// Store the current file path and timestamp for re-import purposes
-
 		SkeletalMesh->GetAssetImportData()->Update(UFactory::CurrentFilename);
-
 		SkeletalMesh->CalculateInvRefMatrices();
 		SkeletalMesh->Build();
 		SkeletalMesh->PostEditChange();
