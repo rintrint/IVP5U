@@ -150,8 +150,7 @@ void UPmxMaterialImport::AssetsCreateTexture(
 				int w = NewTexture->GetSizeX();
 				int h = NewTexture->GetSizeY();
 
-				UE_LOG(LogCategoryPMXMaterialImport, Warning,
-					TEXT("PMX Import NewTexture Complete.[%s]{%d,%d}"), *TextureName, w, h);
+				UE_LOG(LogCategoryPMXMaterialImport, Log, TEXT("PMX Import Texture Complete: [%s]{%d,%d}"), *TextureName, w, h);
 			}
 
 			ExistImages.Add(ImagePaths[i], ImportedTexture);
@@ -879,7 +878,7 @@ UMaterialInterface* UPmxMaterialImport::DuplicateBaseMaterial(
 	}
 	else
 	{
-		UE_LOG(LogCategoryPMXMaterialImport, Error, TEXT("[%s]::BaseMaterial Kind Not Found... "),
+		UE_LOG(LogCategoryPMXMaterialImport, Error, TEXT("[%s]: BaseMaterial Kind Not Found."),
 			*(FString(__FUNCTION__)));
 		return nullptr;
 	}
@@ -892,7 +891,7 @@ UMaterialInterface* UPmxMaterialImport::DuplicateBaseMaterial(
 	// check(BaseMatOriginal);
 	if (nullptr == BaseMatOriginal)
 	{
-		UE_LOG(LogCategoryPMXMaterialImport, Error, TEXT("[%s]:BaseMaterial Not Found... Path[%s]"),
+		UE_LOG(LogCategoryPMXMaterialImport, Error, TEXT("[%s]: BaseMaterial Not Found. Path[%s]"),
 			*(FString(__FUNCTION__)), *DupAssetBaseName);
 		return nullptr;
 	}

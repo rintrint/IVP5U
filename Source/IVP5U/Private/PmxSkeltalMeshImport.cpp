@@ -329,18 +329,10 @@ bool UPmxFactory::ImportBone(
 				;
 			// TransTemp *= -1;
 		}
-		ftr = FRotator3f(0, 0, 0).Quaternion();
 
-		// TransTemp *= 10;
-		FTransform3f ft;
-		ft.SetRotation(ftr);
-		FVector3f fv1 = ft.TransformPosition(TransTemp);
-		FTransform3f ft2 = ft.Inverse();
-		FVector3f fv2 = ft2.TransformPosition(TransTemp);
-		if (BoneName.Contains(L"L"))
-			UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("%s,%d  fv0:%f,%f,%f   fv1:%f,%f,%f   fv2:%f,%f,%f"), *BoneName, hasParent, TransTemp.X, TransTemp.Y, TransTemp.Z, fv1.X, fv1.Y, fv1.Z, fv2.X, fv2.Y, fv2.Z);
+		ftr = FRotator3f(0, 0, 0).Quaternion();
 		JointMatrix.Transform.SetTranslation(TransTemp);
-		JointMatrix.Transform.SetRotation(ftr); // (FQuat(0, 0, 0, 1.0));
+		JointMatrix.Transform.SetRotation(ftr);
 		JointMatrix.Transform.SetScale3D(FVector3f(1));
 		if (hasParent)
 			PmxMeshInfo->boneList[LinkIndex].absTF = PmxMeshInfo->boneList[ParentIndex].absTF * JointMatrix.Transform;

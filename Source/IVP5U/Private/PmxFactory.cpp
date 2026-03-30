@@ -166,7 +166,6 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 				if (FFileHelper::LoadFileToArray(File_Result, *file))
 				{
 					const uint8* DataPtr = File_Result.GetData();
-					// UE_LOG(LogMMD4UE5_PMXFactory,Warning,TEXT("!!!%s"),*file);
 					UObject* NewObject = NULL;
 					FPmxImporter* PmxImporter = FPmxImporter::GetInstance();
 					EPMXImportType ForcedImportType = PMXIT_SkeletalMesh;
@@ -258,7 +257,7 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 							UFactory::CurrentFilename = file;
 							FString Filename(UFactory::CurrentFilename);
 
-							UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("!!!PMX Import :%s"), *Filename);
+							UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("PMX Import: %s"), *Filename);
 							if (InterestingNodeCount > 0)
 							{
 								int32 NodeIndex = 0;
@@ -350,27 +349,27 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 					}
 					else
 					{
-						UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("!!!PMX Import error:: PMXLoaderBinary."));
+						UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("PMX Import error: PMXLoaderBinary."));
 					}
 				}
 				else
 				{
-					UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("!!!PMX Import error:: LoadFileToArray."));
+					UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("PMX Import error: LoadFileToArray."));
 				}
 			}
 			else
 			{
-				UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("!!!PMX Import error:: FIle is not exist."));
+				UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("PMX Import error: FIle is not exist."));
 			}
 		}
 		else
 		{
-			UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("!!!PMX Import error::filepath type error."));
+			UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("PMX Import error: filepath type error."));
 		}
 	}
 	else
 	{
-		UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("!!!PMX Import error::filepath error.%d,%s"), indexs, *Name.ToString());
+		UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("PMX Import error: filepath error.%d,%s"), indexs, *Name.ToString());
 	}
 
 	return false;
@@ -479,7 +478,7 @@ UObject* UPmxFactory::FactoryCreateBinary(
 	ImportUI->bImportMorphTargets = true;
 	ImportUI->bImportTextures = true;
 	ImportUI->SkeletalMeshImportData->bImportMorphTargets = true;
-	UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("!!!PMX Import :%s"), *(InParent->GetPathName()));
+	UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("PMX Import: %s"), *(InParent->GetPathName()));
 
 	PMXImportOptions* ImportOptions = GetImportOptions(
 		PmxImporter,
@@ -549,7 +548,7 @@ UObject* UPmxFactory::FactoryCreateBinary(
 						{
 							// UEnum* CompileModeEnum = GetStaticEnum <EObjectFlags>();
 
-							UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("!!!PMX Import :%s"), *OutputName.ToString());
+							UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("PMX Import: %s"), *OutputName.ToString());
 
 							NewMesh = ImportSkeletalMesh(
 								InParent,
@@ -679,7 +678,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		// but I can move to transient package, and GC will automatically collect it
 		SkeletalMesh->ClearFlags(RF_Standalone);
 		SkeletalMesh->Rename(NULL, GetTransientPackage());
-		UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("!!!ImportBone_out"));
+		UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("ImportBone_out"));
 		return NULL;
 	}
 
@@ -696,7 +695,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		// but I can move to transient package, and GC will automatically collect it
 		SkeletalMesh->ClearFlags(RF_Standalone);
 		SkeletalMesh->Rename(NULL, GetTransientPackage());
-		UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("!!!FillSkelMeshImporterFromFbx_out"));
+		UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("FillSkelMeshImporterFromFbx_out"));
 		return NULL;
 	}
 	else

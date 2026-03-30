@@ -92,7 +92,7 @@ UObject* UVmdFactory::FactoryCreateBinary(
 	double StartTime = FPlatformTime::Seconds();
 	if (vmdMotionInfo.VMDLoaderBinary(Buffer, BufferEnd) == false)
 	{
-		UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("VMD导入取消:: VMD数据读取失败"));
+		UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("VMD导入取消: VMD数据读取失败"));
 		return NULL;
 	}
 	UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("读取VMD文件耗时：%.3fs"), FPlatformTime::Seconds() - StartTime);
@@ -1453,7 +1453,7 @@ bool UVmdFactory::ImportVmdFromFile(FString file, USkeletalMesh* SkeletalMesh)
 					const uint8* DataPtr = File_Result.GetData();
 					if (vmdMotionInfo.VMDLoaderBinary(DataPtr, NULL) == false)
 					{
-						UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("!!!VMD Import error::vmd data load faile."));
+						UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("VMD Import error: vmd data load faile."));
 						return false;
 					}
 					UAnimSequence* LastCreatedAnim = NULL;
@@ -1486,27 +1486,27 @@ bool UVmdFactory::ImportVmdFromFile(FString file, USkeletalMesh* SkeletalMesh)
 					}
 					else
 					{
-						UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("!!!VMD Import error::SkeletalMesh is null."));
+						UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("VMD Import error: SkeletalMesh is null."));
 					}
 				}
 				else
 				{
-					UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("!!!VMD Import error:: LoadFileToArray."));
+					UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("VMD Import error: LoadFileToArray."));
 				}
 			}
 			else
 			{
-				UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("!!!VMD Import error:: FIle is not exist."));
+				UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("VMD Import error: FIle is not exist."));
 			}
 		}
 		else
 		{
-			UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("!!!VMD Import error::filepath type error."));
+			UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("VMD Import error: filepath type error."));
 		}
 	}
 	else
 	{
-		UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("!!!VMD Import error::filepath error.%d,%s"), indexs, *filepath);
+		UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("VMD Import error: filepath error.%d,%s"), indexs, *filepath);
 	}
 
 	return false;
