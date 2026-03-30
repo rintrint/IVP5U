@@ -82,27 +82,16 @@ public:
 
 	void AssetsCreateTexture(
 		UObject* InParentx,
-		// EObjectFlags Flags,
-		// FFeedbackContext * Warn,
 		FString CurPath,
 		FString filePath,
 		TArray<UTexture*>& textureAssetList);
 
 	UTexture* ImportTexture(
-		// FbxFileTexture* FbxTexture,
 		FString InTextureFileName,
 		bool bSetupAsNormalMap);
 
-	/*void AssetsCreateUnrealMaterial(
-		UObject * InParent,
-		FString MaterialName,
-		TArray<UMaterialInterface*>& OutMaterials
-		);
-		*/
-
 	void CreateUnrealMaterial(
 		FString ParentObjName,
-		// UObject * InParent,
 		MMD4UE5::PMX_MATERIAL& PmxMaterial,
 		bool bCreateMaterialInstanceMode,
 		bool bMaterialUnlit,
@@ -125,10 +114,7 @@ public:
 	bool CreateAndLinkExpressionForMaterialProperty_ForMmdAutoluminus(
 		MMD4UE5::PMX_MATERIAL& PmxMaterial,
 		UMaterial* UnrealMaterial,
-		// const char* MaterialProperty,
 		FExpressionInput& MaterialInput,
-		// bool bSetupAsNormalMap,
-		// TArray<FString>& UVSet,
 		const FVector2D& Location,
 		TArray<UTexture*>& textureAssetList);
 

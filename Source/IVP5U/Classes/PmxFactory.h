@@ -63,18 +63,12 @@ class IVP5U_API UPmxFactory : public UFactory, public FReimportHandler // public
 		const FName& Name,
 		const FName& BaseName,
 		EObjectFlags Flags,
-		// UFbxSkeletalMeshImportData* TemplateImportData,
 		FString Filename,
-		// TArray<FbxShape*> *FbxShapeArray,
-		FSkeletalMeshImportData* OutData,
-		bool bCreateRenderData);
+		FSkeletalMeshImportData* OutData);
 
 	bool ImportBone(
-		// TArray<FbxNode*>& NodeArray,
 		MMD4UE5::PmxMeshInfo* PmxMeshInfo,
 		FSkeletalMeshImportData& ImportData,
-		// UFbxSkeletalMeshImportData* TemplateData,
-		// TArray<FbxNode*> &SortedLinks,
 		bool& bOutDiffPose,
 		bool bDisableMissingBindPoseWarning,
 		bool& bUseTime0AsRefPose);
@@ -82,13 +76,7 @@ class IVP5U_API UPmxFactory : public UFactory, public FReimportHandler // public
 	bool FillSkelMeshImporterFromFbx(
 		FSkeletalMeshImportData& ImportData,
 		MMD4UE5::PmxMeshInfo*& PmxMeshInfo,
-		UObject* InParent
-		// FbxMesh*& Mesh,
-		// FbxSkin* Skin,
-		// FbxShape* FbxShape,
-		// TArray<FbxNode*> &SortedLinks,
-		// const TArray<FbxSurfaceMaterial*>& FbxMaterials
-	);
+		UObject* InParent);
 
 	/** Create a new asset from the package and objectname and class */
 	static UObject* CreateAssetOfClass(

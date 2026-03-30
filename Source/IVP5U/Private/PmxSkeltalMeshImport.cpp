@@ -225,11 +225,8 @@ void FMorphMeshRawSource::CalculateMorphTargetLODModel(const FMorphMeshRawSource
 // UPmxFactory
 
 bool UPmxFactory::ImportBone(
-	// TArray<FbxNode*>& NodeArray,
 	MMD4UE5::PmxMeshInfo* PmxMeshInfo,
 	FSkeletalMeshImportData& ImportData,
-	// UFbxSkeletalMeshImportData* TemplateData,
-	// TArray<FbxNode*> &SortedLinks,
 	bool& bOutDiffPose,
 	bool bDisableMissingBindPoseWarning,
 	bool& bUseTime0AsRefPose)
@@ -357,13 +354,7 @@ bool UPmxFactory::ImportBone(
 bool UPmxFactory::FillSkelMeshImporterFromFbx(
 	FSkeletalMeshImportData& ImportData,
 	MMD4UE5::PmxMeshInfo*& PmxMeshInfo,
-	UObject* InParent
-	// FbxMesh*& Mesh,
-	// FbxSkin* Skin,
-	// FbxShape* FbxShape,
-	// TArray<FbxNode*> &SortedLinks,
-	// const TArray<FbxSurfaceMaterial*>& FbxMaterials
-)
+	UObject* InParent)
 {
 	TArray<UMaterialInterface*> Materials;
 
@@ -938,6 +929,7 @@ void UPmxFactory::ImportFbxMorphTarget(
 			LODIndex,
 			ImportData);
 		// BaseSkelMesh->CommitMeshDescription(LODIndex);
+		// BaseSkelMesh->SaveLODImportedData(LODIndex, ImportData);
 	}
 }
 

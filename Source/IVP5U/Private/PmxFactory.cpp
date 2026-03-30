@@ -289,8 +289,7 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 												Name,
 												RF_Public | RF_Standalone | RF_MarkAsNative | RF_Transactional,
 												FPaths::GetBaseFilename(Filename),
-												&smid, // test for MMD,
-												true);
+												&smid);
 											NewObject = NewMesh;
 										}
 
@@ -340,8 +339,7 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 									// if total nodes we found is 0, we didn't find anything.
 									if (TotalNumNodes == 0)
 									{
-										AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoMeshFoundOnRoot", "Could not find any valid mesh on the root hierarchy. If you have mesh in the sub hierarchy, please enable option of [Import Meshes In Bone Hierarchy] when import.")),
-											"FFbxErrors::SkeletalMesh_NoMeshFoundOnRoot");
+										AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoMeshFoundOnRoot", "Could not find any valid mesh on the root hierarchy. If you have mesh in the sub hierarchy, please enable option of [Import Meshes In Bone Hierarchy] when import.")), "FFbxErrors::SkeletalMesh_NoMeshFoundOnRoot");
 									}
 #endif
 								}
@@ -362,14 +360,11 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 						if (NewObject == NULL)
 						{
 							AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoObject", "Import failed.")), "FFbxErrors::Generic_ImportingNewObjectFailed");
-							// Warn->Log(ELogVerbosity::Error, "PMX Import ERR [NewObject is NULL]...FLT");
 							return false;
 						}
 
 						InParent->MarkPackageDirty();
 						return true;
-						// FbxImporter->ReleaseScene();
-						// Warn->EndSlowTask();
 					}
 					else
 					{
@@ -582,8 +577,7 @@ UObject* UPmxFactory::FactoryCreateBinary(
 								Flags,
 								// ImportUI->SkeletalMeshImportData,
 								FPaths::GetBaseFilename(Filename),
-								&smid, // test for MMD,
-								true);
+								&smid);
 							NewObject = NewMesh;
 						}
 
@@ -630,8 +624,7 @@ UObject* UPmxFactory::FactoryCreateBinary(
 					// if total nodes we found is 0, we didn't find anything.
 					if (TotalNumNodes == 0)
 					{
-						AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoMeshFoundOnRoot", "Could not find any valid mesh on the root hierarchy. If you have mesh in the sub hierarchy, please enable option of [Import Meshes In Bone Hierarchy] when import.")),
-							"FFbxErrors::SkeletalMesh_NoMeshFoundOnRoot");
+						AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoMeshFoundOnRoot", "Could not find any valid mesh on the root hierarchy. If you have mesh in the sub hierarchy, please enable option of [Import Meshes In Bone Hierarchy] when import.")), "FFbxErrors::SkeletalMesh_NoMeshFoundOnRoot");
 					}
 	#endif
 				}
@@ -655,7 +648,6 @@ UObject* UPmxFactory::FactoryCreateBinary(
 			Warn->Log(ELogVerbosity::Error, "PMX Import ERR [NewObject is NULL]...FLT");
 		}
 
-		// FbxImporter->ReleaseScene();
 		Warn->EndSlowTask();
 	}
 	else
@@ -677,13 +669,11 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 	const FName& BaseName,
 	EObjectFlags Flags,
 	FString Filename,
-	FSkeletalMeshImportData* OutData,
-	bool bCreateRenderData)
+	FSkeletalMeshImportData* OutData)
 {
 	bool bDiffPose;
 	int32 SkelType = 0; // 0 for skeletal mesh, 1 for rigid mesh
 
-	// bool bCreateRenderData = true;
 	struct ExistingSkelMeshData* ExistSkelMeshDataPtr = NULL;
 
 	FString FolderPath = FPackageName::GetLongPackagePath(InParent->GetOutermost()->GetName());
@@ -697,7 +687,6 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		if (ExistingSkelMesh)
 		{
 			ExistingSkelMesh->PreEditChange(NULL);
-			// ExistSkelMeshDataPtr = SaveExistingSkelMeshData(ExistingSkelMesh);
 		}
 		// if any other object exists, we can't import with this name
 		else if (ExistingObject)
@@ -707,41 +696,20 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		}
 	}
 
-	// [from USkeletalMeshFactory::FactoryCreateBinary]
 	USkeletalMesh* SkeletalMesh = NewObject<USkeletalMesh>(SkelMeshPackage, Name, Flags | RF_Public | RF_Standalone);
-
 	SkeletalMesh->PreEditChange(NULL);
 
 	FSkeletalMeshImportData TempData;
 	// Fill with data from buffer - contains the full .FBX file.
-	FSkeletalMeshImportData* SkelMeshImportDataPtr = &TempData;
-	if (OutData)
-	{
-		SkelMeshImportDataPtr = OutData;
-	}
+	FSkeletalMeshImportData* SkelMeshImportDataPtr = OutData ? OutData : &TempData;
 
 	/*Import Bone Start*/
-	bool bUseTime0AsRefPose = false; // ImportOptions->bUseT0AsRefPose;
+	bool bUseTime0AsRefPose = false;
 	// Note: importing morph data causes additional passes through this function, so disable the warning dialogs
 	// from popping up again on each additional pass.
-	if (
-		!ImportBone(
-			// NodeArray,
-			pmxMeshInfoPtr,
-			*SkelMeshImportDataPtr,
-			// TemplateImportData,
-			// SortedLinkArray,
-			bDiffPose,
-			false, //(FbxShapeArray != NULL),
-			bUseTime0AsRefPose)
-
-		/*false*/
-	)
+	if (!ImportBone(pmxMeshInfoPtr, *SkelMeshImportDataPtr, bDiffPose, false, bUseTime0AsRefPose))
 	{
-		AddTokenizedErrorMessage(FTokenizedMessage::Create(
-									 EMessageSeverity::Error,
-									 LOCTEXT("FbxSkeletaLMeshimport_MultipleRootFound", "Multiple roots found")),
-			"FFbxErrors::SkeletalMesh_MultipleRoots");
+		AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FbxSkeletaLMeshimport_MultipleRootFound", "Multiple roots found")), "FFbxErrors::SkeletalMesh_MultipleRoots");
 		// I can't delete object here since this is middle of import
 		// but I can move to transient package, and GC will automatically collect it
 		SkeletalMesh->ClearFlags(RF_Standalone);
@@ -756,6 +724,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		SkeletalMeshImportData::FMaterial NewMaterial;
 		SkelMeshImportDataPtr->Materials.Add(NewMaterial);
 	}
+
 	if (!FillSkelMeshImporterFromFbx(*SkelMeshImportDataPtr, pmxMeshInfoPtr, InParent))
 	{
 		// I can't delete object here since this is middle of import
@@ -785,7 +754,6 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		SkeletalMesh->Rename(NULL, GetTransientPackage());
 		return NULL;
 	}
-	UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("Bones digested - %i  Depth of hierarchy - %i"), SkeletalMesh->GetRefSkeleton().GetNum(), SkeletalDepth);
 
 	// process bone influences from import data
 	SkeletalMeshImportUtils::ProcessImportMeshInfluences(*SkelMeshImportDataPtr, L"MMDMeshName");
@@ -809,6 +777,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 	ImportedResource->LODModels.Add(new FSkeletalMeshLODModel());
 
 	// SkeletalMesh->CommitMeshDescription(0);
+	// SkeletalMesh->SaveLODImportedData(0, *SkelMeshImportDataPtr);
 
 	UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("ImportSkeletalMesh: Added new LODModel. Total LOD count is now: %d. The only valid index should be 0."), ImportedResource->LODModels.Num());
 	FSkeletalMeshLODModel& LODModel = ImportedResource->LODModels[0];
@@ -839,7 +808,6 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 
 	// Pass the number of texture coordinate sets to the LODModel.  Ensure there is at least one UV coord
 	LODModel.NumTexCoords = FMath::Max<uint32>(1, SkelMeshImportDataPtr->NumTexCoords);
-	if (bCreateRenderData)
 	{
 		TArray<FVector3f> LODPoints;
 		TArray<SkeletalMeshImportData::FMeshWedge> LODWedges;
@@ -847,9 +815,6 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		TArray<SkeletalMeshImportData::FVertInfluence> LODInfluences;
 		TArray<int32> LODPointToRawMap;
 		SkelMeshImportDataPtr->CopyLODImportData(LODPoints, LODWedges, LODFaces, LODInfluences, LODPointToRawMap);
-
-		const bool bShouldComputeNormals = true /*!ImportOptions->ShouldImportNormals()*/ || !SkelMeshImportDataPtr->bHasNormals;
-		const bool bShouldComputeTangents = true /*!ImportOptions->ShouldImportTangents()*/ || !SkelMeshImportDataPtr->bHasTangents;
 
 		IMeshUtilities& MeshUtilities = FModuleManager::Get().LoadModuleChecked<IMeshUtilities>("MeshUtilities");
 
@@ -867,7 +832,6 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 				LODPoints,
 				LODPointToRawMap))
 		{
-			// error handling
 			SkeletalMesh->MarkAsGarbage();
 			return NULL;
 		}
@@ -897,6 +861,8 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		SkeletalMesh->GetAssetImportData()->Update(UFactory::CurrentFilename);
 		SkeletalMesh->CalculateInvRefMatrices();
 		SkeletalMesh->Build();
+		// SkeletalMesh->CommitMeshDescription(0);
+		// SkeletalMesh->SaveLODImportedData(0, *SkelMeshImportDataPtr);
 		SkeletalMesh->PostEditChange();
 		SkeletalMesh->MarkPackageDirty();
 
@@ -951,22 +917,18 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 					{
 						TObjectPtr<USkeletalBodySetup>& bd = NewPhysicsAsset->SkeletalBodySetups[i];
 						USkeletalBodySetup* pbd = bd.Get();
-						FName bname = pbd->BoneName; // pbd->GetFName();
+						FName bname = pbd->BoneName;
 						TArray<PMX_RIGIDBODY> rbs = pmxMeshInfoPtr->findRigid(bname);
 
 						FKAggregateGeom& ag = pbd->AggGeom;
-
 						ag.EmptyElements();
 						if (rbs.Num() < 1)
 						{
 							FKBoxElem ke(0.5, 0.5, 1);
-
 							ag.BoxElems.Add(ke);
 							pbd->PhysicsType = PhysType_Kinematic;
 							pbd->CollisionReponse = EBodyCollisionResponse::BodyCollision_Disabled;
-
 							ke.SetContributeToMass(false);
-							// pbd->BoneName = L"";
 							continue;
 						}
 
@@ -976,55 +938,46 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 							{
 								pbd->PhysicsType = PhysType_Kinematic;
 							}
-							else
-							{
-							}
 							FTransform ft;
 							ft.SetLocation((FVector)rb.Position);
-							// FQuat qd  = FRotator(rb.Rotation.X * 180.f / PI, rb.Rotation.Y * 180.f / PI, rb.Rotation.Z * 180.f / PI).Quaternion();
-
 							ft.SetRotation(rb.Quat);
 
 							if (rb.ShapeType == 0)
 							{
 								FKSphereElem ke(rb.Size.X);
-
 								ke.SetTransform(ft);
 								ke.SetContributeToMass(true);
-								// pbd->CalculateMass();
 								ag.SphereElems.Add(ke);
 							}
 							else if (rb.ShapeType == 1)
 							{
 								FKBoxElem ke(rb.Size.X, rb.Size.Z, rb.Size.Y);
-
-								// ft.SetRotation(qd);
 								ke.SetTransform(ft);
 								ke.SetContributeToMass(true);
-
 								ag.BoxElems.Add(ke);
 							}
 							else if (rb.ShapeType == 2)
 							{
 								FKSphylElem ke(rb.Size.X, rb.Size.Y);
-
 								ke.SetTransform(ft);
 								ke.SetContributeToMass(true);
-
 								ag.SphylElems.Add(ke);
 							}
 						}
 					}
 
 					for (int i = 0; i < bdn; i++)
+					{
 						for (int j = i + 1; j < bdn; j++)
+						{
 							if (NewPhysicsAsset->SkeletalBodySetups[i]->PhysicsType != NewPhysicsAsset->SkeletalBodySetups[j]->PhysicsType)
+							{
 								NewPhysicsAsset->EnableCollision(j, i);
-					// else						NewPhysicsAsset->DisableCollision(j, i);
+							}
+						}
+					}
 
-					// NewPhysicsAsset->ConstraintSetup.Empty();
 					int csn = NewPhysicsAsset->ConstraintSetup.Num();
-
 					for (int i = 0; i < csn; i++)
 					{
 						FConstraintInstance& cs = NewPhysicsAsset->ConstraintSetup[i]->DefaultInstance;
@@ -1035,13 +988,8 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 						cs.ProfileInstance.TwistLimit.TwistLimitDegrees = 0;
 						cs.ProfileInstance.ConeLimit.Swing1LimitDegrees = 25;
 						cs.ProfileInstance.ConeLimit.Swing2LimitDegrees = 5;
-
 						cs.SetDisableCollision(true);
 					}
-
-					// NewPhysicsAsset->PreEditChange(NULL);
-					// NewPhysicsAsset->PostEditChange();
-					// NewPhysicsAsset->MarkPackageDirty();
 				}
 			}
 		}
@@ -1129,14 +1077,7 @@ UMMDExtendAsset* UPmxFactory::CreateMMDExtendFromMMDModel(
 
 		if (!NewMMDExtendAsset)
 		{
-			AddTokenizedErrorMessage(
-				FTokenizedMessage::Create(
-					EMessageSeverity::Warning,
-					FText::Format(LOCTEXT("CouldNotCreateMMDExtendAsset",
-									  "Could not create MMD Extend Asset ('{0}') for '{1}'"),
-						FText::FromString(ObjectName),
-						FText::FromString(BaseName.ToString()))),
-				"FFbxErrors::SkeletalMesh_FailedToCreatePhyscisAsset");
+			AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Warning, FText::Format(LOCTEXT("CouldNotCreateMMDExtendAsset", "Could not create MMD Extend Asset ('{0}') for '{1}'"), FText::FromString(ObjectName), FText::FromString(BaseName.ToString()))), "FFbxErrors::SkeletalMesh_FailedToCreatePhyscisAsset");
 		}
 		else
 		{

@@ -165,7 +165,6 @@ void UPmxMaterialImport::AssetsCreateTexture(
 }
 
 UTexture* UPmxMaterialImport::ImportTexture(
-	// FbxFileTexture* FbxTexture,
 	FString InTextureFileName,
 	bool bSetupAsNormalMap)
 {
@@ -289,13 +288,11 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty(
 {
 	bool bCreated = false;
 
-	int32 TextureCount = PmxMaterial.TextureIndex; // FbxProperty.GetSrcObjectCount<FbxTexture>();
+	int32 TextureCount = PmxMaterial.TextureIndex;
 	if (TextureCount >= 0 && TextureCount < textureAssetList.Num())
 	{
 		// for (int32 TextureIndex = 0; TextureIndex<TextureCount; ++TextureIndex)
 		{
-			// FbxFileTexture* FbxTexture = FbxProperty.GetSrcObject<FbxFileTexture>(TextureIndex);
-
 			// create an unreal texture asset
 			UTexture* UnrealTexture = textureAssetList[TextureCount]; // ImportTexture(FbxTexture, bSetupAsNormalMap);
 
@@ -420,7 +417,6 @@ void UPmxMaterialImport::FixupMaterial(
 	if (UnrealMaterial->GetEditorOnlyData()->BaseColor.Expression == NULL)
 	{
 		UnrealMaterial->BlendMode = BLEND_Masked;
-		// FbxDouble3 DiffuseColor;
 
 		UMaterialExpressionVectorParameter* MyColorExpression = NewObject<UMaterialExpressionVectorParameter>(UnrealMaterial);
 		UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(MyColorExpression);
@@ -458,8 +454,6 @@ void UPmxMaterialImport::FixupMaterial(
 	// add a basic diffuse color if no texture is linked to diffuse
 	if (UnrealMaterial->GetEditorOnlyData()->AmbientOcclusion.Expression == NULL)
 	{
-		// FbxDouble3 DiffuseColor;
-
 		UMaterialExpressionVectorParameter* MyColorExpression = NewObject<UMaterialExpressionVectorParameter>(UnrealMaterial);
 		UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(MyColorExpression);
 		UnrealMaterial->GetEditorOnlyData()->AmbientOcclusion.Expression = MyColorExpression;
@@ -514,7 +508,6 @@ void UPmxMaterialImport::FixupMaterial(
 
 void UPmxMaterialImport::CreateUnrealMaterial(
 	FString ParentObjName,
-	// UObject * InParent,
 	MMD4UE5::PMX_MATERIAL& PmxMaterial,
 	bool bCreateMaterialInstanceMode,
 	bool bMaterialUnlit,
@@ -720,23 +713,18 @@ void UPmxMaterialImport::CreateUnrealMaterial(
 bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty_ForMmdAutoluminus(
 	MMD4UE5::PMX_MATERIAL& PmxMaterial,
 	UMaterial* UnrealMaterial,
-	// const char* MaterialProperty,
 	FExpressionInput& MaterialInput,
-	// bool bSetupAsNormalMap,
-	// TArray<FString>& UVSet,
 	const FVector2D& Location,
 	TArray<UTexture*>& textureAssetList)
 {
 	bool bCreated = false;
 
-	int32 TextureCount = PmxMaterial.TextureIndex; // FbxProperty.GetSrcObjectCount<FbxTexture>();
+	int32 TextureCount = PmxMaterial.TextureIndex;
 	if (TextureCount >= 0 && TextureCount < textureAssetList.Num())
 	{
 		// for (int32 TextureIndex = 0; TextureIndex<TextureCount; ++TextureIndex)
 		if (PmxMaterial.SphereMode == 2) // auto luminus
 		{
-			// FbxFileTexture* FbxTexture = FbxProperty.GetSrcObject<FbxFileTexture>(TextureIndex);
-
 			// create an unreal texture asset
 			UTexture* UnrealTexture = textureAssetList[TextureCount]; // ImportTexture(FbxTexture, bSetupAsNormalMap);
 
@@ -900,9 +888,6 @@ UMaterialInterface* UPmxMaterialImport::DuplicateBaseMaterial(
 	UMaterial* BaseMatOriginal = nullptr;
 
 	FAssetData AssetData = AssetRegistryModule.Get().GetAssetByObjectPath(FSoftObjectPath(*DupAssetBaseName));
-	// TArray<FAssetData> AssetDataArray;
-	// AssetRegistryModule.Get().GetAssetsByPath(FName(*DupAssetBaseName), AssetDataArray, true);
-	// FAssetData AssetData = AssetDataArray[0];
 	BaseMatOriginal = Cast<UMaterial>(AssetData.GetAsset());
 	// check(BaseMatOriginal);
 	if (nullptr == BaseMatOriginal)
