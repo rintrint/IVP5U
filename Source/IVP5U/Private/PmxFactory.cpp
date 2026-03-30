@@ -808,13 +808,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 	ImportedResource->LODModels.Empty();
 	ImportedResource->LODModels.Add(new FSkeletalMeshLODModel());
 
-	// Bridge legacy ImportData to MeshDescription API
-	FMeshDescription* MeshDescription = SkeletalMesh->CreateMeshDescription(0);
-	if (MeshDescription)
-	{
-		SkelMeshImportDataPtr->GetMeshDescription(SkeletalMesh, nullptr, *MeshDescription);
-		SkeletalMesh->CommitMeshDescription(0);
-	}
+	SkeletalMesh->CommitMeshDescription(0);
 
 	UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("ImportSkeletalMesh: Added new LODModel. Total LOD count is now: %d. The only valid index should be 0."), ImportedResource->LODModels.Num());
 	FSkeletalMeshLODModel& LODModel = ImportedResource->LODModels[0];

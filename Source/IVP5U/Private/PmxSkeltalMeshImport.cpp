@@ -937,22 +937,7 @@ void UPmxFactory::ImportFbxMorphTarget(
 			Filename,
 			LODIndex,
 			ImportData);
-
-		// Use modern MeshDescription API to save Morph Target data, avoiding deprecation warning
-		FMeshDescription* MeshDescription = BaseSkelMesh->GetMeshDescription(LODIndex);
-		if (!MeshDescription)
-		{
-			MeshDescription = BaseSkelMesh->CreateMeshDescription(LODIndex);
-		}
-
-		if (MeshDescription)
-		{
-			// Convert legacy FSkeletalMeshImportData to the new FMeshDescription
-			ImportData.GetMeshDescription(BaseSkelMesh, nullptr, *MeshDescription);
-
-			// Safely commit the populated MeshDescription
-			BaseSkelMesh->CommitMeshDescription(LODIndex);
-		}
+		BaseSkelMesh->CommitMeshDescription(LODIndex);
 	}
 }
 
