@@ -933,12 +933,19 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 				else
 				{
 					int bdn = NewPhysicsAsset->SkeletalBodySetups.Num();
+					TArray<PMX_RIGIDBODY> bodyRigids;
+					bodyRigids.SetNum(bdn);
 					for (int i = 0; i < bdn; i++)
 					{
 						TObjectPtr<USkeletalBodySetup>& bd = NewPhysicsAsset->SkeletalBodySetups[i];
 						USkeletalBodySetup* pbd = bd.Get();
 						FName bname = pbd->BoneName;
 						TArray<PMX_RIGIDBODY> rbs = pmxMeshInfoPtr->findRigid(bname);
+
+						if (rbs.Num() > 0)
+						{
+							bodyRigids[i] = rbs[0];
+						}
 
 						FKAggregateGeom& ag = pbd->AggGeom;
 						ag.EmptyElements();
@@ -954,9 +961,18 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 
 						for (auto rb : rbs)
 						{
-							if (rb.Mass < 0.001 || rb.RigidBodyGroupIndex < 3)
+							switch (rb.OpType)
 							{
-								pbd->PhysicsType = PhysType_Kinematic;
+								case 0: // 追踪骨骼
+									pbd->PhysicsType = PhysType_Kinematic;
+									break;
+								case 1: // 物理演算
+								case 2: // 物理+骨骼位置统一
+									pbd->PhysicsType = PhysType_Simulated;
+									break;
+								default:
+									pbd->PhysicsType = PhysType_Kinematic;
+									break;
 							}
 							FTransform ft;
 							ft.SetLocation((FVector)rb.Position);
@@ -990,9 +1006,18 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 					{
 						for (int j = i + 1; j < bdn; j++)
 						{
-							if (NewPhysicsAsset->SkeletalBodySetups[i]->PhysicsType != NewPhysicsAsset->SkeletalBodySetups[j]->PhysicsType)
+							const PMX_RIGIDBODY& rbi = bodyRigids[i];
+							const PMX_RIGIDBODY& rbj = bodyRigids[j];
+
+							uint16 groupI = (uint16)(1 << rbi.RigidBodyGroupIndex);
+							uint16 groupJ = (uint16)(1 << rbj.RigidBodyGroupIndex);
+
+							bool iBlocksJ = (rbi.RigidBodyGroupTarget & groupJ) != 0;
+							bool jBlocksI = (rbj.RigidBodyGroupTarget & groupI) != 0;
+
+							if (!iBlocksJ && !jBlocksI)
 							{
-								NewPhysicsAsset->EnableCollision(j, i);
+								NewPhysicsAsset->EnableCollision(i, j);
 							}
 						}
 					}
