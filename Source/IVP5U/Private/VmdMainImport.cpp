@@ -49,7 +49,7 @@ VMDImportOptions* GetVMDImportOptions(
 		}
 		else
 		{
-			ImportUI->Skeleton = NULL;
+			ImportUI->Skeleton = nullptr;
 		}
 
 		if (ImportOptions->SkeletalMeshForAnimation)
@@ -58,7 +58,7 @@ VMDImportOptions* GetVMDImportOptions(
 		}
 		else
 		{
-			ImportUI->SkeletonMesh = NULL;
+			ImportUI->SkeletonMesh = nullptr;
 		}
 
 		// last select asset ref
@@ -68,7 +68,7 @@ VMDImportOptions* GetVMDImportOptions(
 		}
 		else
 		{
-			ImportUI->MmdExtendAsset = NULL;
+			ImportUI->MmdExtendAsset = nullptr;
 		}
 		if (ImportOptions->MMD2UE5NameTableRow)
 		{
@@ -76,7 +76,7 @@ VMDImportOptions* GetVMDImportOptions(
 		}
 		else
 		{
-			ImportUI->MMD2UE5NameTableRow = NULL;
+			ImportUI->MMD2UE5NameTableRow = nullptr;
 		}
 		if (ImportOptions->AnimSequenceAsset)
 		{
@@ -84,7 +84,7 @@ VMDImportOptions* GetVMDImportOptions(
 		}
 		else
 		{
-			ImportUI->AnimSequenceAsset = NULL;
+			ImportUI->AnimSequenceAsset = nullptr;
 		}
 		if (ImportOptions->ImportUniformScale)
 		{
@@ -160,7 +160,7 @@ VMDImportOptions* GetVMDImportOptions(
 	{
 		return VmdImporter->GetImportOptions();
 	}
-	return NULL;
+	return nullptr;
 }
 
 void ApplyVMDImportUIToImportOptions(
@@ -191,9 +191,7 @@ void ApplyVMDImportUIToImportOptions(
 TSharedPtr<FVmdImporter> FVmdImporter::StaticInstance;
 
 FVmdImporter::FVmdImporter()
-	: /* Scene(NULL)
-	 , */
-	ImportOptions(NULL)
+	: ImportOptions(nullptr)
 {
 	ImportOptions = new VMDImportOptions();
 	FMemory::Memzero(*ImportOptions);
@@ -225,17 +223,17 @@ void FVmdImporter::CleanUp()
 	ReleaseScene();
 
 	delete GeometryConverter;
-	GeometryConverter = NULL;
+	GeometryConverter = nullptr;
 #endif
 	delete ImportOptions;
-	ImportOptions = NULL;
+	ImportOptions = nullptr;
 #if 0
 	if (SdkManager)
 	{
 		SdkManager->Destroy();
 	}
-	SdkManager = NULL;
-	Logger = NULL;
+	SdkManager = nullptr;
+	Logger = nullptr;
 #endif
 }
 
@@ -253,7 +251,7 @@ UVmdImportUI::UVmdImportUI(const FObjectInitializer& ObjectInitializer)
 bool UVmdImportUI::CanEditChange(const FProperty* InProperty) const
 {
 	bool bIsMutable = Super::CanEditChange(InProperty);
-	if (bIsMutable && InProperty != NULL)
+	if (bIsMutable && InProperty != nullptr)
 	{
 		FName PropName = InProperty->GetFName();
 

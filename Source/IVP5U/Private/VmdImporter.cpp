@@ -193,7 +193,7 @@ namespace MMD4UE5
 		{
 			// Keys
 			TArray<VmdKeyTrackList> tempKeyBoneList;
-			VmdKeyTrackList* vmdKeyTrackPtr = NULL;
+			VmdKeyTrackList* vmdKeyTrackPtr = nullptr;
 
 			// VMD Key
 			boneTrackNameMap.Empty(readData->vmdKeyCount / 10); // 预估轨道数量
@@ -256,7 +256,7 @@ namespace MMD4UE5
 		{
 			// Skins
 			TArray<VmdFaceTrackList> tempKeyFaceList;
-			VmdFaceTrackList* vmdFaceTrackPtr = NULL;
+			VmdFaceTrackList* vmdFaceTrackPtr = nullptr;
 
 			// 优化：使用哈希映射跟踪表情名称
 			faceTrackNameMap.Empty(readData->vmdFaceCount / 5); // 预估轨道数量
@@ -320,8 +320,8 @@ namespace MMD4UE5
 		{
 			// Keys
 			TArray<VmdCameraTrackList> tempKeyCamList;
-			VmdCameraTrackList* vmdCamKeyTrackPtr = NULL;
-			VMD_CAMERA* vmdCamKeyPtr = NULL;
+			VmdCameraTrackList* vmdCamKeyTrackPtr = nullptr;
+			VMD_CAMERA* vmdCamKeyPtr = nullptr;
 
 			// Camera Key - 相机轨道只有一个，无需使用映射
 			tempKeyCamList.Empty();

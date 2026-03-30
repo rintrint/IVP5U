@@ -37,7 +37,7 @@ void CheckLimitAngle(
 UVmdFactory::UVmdFactory(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	SupportedClass = NULL;
+	SupportedClass = nullptr;
 	// SupportedClass = UPmxFactory::StaticClass();
 	Formats.Empty();
 
@@ -93,7 +93,7 @@ UObject* UVmdFactory::FactoryCreateBinary(
 	if (vmdMotionInfo.VMDLoaderBinary(Buffer, BufferEnd) == false)
 	{
 		UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("VMD导入取消: VMD数据读取失败"));
-		return NULL;
+		return nullptr;
 	}
 	UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("读取VMD文件耗时：%.3fs"), FPlatformTime::Seconds() - StartTime);
 
@@ -135,11 +135,11 @@ UObject* UVmdFactory::FactoryCreateBinary(
 			(vmdMotionInfo.maxFrame + 1) / 30.0f); // 假设VMD帧率为30fps
 	}
 
-	UAnimSequence* LastCreatedAnim = NULL;
-	USkeleton* Skeleton = NULL;
-	USkeletalMesh* SkeletalMesh = NULL;
-	UIKRigDefinition* IKRig = NULL;
-	VMDImportOptions* ImportOptions = NULL;
+	UAnimSequence* LastCreatedAnim = nullptr;
+	USkeleton* Skeleton = nullptr;
+	USkeletalMesh* SkeletalMesh = nullptr;
+	UIKRigDefinition* IKRig = nullptr;
+	VMDImportOptions* ImportOptions = nullptr;
 
 	// 检查是否为相机动画
 	if (vmdMotionInfo.keyCameraList.Num() == 0)
@@ -174,7 +174,7 @@ UObject* UVmdFactory::FactoryCreateBinary(
 		{
 			UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("用户取消VMD导入"));
 			bOutOperationCanceled = true; // 设置引擎级取消标誌
-			return NULL;				  // 返回NULL表示没有创建资产
+			return nullptr;				  // 返回nullptr表示没有创建资产
 		}
 
 		/* 第一次判定 */
@@ -203,7 +203,7 @@ UObject* UVmdFactory::FactoryCreateBinary(
 				{
 					UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("用户取消VMD导入"));
 					bOutOperationCanceled = true; // 设置引擎级取消标誌
-					return NULL;				  // 返回NULL表示没有创建资产
+					return nullptr;				  // 返回nullptr表示没有创建资产
 				}
 			}
 		}
@@ -280,7 +280,7 @@ UObject* UVmdFactory::FactoryCreateBinary(
 		}
 
 		bOutOperationCanceled = true; // 设置引擎级取消标誌
-		return NULL;				  // 返回NULL表示没有创建资产
+		return nullptr;				  // 返回nullptr表示没有创建资产
 	}
 	return LastCreatedAnim;
 };
@@ -302,13 +302,13 @@ UAnimSequence* UVmdFactory::ImportAnimations(
 	MMD4UE5::VmdMotionInfo* vmdMotionInfo,
 	VMDImportOptions* ImportOptions)
 {
-	UAnimSequence* LastCreatedAnim = NULL;
+	UAnimSequence* LastCreatedAnim = nullptr;
 
 	// 检查骨骼是否存在
-	if (Skeleton == NULL)
+	if (Skeleton == nullptr)
 	{
 		UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("ImportAnimations: Skeleton为空"));
-		return NULL;
+		return nullptr;
 	}
 
 	FString SequenceName = FString::Printf(TEXT("A_%s"), *Name);
@@ -324,7 +324,7 @@ UAnimSequence* UVmdFactory::ImportAnimations(
 	else
 	{
 		UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("获取动画路径失败"));
-		return NULL;
+		return nullptr;
 	}
 
 	// 优化：直接使用格式化字符串
@@ -544,12 +544,12 @@ UAnimSequence* UVmdFactory::AddtionalMorphCurveImportToAnimations(
 	UDataTable* ReNameTable,
 	MMD4UE5::VmdMotionInfo* vmdMotionInfo)
 {
-	USkeleton* Skeleton = NULL;
+	USkeleton* Skeleton = nullptr;
 	// we need skeleton to create animsequence
-	if (exsistAnimSequ == NULL)
+	if (exsistAnimSequ == nullptr)
 	{
 		UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("exsistAnimSequ为空"));
-		return NULL;
+		return nullptr;
 	}
 
 	Skeleton = exsistAnimSequ->GetSkeleton();
@@ -1335,7 +1335,7 @@ bool UVmdFactory::FindTableRowMMD2UEName(
 	FName mmdName,
 	FName* ue5Name)
 {
-	if (ReNameTable == NULL || ue5Name == NULL)
+	if (ReNameTable == nullptr || ue5Name == nullptr)
 	{
 		return false;
 	}
@@ -1394,7 +1394,7 @@ FTransform UVmdFactory::CalcGlbTransformFromBoneName(
 	FName BoneName,
 	int32 keyIndex)
 {
-	if (DestSeq == NULL || Skeleton == NULL || BoneName == NAME_None || keyIndex < 0)
+	if (DestSeq == nullptr || Skeleton == nullptr || BoneName == NAME_None || keyIndex < 0)
 	{
 		// 错误输入参数
 		return FTransform::Identity;
@@ -1451,14 +1451,14 @@ bool UVmdFactory::ImportVmdFromFile(FString file, USkeletalMesh* SkeletalMesh)
 				if (FFileHelper::LoadFileToArray(File_Result, *file))
 				{
 					const uint8* DataPtr = File_Result.GetData();
-					if (vmdMotionInfo.VMDLoaderBinary(DataPtr, NULL) == false)
+					if (vmdMotionInfo.VMDLoaderBinary(DataPtr, nullptr) == false)
 					{
 						UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("VMD Import error: vmd data load faile."));
 						return false;
 					}
-					UAnimSequence* LastCreatedAnim = NULL;
-					USkeleton* Skeleton = NULL;
-					// UIKRigDefinition* IKRig = NULL;
+					UAnimSequence* LastCreatedAnim = nullptr;
+					USkeleton* Skeleton = nullptr;
+					// UIKRigDefinition* IKRig = nullptr;
 
 					// 創建一個默認的 ImportOptions
 					VMDImportOptions DefaultImportOptions;
@@ -1466,8 +1466,8 @@ bool UVmdFactory::ImportVmdFromFile(FString file, USkeletalMesh* SkeletalMesh)
 					DefaultImportOptions.ImportUniformScale = 0.08f; // 設置默認縮放為 0.08
 
 					VMDImportOptions* ImportOptions = &DefaultImportOptions;
-					UDataTable* MMD2UE5NameTable = NULL;
-					// UMMDExtendAsset* MMDasset = NULL;
+					UDataTable* MMD2UE5NameTable = nullptr;
+					// UMMDExtendAsset* MMDasset = nullptr;
 					if (SkeletalMesh)
 					{
 						Skeleton = SkeletalMesh->GetSkeleton();
@@ -1475,11 +1475,11 @@ bool UVmdFactory::ImportVmdFromFile(FString file, USkeletalMesh* SkeletalMesh)
 						LastCreatedAnim = MyFactory->ImportAnimations(
 							Skeleton,
 							SkeletalMesh,
-							NULL,
+							nullptr,
 							filepath,
-							NULL,
+							nullptr,
 							MMD2UE5NameTable,
-							NULL,
+							nullptr,
 							&vmdMotionInfo,
 							ImportOptions);
 						return true;

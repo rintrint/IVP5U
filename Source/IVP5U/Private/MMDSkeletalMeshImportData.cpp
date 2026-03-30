@@ -18,7 +18,7 @@ UMMDSkeletalMeshImportData* UMMDSkeletalMeshImportData::GetImportDataForSkeletal
 		ImportData = NewObject<UMMDSkeletalMeshImportData>(SkeletalMesh, NAME_None, RF_NoFlags, TemplateForCreation);
 
 		// Try to preserve the source file path if possible
-		if (SkeletalMesh->GetAssetImportData() != NULL)
+		if (SkeletalMesh->GetAssetImportData() != nullptr)
 		{
 			ImportData->SourceData = SkeletalMesh->GetAssetImportData()->SourceData;
 		}

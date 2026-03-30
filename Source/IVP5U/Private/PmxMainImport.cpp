@@ -51,7 +51,7 @@ PMXImportOptions* GetImportOptions(
 		}
 		else
 		{
-			ImportUI->Skeleton = NULL;
+			ImportUI->Skeleton = nullptr;
 		}
 
 		if (ImportOptions->PhysicsAsset)
@@ -60,7 +60,7 @@ PMXImportOptions* GetImportOptions(
 		}
 		else
 		{
-			ImportUI->PhysicsAsset = NULL;
+			ImportUI->PhysicsAsset = nullptr;
 		}
 		if (bForceImportType)
 		{
@@ -75,7 +75,7 @@ PMXImportOptions* GetImportOptions(
 		}
 		else
 		{
-			ImportUI->MmdExtendAsset = NULL;
+			ImportUI->MmdExtendAsset = nullptr;
 		}
 		if (ImportOptions->MMD2UE5NameTableRow)
 		{
@@ -83,7 +83,7 @@ PMXImportOptions* GetImportOptions(
 		}
 		else
 		{
-			ImportUI->MMD2UE5NameTableRow = NULL;
+			ImportUI->MMD2UE5NameTableRow = nullptr;
 		}
 		if (ImportOptions->AnimSequenceAsset)
 		{
@@ -91,7 +91,7 @@ PMXImportOptions* GetImportOptions(
 		}
 		else
 		{
-			ImportUI->AnimSequenceAsset = NULL;
+			ImportUI->AnimSequenceAsset = nullptr;
 		}
 
 		ImportUI->bImportAsSkeletal = ImportUI->MeshTypeToImport == PMXIT_SkeletalMesh;
@@ -159,7 +159,7 @@ PMXImportOptions* GetImportOptions(
 	{
 		return PmxImporter->GetImportOptions();
 	}
-	return NULL;
+	return nullptr;
 }
 
 void ApplyImportUIToImportOptions(
@@ -251,15 +251,15 @@ void ApplyImportUIToImportOptions(
 TSharedPtr<FPmxImporter> FPmxImporter::StaticInstance;
 
 FPmxImporter::FPmxImporter()
-	: /* Scene(NULL)
+	: /* Scene(nullptr)
 	 , */
-	ImportOptions(NULL)
+	ImportOptions(nullptr)
 /*
-, GeometryConverter(NULL)
-, SdkManager(NULL)
-, Importer(NULL)
+, GeometryConverter(nullptr)
+, SdkManager(nullptr)
+, Importer(nullptr)
 , bFirstMesh(true)
-, Logger(NULL)
+, Logger(nullptr)
 */
 {
 #if 0
@@ -272,7 +272,7 @@ FPmxImporter::FPmxImporter()
 
 	// Create the geometry converter
 	GeometryConverter = new FbxGeometryConverter(SdkManager);
-	Scene = NULL;
+	Scene = nullptr;
 
 	CurPhase = NOTSTARTED;
 #endif
@@ -306,17 +306,17 @@ void FPmxImporter::CleanUp()
 	ReleaseScene();
 
 	delete GeometryConverter;
-	GeometryConverter = NULL;
+	GeometryConverter = nullptr;
 #endif
 	delete ImportOptions;
-	ImportOptions = NULL;
+	ImportOptions = nullptr;
 #if 0
 	if (SdkManager)
 	{
 		SdkManager->Destroy();
 	}
-	SdkManager = NULL;
-	Logger = NULL;
+	SdkManager = nullptr;
+	Logger = nullptr;
 #endif
 }
 
@@ -342,7 +342,7 @@ UPmxImportUI::UPmxImportUI(const FObjectInitializer& ObjectInitializer)
 bool UPmxImportUI::CanEditChange(const FProperty* InProperty) const
 {
 	bool bIsMutable = Super::CanEditChange(InProperty);
-	if (bIsMutable && InProperty != NULL)
+	if (bIsMutable && InProperty != nullptr)
 	{
 		FName PropName = InProperty->GetFName();
 

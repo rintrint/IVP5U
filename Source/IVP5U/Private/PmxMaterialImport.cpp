@@ -50,7 +50,7 @@ void UPmxMaterialImport::AssetsCreateTexture(
 		// TODO: 考虑ImageBaseDirectory
 		FString FileName = CurPath / ImagePaths[i];
 
-		UTexture* ImportedTexture = NULL;
+		UTexture* ImportedTexture = nullptr;
 		if (ExistImages.Contains(ImagePaths[i]))
 		{
 			ImportedTexture = ExistImages.FindChecked(ImagePaths[i]);
@@ -73,7 +73,7 @@ void UPmxMaterialImport::AssetsCreateTexture(
 
 		FString BasePackageName_2 = UPackageTools::SanitizePackageName(BasePackageName);
 
-		UTexture* ExistingTexture = NULL;
+		UTexture* ExistingTexture = nullptr;
 		// First check if the asset already exists.
 		{
 			FString ObjectPath = BasePackageName_2 + TEXT(".") + TextureName;
@@ -97,7 +97,7 @@ void UPmxMaterialImport::AssetsCreateTexture(
 			TextureFact->AddToRoot();
 			// save texture settings if texture exist
 			TextureFact->SuppressImportOverwriteDialog();
-			UPackage* TexturePackage = NULL;
+			UPackage* TexturePackage = nullptr;
 			if (ImportedTexture)
 			{
 				TexturePackage = ImportedTexture->GetOutermost();
@@ -117,7 +117,7 @@ void UPmxMaterialImport::AssetsCreateTexture(
 				TexturePackage,
 				FName(*TextureName),
 				RF_Standalone | RF_Public,
-				NULL,
+				nullptr,
 				*FPaths::GetExtension(ImagePaths[i]),
 				BufferBegin,
 				BufferEnd,
@@ -168,7 +168,7 @@ UTexture* UPmxMaterialImport::ImportTexture(
 	bool bSetupAsNormalMap)
 {
 	// create an unreal texture asset
-	UTexture* UnrealTexture = NULL;
+	UTexture* UnrealTexture = nullptr;
 	FString Filename1 = InTextureFileName; // ANSI_TO_TCHAR(FbxTexture->GetFileName());
 	FString Extension = FPaths::GetExtension(Filename1).ToLower();
 	// name the texture with file name
@@ -180,8 +180,8 @@ UTexture* UPmxMaterialImport::ImportTexture(
 	FString BasePackageName = FPackageName::GetLongPackagePath(InParent->GetOutermost()->GetName()) / TextureName;
 	BasePackageName = UPackageTools::SanitizePackageName(BasePackageName);
 
-	UTexture* ExistingTexture = NULL;
-	UPackage* TexturePackage = NULL;
+	UTexture* ExistingTexture = nullptr;
+	UPackage* TexturePackage = nullptr;
 	// First check if the asset already exists.
 	{
 		FString ObjectPath = BasePackageName + TEXT(".") + TextureName;
@@ -259,10 +259,10 @@ UTexture* UPmxMaterialImport::ImportTexture(
 
 		UnrealTexture = (UTexture*)TextureFact->FactoryCreateBinary(
 			UTexture2D::StaticClass(), TexturePackage, *TextureName,
-			RF_Standalone | RF_Public, NULL, TextureType,
+			RF_Standalone | RF_Public, nullptr, TextureType,
 			PtrTexture, PtrTexture + DataBinary.Num(), GWarn);
 
-		if (UnrealTexture != NULL)
+		if (UnrealTexture != nullptr)
 		{
 			// Notify the asset registry
 			FAssetRegistryModule::AssetCreated(UnrealTexture);
@@ -413,7 +413,7 @@ void UPmxMaterialImport::FixupMaterial(
 	MMD4UE5::PMX_MATERIAL& PmxMaterial,
 	UMaterial* UnrealMaterial)
 {
-	if (UnrealMaterial->GetEditorOnlyData()->BaseColor.Expression == NULL)
+	if (UnrealMaterial->GetEditorOnlyData()->BaseColor.Expression == nullptr)
 	{
 		UnrealMaterial->BlendMode = BLEND_Masked;
 
@@ -451,7 +451,7 @@ void UPmxMaterialImport::FixupMaterial(
 	}
 
 	// add a basic diffuse color if no texture is linked to diffuse
-	if (UnrealMaterial->GetEditorOnlyData()->AmbientOcclusion.Expression == NULL)
+	if (UnrealMaterial->GetEditorOnlyData()->AmbientOcclusion.Expression == nullptr)
 	{
 		UMaterialExpressionVectorParameter* MyColorExpression = NewObject<UMaterialExpressionVectorParameter>(UnrealMaterial);
 		UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(MyColorExpression);
@@ -587,9 +587,9 @@ void UPmxMaterialImport::CreateUnrealMaterial(
 		auto MaterialFactory = NewObject<UMaterialFactoryNew>();
 
 		UMaterial* UnrealMaterial = (UMaterial*)MaterialFactory->FactoryCreateNew(
-			UMaterial::StaticClass(), Package, *MaterialFullName, RF_Standalone | RF_Public, NULL, GWarn);
+			UMaterial::StaticClass(), Package, *MaterialFullName, RF_Standalone | RF_Public, nullptr, GWarn);
 
-		if (UnrealMaterial != NULL)
+		if (UnrealMaterial != nullptr)
 		{
 			// Notify the asset registry
 			FAssetRegistryModule::AssetCreated(UnrealMaterial);
@@ -603,7 +603,7 @@ void UPmxMaterialImport::CreateUnrealMaterial(
 			CreateAndLinkExpressionForMaterialProperty(
 				PmxMaterial,
 				UnrealMaterial,
-				NULL,
+				nullptr,
 				UnrealMaterial->GetEditorOnlyData()->BaseColor,
 				false,
 				FVector2D(240, -320),
@@ -625,7 +625,7 @@ void UPmxMaterialImport::CreateUnrealMaterial(
 		FGlobalComponentReregisterContext RecreateComponents;
 
 		// let the material update itself if necessary
-		UnrealMaterial->PreEditChange(NULL);
+		UnrealMaterial->PreEditChange(nullptr);
 		UnrealMaterial->PostEditChange();
 		UnrealMaterial->MarkPackageDirty();
 		// ImportedMaterialData.AddImportedMaterial( FbxMaterial, *UnrealMaterial );
@@ -1024,7 +1024,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst(
 
 		UPackage* Package = CreatePackage(*FinalPackageName);
 		UObject* NewAsset = Factory->FactoryCreateNew(
-			UMaterialInstanceConstant::StaticClass(), Package, *NewMICName, RF_Standalone | RF_Public, NULL, GWarn);
+			UMaterialInstanceConstant::StaticClass(), Package, *NewMICName, RF_Standalone | RF_Public, nullptr, GWarn);
 
 		if (Cast<UMaterialInstanceConstant>(NewAsset))
 		{
@@ -1061,7 +1061,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Masked(
 	UMaterialInterface* ParentMaterial = this->DuplicateBaseMaterial(ParentObjName, E_DupBaseMat_Typ_Normal);
 	if (nullptr == ParentMaterial)
 	{
-		UE_LOG(LogCategoryPMXMaterialImport, Error, TEXT("[%s]:Parent Material NULL:Path[%s]"),
+		UE_LOG(LogCategoryPMXMaterialImport, Error, TEXT("[%s]:Parent Material nullptr:Path[%s]"),
 			*(FString(__FUNCTION__)), *ParentObjName);
 
 		return nullptr;
@@ -1073,7 +1073,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Masked(
 	pUMIC = Cast<UMaterialInstanceConstant>(UnrealMaterial);
 	if (nullptr == pUMIC)
 	{
-		UE_LOG(LogCategoryPMXMaterialImport, Error, TEXT("[%s]:Material NULL"), *(FString(__FUNCTION__)));
+		UE_LOG(LogCategoryPMXMaterialImport, Error, TEXT("[%s]:Material nullptr"), *(FString(__FUNCTION__)));
 
 		return nullptr;
 	}
@@ -1190,7 +1190,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Masked_Unlit(
 	UMaterialInterface* ParentMaterial = this->DuplicateBaseMaterial(ParentObjName, E_DupBaseMat_Typ_Unlit_Normal);
 	if (nullptr == ParentMaterial)
 	{
-		UE_LOG(LogCategoryPMXMaterialImport, Error, TEXT("[%s]:Parent Material NULL:Path[%s]"),
+		UE_LOG(LogCategoryPMXMaterialImport, Error, TEXT("[%s]:Parent Material nullptr:Path[%s]"),
 			*(FString(__FUNCTION__)), *ParentObjName);
 
 		return nullptr;
@@ -1202,7 +1202,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Masked_Unlit(
 	pUMIC = Cast<UMaterialInstanceConstant>(UnrealMaterial);
 	if (nullptr == pUMIC)
 	{
-		UE_LOG(LogCategoryPMXMaterialImport, Error, TEXT("[%s]:Material NULL"), *(FString(__FUNCTION__)));
+		UE_LOG(LogCategoryPMXMaterialImport, Error, TEXT("[%s]:Material nullptr"), *(FString(__FUNCTION__)));
 
 		return nullptr;
 	}
@@ -1287,7 +1287,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Luminous(
 	UMaterialInterface* ParentMaterial = this->DuplicateBaseMaterial(ParentObjName, E_DupBaseMat_Typ_Luminous);
 	if (nullptr == ParentMaterial)
 	{
-		UE_LOG(LogCategoryPMXMaterialImport, Error, TEXT("[%s]:Parent Material NULL:Path[%s]"),
+		UE_LOG(LogCategoryPMXMaterialImport, Error, TEXT("[%s]:Parent Material nullptr:Path[%s]"),
 			*(FString(__FUNCTION__)), *ParentObjName);
 
 		return nullptr;
@@ -1299,7 +1299,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Luminous(
 	pUMIC = Cast<UMaterialInstanceConstant>(UnrealMaterial);
 	if (nullptr == pUMIC)
 	{
-		UE_LOG(LogCategoryPMXMaterialImport, Error, TEXT("[%s]:Material NULL"), *(FString(__FUNCTION__)));
+		UE_LOG(LogCategoryPMXMaterialImport, Error, TEXT("[%s]:Material nullptr"), *(FString(__FUNCTION__)));
 
 		return nullptr;
 	}
@@ -1394,7 +1394,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Luminous_Unlit(
 	UMaterialInterface* ParentMaterial = this->DuplicateBaseMaterial(ParentObjName, E_DupBaseMat_Typ_Unlit_Luminous);
 	if (nullptr == ParentMaterial)
 	{
-		UE_LOG(LogCategoryPMXMaterialImport, Error, TEXT("[%s]:Parent Material NULL:Path[%s]"),
+		UE_LOG(LogCategoryPMXMaterialImport, Error, TEXT("[%s]:Parent Material nullptr:Path[%s]"),
 			*(FString(__FUNCTION__)), *ParentObjName);
 
 		return nullptr;
@@ -1406,7 +1406,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Luminous_Unlit(
 	pUMIC = Cast<UMaterialInstanceConstant>(UnrealMaterial);
 	if (nullptr == pUMIC)
 	{
-		UE_LOG(LogCategoryPMXMaterialImport, Error, TEXT("[%s]:Material NULL"), *(FString(__FUNCTION__)));
+		UE_LOG(LogCategoryPMXMaterialImport, Error, TEXT("[%s]:Material nullptr"), *(FString(__FUNCTION__)));
 
 		return nullptr;
 	}

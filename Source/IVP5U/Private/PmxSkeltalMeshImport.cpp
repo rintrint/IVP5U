@@ -179,7 +179,7 @@ void FMorphMeshRawSource::CalculateMorphTargetLODModel(const FMorphMeshRawSource
 				uint32* TargetVertIdx = WedgePointToVertexIndexMap.Find(BasePointIdx);
 
 				// only add the vertex if the source point was found
-				if (TargetVertIdx != NULL)
+				if (TargetVertIdx != nullptr)
 				{
 					// get target mesh vertex using its index buffer
 					const FMorphMeshVertexRaw& VTarget = TargetSource.Vertices[*TargetVertIdx];
@@ -694,26 +694,26 @@ UObject* UPmxFactory::CreateAssetOfClass(
 	UObject* Object = LoadObject<UObject>(Parent, *ObjectName, nullptr, LOAD_NoWarn | LOAD_Quiet);
 
 	// if object with same name but different class exists, warn user
-	if ((Object != NULL) && (Object->GetClass() != AssetClass))
+	if ((Object != nullptr) && (Object->GetClass() != AssetClass))
 	{
 		// UnFbx::FFbxImporter* FFbxImporter = UnFbx::FFbxImporter::GetInstance();
 		// FFbxImporter->AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("Error_AssetExist", "Asset with same name exists. Can't overwrite another asset")), FFbxErrors::Generic_SameNameAssetExists);
-		return NULL;
+		return nullptr;
 	}
 
 	// if object with same name exists, warn user
-	if (Object != NULL && !bAllowReplace)
+	if (Object != nullptr && !bAllowReplace)
 	{
 		// until we have proper error message handling so we don't ask every time, but once, I'm disabling it.
 		// 		if ( EAppReturnType::Yes != FMessageDialog::Open( EAppMsgType::YesNo, LocalizeSecure(NSLOCTEXT("UnrealEd", "Error_AssetExistAsk", "Asset with the name (`~) exists. Would you like to overwrite?").ToString(), *ParentPath) ) )
 		// 		{
-		// 			return NULL;
+		// 			return nullptr;
 		// 		}
 		// UnFbx::FFbxImporter* FFbxImporter = UnFbx::FFbxImporter::GetInstance();
 		// FFbxImporter->AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Warning, FText::Format(LOCTEXT("FbxSkeletaLMeshimport_SameNameExist", "Asset with the name ('{0}') exists. Overwriting..."), FText::FromString(ParentPath))), FFbxErrors::Generic_SameNameAssetOverriding);
 	}
 
-	if (Object == NULL)
+	if (Object == nullptr)
 	{
 		// add it to the set
 		// do not add to the set, now create independent asset

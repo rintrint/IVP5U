@@ -11,7 +11,7 @@ class SVmdOptionWindow : public SCompoundWidget
 {
 public:
 	SLATE_BEGIN_ARGS(SVmdOptionWindow)
-		: _ImportUI(NULL), _WidgetWindow(), _FullPath(), _ForcedImportType(), _IsObjFormat(false)
+		: _ImportUI(nullptr), _WidgetWindow(), _FullPath(), _ForcedImportType(), _IsObjFormat(false)
 	{
 	}
 
@@ -74,7 +74,7 @@ public:
 	}
 
 	SVmdOptionWindow()
-		: ImportUI(NULL), bShouldImport(false), bShouldImportAll(false)
+		: ImportUI(nullptr), bShouldImport(false), bShouldImportAll(false)
 	{
 	}
 

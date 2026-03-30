@@ -635,7 +635,7 @@ namespace MMD4UE5
 				if (pmxBonePtr.Flag_IK == 1)
 				{
 					// search ik-list from pmd data.
-					PMD_IK* tempPmdIKPtr = NULL;
+					PMD_IK* tempPmdIKPtr = nullptr;
 					for (int32 listIKIndx = 0; listIKIndx < pmdMeshInfoPtr->ikData.Count; ++listIKIndx)
 					{
 						if (pmdMeshInfoPtr->ikList[listIKIndx].Bone == (i - 1))
@@ -697,8 +697,8 @@ namespace MMD4UE5
 			// モーフ情報の数を取得
 			int32 PmxMorphNum = 0;
 			TArray<int32> pmdMorphIndexList;
-			PMD_SKIN* basePmdMorphPtr = NULL;	// base
-			PMD_SKIN* targetPmdMorphPtr = NULL; // モーフ変換時の変換元モーフ情報
+			PMD_SKIN* basePmdMorphPtr = nullptr;	// base
+			PMD_SKIN* targetPmdMorphPtr = nullptr; // モーフ変換時の変換元モーフ情報
 
 			for (i = 0; i < pmdMeshInfoPtr->skinData.Count; i++)
 			{
@@ -712,7 +712,7 @@ namespace MMD4UE5
 					PmxMorphNum++;
 					pmdMorphIndexList.Add(i);
 				}
-				else if (0 == pmdMeshInfoPtr->skinList[i].SkinType && basePmdMorphPtr == NULL)
+				else if (0 == pmdMeshInfoPtr->skinList[i].SkinType && basePmdMorphPtr == nullptr)
 				{
 					// もし既にBaseが登録されている場合(PMDフォーマットとして異常)は上書きしない
 					basePmdMorphPtr = &pmdMeshInfoPtr->skinList[i];

@@ -62,7 +62,7 @@ class UPmxImportUI : public UObject
 	UPROPERTY(EditAnywhere, config, Category = Mesh, meta = (OBJRestrict = "true", ImportType = "SkeletalMesh"))
 	uint32 bCreatePhysicsAsset : 1;
 
-	/** If this is set, use this PhysicsAsset. It is possible bCreatePhysicsAsset == false, and PhysicsAsset == NULL. It is possible they do not like to create anything. */
+	/** If this is set, use this PhysicsAsset. It is possible bCreatePhysicsAsset == false, and PhysicsAsset == nullptr. It is possible they do not like to create anything. */
 	// UPROPERTY(EditAnywhere, AdvancedDisplay, Category = Mesh, meta = (ImportType = "SkeletalMesh", editcondition = "!bCreatePhysicsAsset"))
 	class UPhysicsAsset* PhysicsAsset;
 

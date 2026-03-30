@@ -11,7 +11,7 @@ class SPmxOptionWindow : public SCompoundWidget
 {
 public:
 	SLATE_BEGIN_ARGS(SPmxOptionWindow)
-		: _ImportUI(NULL), _WidgetWindow(), _FullPath(), _ForcedImportType(), _IsObjFormat(false)
+		: _ImportUI(nullptr), _WidgetWindow(), _FullPath(), _ForcedImportType(), _IsObjFormat(false)
 	{
 	}
 
@@ -74,7 +74,7 @@ public:
 	}
 
 	SPmxOptionWindow()
-		: ImportUI(NULL), bShouldImport(false), bShouldImportAll(false)
+		: ImportUI(nullptr), bShouldImport(false), bShouldImportAll(false)
 	{
 	}
 

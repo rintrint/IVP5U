@@ -102,7 +102,7 @@ bool SPmxOptionWindow::CanImport()  const
 	// do test to see if we are ready to import
 	if (ImportUI->MeshTypeToImport == PMXIT_Animation)
 	{
-		if (ImportUI->Skeleton == NULL || !ImportUI->bImportAnimations)
+		if (ImportUI->Skeleton == nullptr || !ImportUI->bImportAnimations)
 		{
 			return false;
 		}

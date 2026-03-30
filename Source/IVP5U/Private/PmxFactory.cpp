@@ -60,7 +60,7 @@ using namespace MMD4UE5;
 UPmxFactory::UPmxFactory(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	SupportedClass = NULL;
+	SupportedClass = nullptr;
 	// SupportedClass = UPmxFactory::StaticClass();
 	Formats.Empty();
 
@@ -166,7 +166,7 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 				if (FFileHelper::LoadFileToArray(File_Result, *file))
 				{
 					const uint8* DataPtr = File_Result.GetData();
-					UObject* NewObject = NULL;
+					UObject* NewObject = nullptr;
 					FPmxImporter* PmxImporter = FPmxImporter::GetInstance();
 					EPMXImportType ForcedImportType = PMXIT_SkeletalMesh;
 					// For multiple files, use the same settings
@@ -185,13 +185,13 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 					if (bIsPmxFormat)
 					{
 						// pmx ver
-						pmxImportResult = pmxMeshInfoPtr.PMXLoaderBinary(DataPtr, NULL);
+						pmxImportResult = pmxMeshInfoPtr.PMXLoaderBinary(DataPtr, nullptr);
 					}
 					else
 					{
 						// pmd ver
 						MMD4UE5::PmdMeshInfo PmdMeshInfo;
-						if (PmdMeshInfo.PMDLoaderBinary(DataPtr, NULL))
+						if (PmdMeshInfo.PMDLoaderBinary(DataPtr, nullptr))
 						{
 							// Up convert From PMD to PMX format gfor UE5
 							pmxImportResult = PmdMeshInfo.ConvertToPmxFormat(&pmxMeshInfoPtr);
@@ -263,7 +263,7 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 								int32 NodeIndex = 0;
 
 								int32 ImportedMeshCount = 0;
-								UStaticMesh* NewStaticMesh = NULL;
+								UStaticMesh* NewStaticMesh = nullptr;
 
 								if (importAssetTypeMMD == E_MMD_TO_UE5_SKELTON) // skeletal mesh
 								{
@@ -278,7 +278,7 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 										// for MMD?
 										int32 MaxLODLevel = 1;
 										FSkeletalMeshImportData smid;
-										USkeletalMesh* NewMesh = NULL;
+										USkeletalMesh* NewMesh = nullptr;
 										if (LODIndex == 0)
 										{
 											NewMesh = ImportSkeletalMesh(
@@ -338,7 +338,7 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 							}
 						}
 
-						if (NewObject == NULL)
+						if (NewObject == nullptr)
 						{
 							AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoObject", "Import failed.")), "FFbxErrors::Generic_ImportingNewObjectFailed");
 							return false;
@@ -402,13 +402,13 @@ UObject* UPmxFactory::FactoryCreateBinary(
 	{
 		bOutOperationCanceled = true;
 
-		GEditor->GetEditorSubsystem<UImportSubsystem>()->OnAssetPostImport.Broadcast(this, NULL);
-		return NULL;
+		GEditor->GetEditorSubsystem<UImportSubsystem>()->OnAssetPostImport.Broadcast(this, nullptr);
+		return nullptr;
 	}
 
 	GEditor->GetEditorSubsystem<UImportSubsystem>()->OnAssetPreImport.Broadcast(this, Class, InParent, Name, Type);
 
-	UObject* NewObject = NULL;
+	UObject* NewObject = nullptr;
 
 	FPmxImporter* PmxImporter = FPmxImporter::GetInstance();
 
@@ -447,8 +447,8 @@ UObject* UPmxFactory::FactoryCreateBinary(
 	{
 		// Log the error message and fail the import.
 		Warn->Log(ELogVerbosity::Error, "PMX Import ERR...FLT");
-		GEditor->GetEditorSubsystem<UImportSubsystem>()->OnAssetPostImport.Broadcast(this, NULL);
-		return NULL;
+		GEditor->GetEditorSubsystem<UImportSubsystem>()->OnAssetPostImport.Broadcast(this, nullptr);
+		return nullptr;
 	}
 	else
 	{
@@ -459,8 +459,8 @@ UObject* UPmxFactory::FactoryCreateBinary(
 			FText::FromString(pmxMeshInfoPtr.modelNameJP), FText::FromString(pmxMeshInfoPtr.modelCommentJP));
 		// if (EAppReturnType::Ok != FMessageDialog::Open(EAppMsgType::OkCancel, Message))
 		//{
-		//	GEditor->GetEditorSubsystem<UImportSubsystem>()->OnAssetPostImport.Broadcast(this, NULL);
-		//	return NULL;
+		//	GEditor->GetEditorSubsystem<UImportSubsystem>()->OnAssetPostImport.Broadcast(this, nullptr);
+		//	return nullptr;
 		// }
 		TitleStr = FText::Format(LOCTEXT("ImportReadMe_Generic_Dbg", "{0} 制限事項"), FText::FromString("IVP5U Plugin"));
 		const FText MessageDbg = FText(LOCTEXT("ImportReadMe_Generic_Dbg_Msg",
@@ -527,7 +527,7 @@ UObject* UPmxFactory::FactoryCreateBinary(
 				int32 NodeIndex = 0;
 
 				int32 ImportedMeshCount = 0;
-				UStaticMesh* NewStaticMesh = NULL;
+				UStaticMesh* NewStaticMesh = nullptr;
 				if (importAssetTypeMMD == E_MMD_TO_UE5_STATICMESH) // static mesh
 				{
 				}
@@ -543,7 +543,7 @@ UObject* UPmxFactory::FactoryCreateBinary(
 						// for MMD?
 						int32 MaxLODLevel = 1;
 						FSkeletalMeshImportData smid;
-						USkeletalMesh* NewMesh = NULL;
+						USkeletalMesh* NewMesh = nullptr;
 						if (LODIndex == 0)
 						{
 							// UEnum* CompileModeEnum = GetStaticEnum <EObjectFlags>();
@@ -606,10 +606,10 @@ UObject* UPmxFactory::FactoryCreateBinary(
 			}
 		}
 
-		if (NewObject == NULL)
+		if (NewObject == nullptr)
 		{
 			AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoObject", "Import failed.")), "FFbxErrors::Generic_ImportingNewObjectFailed");
-			Warn->Log(ELogVerbosity::Error, "PMX Import ERR [NewObject is NULL]...FLT");
+			Warn->Log(ELogVerbosity::Error, "PMX Import ERR [NewObject is nullptr]...FLT");
 		}
 
 		Warn->EndSlowTask();
@@ -638,7 +638,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 	bool bDiffPose;
 	int32 SkelType = 0; // 0 for skeletal mesh, 1 for rigid mesh
 
-	struct ExistingSkelMeshData* ExistSkelMeshDataPtr = NULL;
+	struct ExistingSkelMeshData* ExistSkelMeshDataPtr = nullptr;
 
 	FString FolderPath = FPackageName::GetLongPackagePath(InParent->GetOutermost()->GetName());
 	FString NewPackagePath = FString::Printf(TEXT("%s/%s"), *FolderPath, *Name.ToString());
@@ -650,18 +650,18 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 
 		if (ExistingSkelMesh)
 		{
-			ExistingSkelMesh->PreEditChange(NULL);
+			ExistingSkelMesh->PreEditChange(nullptr);
 		}
 		// if any other object exists, we can't import with this name
 		else if (ExistingObject)
 		{
 			AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Warning, FText::Format(LOCTEXT("FbxSkeletaLMeshimport_OverlappingName", "Same name but different class: '{0}' already exists"), FText::FromString(ExistingObject->GetName()))), "FFbxErrors::Generic_SameNameAssetExists");
-			return NULL;
+			return nullptr;
 		}
 	}
 
 	USkeletalMesh* SkeletalMesh = NewObject<USkeletalMesh>(SkelMeshPackage, Name, Flags | RF_Public | RF_Standalone);
-	SkeletalMesh->PreEditChange(NULL);
+	SkeletalMesh->PreEditChange(nullptr);
 
 	FSkeletalMeshImportData TempData;
 	// Fill with data from buffer - contains the full .FBX file.
@@ -677,9 +677,9 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		// I can't delete object here since this is middle of import
 		// but I can move to transient package, and GC will automatically collect it
 		SkeletalMesh->ClearFlags(RF_Standalone);
-		SkeletalMesh->Rename(NULL, GetTransientPackage());
+		SkeletalMesh->Rename(nullptr, GetTransientPackage());
 		UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("ImportBone_out"));
-		return NULL;
+		return nullptr;
 	}
 
 	for (int32 MaterialIndex = 0; MaterialIndex < pmxMeshInfoPtr->materialList.Num(); ++MaterialIndex)
@@ -694,9 +694,9 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		// I can't delete object here since this is middle of import
 		// but I can move to transient package, and GC will automatically collect it
 		SkeletalMesh->ClearFlags(RF_Standalone);
-		SkeletalMesh->Rename(NULL, GetTransientPackage());
+		SkeletalMesh->Rename(nullptr, GetTransientPackage());
 		UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("FillSkelMeshImporterFromFbx_out"));
-		return NULL;
+		return nullptr;
 	}
 	else
 	{
@@ -725,14 +725,14 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 	if (!ProcessImportMeshSkeleton(SkeletalMesh->GetSkeleton(), SkeletalMesh->GetRefSkeleton(), SkeletalDepth, *SkelMeshImportDataPtr))
 	{
 		SkeletalMesh->ClearFlags(RF_Standalone);
-		SkeletalMesh->Rename(NULL, GetTransientPackage());
-		return NULL;
+		SkeletalMesh->Rename(nullptr, GetTransientPackage());
+		return nullptr;
 	}
 
 	// process bone influences from import data
 	SkeletalMeshImportUtils::ProcessImportMeshInfluences(*SkelMeshImportDataPtr, L"MMDMeshName");
 
-	SkeletalMesh->PreEditChange(NULL);
+	SkeletalMesh->PreEditChange(nullptr);
 	// Dirty the DDC Key for any imported Skeletal Mesh
 	SkeletalMesh->InvalidateDeriveDataCacheGUID();
 
@@ -804,7 +804,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 				LODPointToRawMap))
 		{
 			SkeletalMesh->MarkAsGarbage();
-			return NULL;
+			return nullptr;
 		}
 
 		// Build succeeded (with or without warnings)
@@ -828,7 +828,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		// ==============================================================================
 		// see if we have skeleton set up
 		// if creating skeleton, create skeleeton
-		USkeleton* Skeleton = NULL;
+		USkeleton* Skeleton = nullptr;
 		FString SkelObjectName = FString::Printf(TEXT("SK_%s"), *BaseName.ToString());
 		Skeleton = CreateAsset<USkeleton>(InParent->GetName(), SkelObjectName, true);
 		if (!Skeleton)
@@ -910,7 +910,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 	// ==============================================================================
 	if (InParent != GetTransientPackage() && ImportUI->bCreatePhysicsAsset)
 	{
-		if (SkeletalMesh->GetPhysicsAsset() == NULL)
+		if (SkeletalMesh->GetPhysicsAsset() == nullptr)
 		{
 			FString PhysObjectName = FString::Printf(TEXT("PA_%s"), *BaseName.ToString());
 			UPhysicsAsset* NewPhysicsAsset = CreateAsset<UPhysicsAsset>(InParent->GetName(), PhysObjectName, true);
@@ -1047,12 +1047,12 @@ UMMDExtendAsset* UPmxFactory::CreateMMDExtendFromMMDModel(
 	MMD4UE5::PmxMeshInfo* PmxMeshInfo,
 	const FName& BaseName)
 {
-	UMMDExtendAsset* NewMMDExtendAsset = NULL;
+	UMMDExtendAsset* NewMMDExtendAsset = nullptr;
 	check(SkeletalMesh->GetSkeleton());
 	// Add UE 4.9
-	if (SkeletalMesh->GetSkeleton() == NULL)
+	if (SkeletalMesh->GetSkeleton() == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	// issue #2 : Fix MMDExtend IK Index
