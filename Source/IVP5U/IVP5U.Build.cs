@@ -19,7 +19,16 @@ namespace UnrealBuildTool.Rules
         public IVP5U(ReadOnlyTargetRules Target) : base(Target)
         {
             // --- Warning level ---
+            // Low noise, safe to enable
+            CppCompileWarningSettings.DeprecationWarningLevel = WarningLevel.Error;
+            CppCompileWarningSettings.DeterministicWarningLevel = WarningLevel.Error;
+            CppCompileWarningSettings.ShadowVariableWarningLevel = WarningLevel.Error;
+            CppCompileWarningSettings.UndefinedIdentifierWarningLevel = WarningLevel.Error;
             CppCompileWarningSettings.UnsafeTypeCastWarningLevel = WarningLevel.Error;
+            // High noise, may flood engine logs
+            // CppCompileWarningSettings.ShortenSizeTToIntWarningLevel = WarningLevel.Error;
+            // CppCompileWarningSettings.SwitchUnhandledEnumeratorWarningLevel = WarningLevel.Error;
+            // CppCompileWarningSettings.UnusedParameterWarningLevel = WarningLevel.Error;
 
             // --- Include paths ---
             PublicIncludePaths.AddRange(
