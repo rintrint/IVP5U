@@ -691,7 +691,7 @@ UObject* UPmxFactory::CreateAssetOfClass(
 		*ObjectName);
 	UObject* Parent = CreatePackage(*ParentPath);
 	// See if an object with this name exists
-	UObject* Object = LoadObject<UObject>(Parent, *ObjectName, NULL, LOAD_None, NULL);
+	UObject* Object = LoadObject<UObject>(Parent, *ObjectName, nullptr, LOAD_NoWarn | LOAD_Quiet);
 
 	// if object with same name but different class exists, warn user
 	if ((Object != NULL) && (Object->GetClass() != AssetClass))

@@ -211,7 +211,7 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 						FString packpath = "/Game/" + filepath + "/" + filepath;
 
 						UObject* InParent = CreatePackage(*packpath);
-						// UObject* InParent = LoadObject<UObject>(ParentPackage, *Name.ToString());
+						// UObject* InParent = LoadObject<UObject>(ParentPackage, *Name.ToString(), nullptr, LOAD_NoWarn | LOAD_Quiet);
 						// InParent->MarkPackageDirty();
 
 						PMXImportOptions* ImportOptions = GetImportOptions(
@@ -834,7 +834,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		if (!Skeleton)
 		{
 			// same object exists, try to see if it's skeleton, if so, load
-			Skeleton = LoadObject<USkeleton>(InParent, *SkelObjectName);
+			Skeleton = LoadObject<USkeleton>(InParent, *SkelObjectName, nullptr, LOAD_NoWarn | LOAD_Quiet);
 
 			// if not skeleton, we're done, we can't create skeleton with same name
 			// @todo in the future, we'll allow them to rename
@@ -1067,7 +1067,7 @@ UMMDExtendAsset* UPmxFactory::CreateMMDExtendFromMMDModel(
 	if (!NewMMDExtendAsset)
 	{
 		// same object exists, try to see if it's asset, if so, load
-		NewMMDExtendAsset = LoadObject<UMMDExtendAsset>(InParent, *ObjectName);
+		NewMMDExtendAsset = LoadObject<UMMDExtendAsset>(InParent, *ObjectName, nullptr, LOAD_NoWarn | LOAD_Quiet);
 
 		if (!NewMMDExtendAsset)
 		{

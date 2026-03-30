@@ -77,7 +77,7 @@ void UPmxMaterialImport::AssetsCreateTexture(
 		// First check if the asset already exists.
 		{
 			FString ObjectPath = BasePackageName_2 + TEXT(".") + TextureName;
-			ExistingTexture = LoadObject<UTexture>(NULL, *ObjectPath);
+			ExistingTexture = LoadObject<UTexture>(nullptr, *ObjectPath, nullptr, LOAD_NoWarn | LOAD_Quiet);
 		}
 		if (!ExistingTexture)
 		{
@@ -185,7 +185,7 @@ UTexture* UPmxMaterialImport::ImportTexture(
 	// First check if the asset already exists.
 	{
 		FString ObjectPath = BasePackageName + TEXT(".") + TextureName;
-		ExistingTexture = LoadObject<UTexture>(NULL, *ObjectPath);
+		ExistingTexture = LoadObject<UTexture>(nullptr, *ObjectPath, nullptr, LOAD_NoWarn | LOAD_Quiet);
 	}
 
 	if (!ExistingTexture)
@@ -566,7 +566,7 @@ void UPmxMaterialImport::CreateUnrealMaterial(
 		}
 		else*/
 		{
-			UMaterialInterface* FoundMaterial = LoadObject<UMaterialInterface>(NULL, *ObjectPath.ToString());
+			UMaterialInterface* FoundMaterial = LoadObject<UMaterialInterface>(nullptr, *ObjectPath.ToString(), nullptr, LOAD_NoWarn | LOAD_Quiet);
 			// do not override existing materials
 			if (FoundMaterial)
 			{
@@ -910,7 +910,7 @@ UMaterialInterface* UPmxMaterialImport::DuplicateBaseMaterial(
 		// The material could already exist in the project
 		FName ObjectPath = *(TargetPathName / BaseMatName + TEXT(".") + BaseMatName);
 		// Existing check
-		UMaterialInterface* FoundMaterial = LoadObject<UMaterialInterface>(NULL, *ObjectPath.ToString());
+		UMaterialInterface* FoundMaterial = LoadObject<UMaterialInterface>(nullptr, *ObjectPath.ToString(), nullptr, LOAD_NoWarn | LOAD_Quiet);
 		// do not override existing materials
 		if (FoundMaterial)
 		{
@@ -980,7 +980,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst(
 	// The material could already exist in the project
 	FName ObjectPath = *(TargetPathName + TEXT(".") + NewMICName);
 	// Existing check
-	UMaterialInterface* FoundMaterial = LoadObject<UMaterialInterface>(NULL, *ObjectPath.ToString());
+	UMaterialInterface* FoundMaterial = LoadObject<UMaterialInterface>(nullptr, *ObjectPath.ToString(), nullptr, LOAD_NoWarn | LOAD_Quiet);
 	// do not override existing materials
 	if (FoundMaterial)
 	{
