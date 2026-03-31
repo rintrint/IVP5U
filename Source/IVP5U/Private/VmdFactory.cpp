@@ -657,7 +657,7 @@ bool UVmdFactory::PrepareMorphCurveData(
 	for (const TObjectPtr<UMorphTarget>& MorphTarget : MorphTargets)
 	{
 		MorphTargetMap.Add(MorphTarget->GetFName(), MorphTarget.Get());
-		MorphTargetMap.Add(FName(*NormalizeBoneAndMorphName(MorphTarget->GetFName().ToString())), MorphTarget.Get());
+		MorphTargetMap.Add(FName(*MMDNameUtils::ReplaceInvalidChars(MorphTarget->GetFName().ToString())), MorphTarget.Get());
 	}
 
 	// 预处理重命名表
@@ -697,7 +697,7 @@ bool UVmdFactory::PrepareMorphCurveData(
 			FName Name = *vmdMotionInfo->keyFaceList[i].TrackName;
 			FName* MappedName = RenameMap.Find(Name);
 			FName TestName = MappedName ? *MappedName : Name;
-			FName NormalizedTestName = FName(*NormalizeBoneAndMorphName(TestName.ToString()));
+			FName NormalizedTestName = FName(*MMDNameUtils::ReplaceInvalidChars(TestName.ToString()));
 
 			if (!TestedMorphs.Contains(TestName))
 			{
@@ -766,7 +766,7 @@ bool UVmdFactory::PrepareMorphCurveData(
 		}
 
 		// 检查该表情是否存在于模型中
-		FName NormalizedName = FName(*NormalizeBoneAndMorphName(Name.ToString()));
+		FName NormalizedName = FName(*MMDNameUtils::ReplaceInvalidChars(Name.ToString()));
 		UMorphTarget* morphTargetPtr = MorphTargetMap.FindRef(Name);
 		if (!morphTargetPtr)
 			morphTargetPtr = MorphTargetMap.FindRef(NormalizedName);
@@ -1007,7 +1007,6 @@ bool UVmdFactory::PrepareVMDBoneAnimData(
 			}
 		}
 
-		// UE_LOG(LogMMD4UE5_VMDFactory, Warning, TEXT("%s"),*targetName.ToString());
 		int vmdKeyListIndex = vmdMotionInfo->FindKeyTrackName(targetName.ToString(),
 			MMD4UE5::VmdMotionInfo::EVMD_KEYBONE);
 		if (vmdKeyListIndex == -1)
@@ -1035,7 +1034,7 @@ bool UVmdFactory::PrepareVMDBoneAnimData(
 			int sortIndex = 0;
 			int preKeyIndex = -1;
 			auto& kybone = vmdMotionInfo->keyBoneList[vmdKeyListIndex];
-			// if (kybone.keyList.Num() < 2)                    continue;
+			// if (kybone.keyList.Num() < 2) continue;
 			int nextKeyIndex = kybone.sortIndexList[sortIndex];
 			int nextKeyFrame = kybone.keyList[nextKeyIndex].Frame;
 			int baseKeyFrame = 0;
@@ -1050,15 +1049,6 @@ bool UVmdFactory::PrepareVMDBoneAnimData(
 			// 事先针对各轨迹，在没有父Bone的情况下，在Local坐标下计算预定全部注册的帧（如果有更好的处理……讨论）
 			// 如果进入90度以上的轴旋转，则由于四元数的原因或处理有错误而进入多余的旋转。
 			// 通过上述方式，仅通过Z旋转（旋转运动），下半身和上半身的轴成为物理上不可能的旋转的组合。臭虫。
-
-			// if (targetName == L"右足ＩＫ")
-			// {
-			//     UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("右足ＩＫ"));
-			// }
-			// if (targetName == L"左足ＩＫ")
-			// {
-			//     UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("左足ＩＫ"));
-			// }
 
 			for (int32 i = 0; i < DestSeq->GetNumberOfSampledKeys(); i++)
 			{

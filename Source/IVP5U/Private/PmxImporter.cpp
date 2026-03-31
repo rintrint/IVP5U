@@ -2,6 +2,7 @@
 
 #include "PmxImporter.h"
 #include "MMDImportHelper.h"
+#include "MMDNameUtils.h"
 
 namespace MMD4UE5
 {
@@ -77,7 +78,8 @@ namespace MMD4UE5
 		this->modelCommentJP = PMXTexBufferToFString(&Buffer, pmxEncodeType);
 		this->modelCommentEng = PMXTexBufferToFString(&Buffer, pmxEncodeType);
 
-		modelNameJP = modelNameJP.Replace(TEXT("."), TEXT("_")); // [.] is broken filepath for UE5
+		modelNameJP = MMDNameUtils::ReplaceInvalidChars(modelNameJP);
+		modelNameEng = MMDNameUtils::ReplaceInvalidChars(modelNameEng);
 
 		{
 			// 統計
@@ -278,12 +280,15 @@ namespace MMD4UE5
 			materialList.AddZeroed(PmxMaterialNum);
 
 			// 读取材质
+			TSet<FString> MaterialNameSet;
+			TSet<FString> MaterialNameEngSet;
 			for (uint32 i = 0; i < PmxMaterialNum; i++)
 			{
 				// 材质名称的取得
-				// materialList[i].Name = PMXTexBufferToFString(&Buffer, pmxEncodeType);
 				materialList[i].Name = FString::Printf(TEXT("%d_%s"), i, *PMXTexBufferToFString(&Buffer, pmxEncodeType));
-				materialList[i].NameEng = PMXTexBufferToFString(&Buffer, pmxEncodeType);
+				materialList[i].Name = MMDNameUtils::SanitizeAndDeduplicate(materialList[i].Name, TEXT("Material"), MaterialNameSet);
+				materialList[i].NameEng = FString::Printf(TEXT("%d_%s"), i, *PMXTexBufferToFString(&Buffer, pmxEncodeType));
+				materialList[i].NameEng = MMDNameUtils::SanitizeAndDeduplicate(materialList[i].NameEng, TEXT("Material"), MaterialNameEngSet);
 
 				// Diffuse (R,G,B,A)
 				memcopySize = sizeof(materialList[i].Diffuse);
@@ -385,11 +390,15 @@ namespace MMD4UE5
 			boneList.AddZeroed(PmxBoneNum);
 
 			// 获取骨骼信息
+			TSet<FString> BoneNameSet;
+			TSet<FString> BoneNameEngSet;
 			uint32 PmxIKNum = 0;
 			for (uint32 i = 1; i < PmxBoneNum + offsetBoneIndex; i++)
 			{
 				boneList[i].Name = PMXTexBufferToFString(&Buffer, pmxEncodeType);
+				boneList[i].Name = MMDNameUtils::SanitizeAndDeduplicate(boneList[i].Name, TEXT("Bone"), BoneNameSet);
 				boneList[i].NameEng = PMXTexBufferToFString(&Buffer, pmxEncodeType);
+				boneList[i].NameEng = MMDNameUtils::SanitizeAndDeduplicate(boneList[i].NameEng, TEXT("Bone"), BoneNameEngSet);
 
 				memcopySize = sizeof(boneList[i].Position);
 				FMemory::Memcpy(&boneList[i].Position, Buffer, memcopySize);
@@ -547,11 +556,15 @@ namespace MMD4UE5
 			morphList.AddZeroed(PmxMorphNum);
 
 			// 导入变形信息
+			TSet<FString> MorphNameSet;
+			TSet<FString> MorphNameEngSet;
 			int32 PmxSkinNum = 0;
 			for (i = 0; i < PmxMorphNum; i++)
 			{
 				morphList[i].Name = PMXTexBufferToFString(&Buffer, pmxEncodeType);
+				morphList[i].Name = MMDNameUtils::SanitizeAndDeduplicate(morphList[i].Name, TEXT("Morph"), MorphNameSet);
 				morphList[i].NameEng = PMXTexBufferToFString(&Buffer, pmxEncodeType);
+				morphList[i].NameEng = MMDNameUtils::SanitizeAndDeduplicate(morphList[i].NameEng, TEXT("Morph"), MorphNameEngSet);
 
 				memcopySize = sizeof(morphList[i].ControlPanel);
 				FMemory::Memcpy(&morphList[i].ControlPanel, Buffer, memcopySize);
@@ -729,17 +742,19 @@ namespace MMD4UE5
 
 			rigidList.AddZeroed(rbNum);
 
+			TSet<FString> RigidBodyNameSet;
+			TSet<FString> RigidBodyNameEngSet;
 			int32 PmxSkinNum = 0;
 			for (i = 0; i < rbNum; i++)
 			{
 				PMX_RIGIDBODY& rb = rigidList[i];
+
 				rb.Name = PMXTexBufferToFString(&Buffer, pmxEncodeType);
-
+				rb.Name = MMDNameUtils::SanitizeAndDeduplicate(rb.Name, TEXT("RigidBody"), RigidBodyNameSet);
 				rb.NameEng = PMXTexBufferToFString(&Buffer, pmxEncodeType);
+				rb.NameEng = MMDNameUtils::SanitizeAndDeduplicate(rb.NameEng, TEXT("RigidBody"), RigidBodyNameEngSet);
 
-				// UE_LOG print this->baseHeader.BoneIndexSize
 				rb.BoneIndex = MMDExtendBufferSizeToInt32(&Buffer, this->baseHeader.BoneIndexSize) + offsetBoneIndex;
-				// UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX Import [RigidBody] BoneIndexSize %d"), rb.BoneIndex);
 
 				auto bone = boneList[rb.BoneIndex];
 				rb.fnName = FName(bone.Name);

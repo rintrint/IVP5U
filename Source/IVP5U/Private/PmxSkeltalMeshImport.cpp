@@ -359,7 +359,6 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 				textureAssetList);
 		}
 	}
-	// UE_LOG(LogCategoryPMXFactory, Warning, TEXT("PMX Import Texture Extecd Complete."));
 
 	TArray<FString> UVSets;
 	if (ImportUI->bImportMaterials)
@@ -393,9 +392,6 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 			}
 		}
 	}
-	///////////////////////////////////////////
-	// UE_LOG(LogCategoryPMXFactory, Warning, TEXT("PMX Import Material Extecd Complete."));
-	///////////////////////////////////////////
 #endif
 
 	//	store the UVs in arrays for fast access in the later looping of triangles
@@ -570,7 +566,6 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 						ImportData.Influences.Last().Weight = PmxMeshInfo->vertexList[ControlPointIndex].BoneWeight[multiBone];
 						ImportData.Influences.Last().VertexIndex = ExistPointNum + ControlPointIndex;
 					}
-					// UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("BDEF2"), "");
 				}
 				break;
 				case 2: // 2:BDEF4
@@ -789,17 +784,7 @@ void UPmxFactory::ImportMorphTargetsInternal(
 		MMD4UE5::PMX_MORPH* pmxMorphPtr = &(PmxMeshInfo.morphList[NodeIndex]);
 		if (pmxMorphPtr->Type == 1 && pmxMorphPtr->Vertex.Num() > 0)
 		{ // 頂点Morph
-			FString ShapeName = NormalizeBoneAndMorphName(pmxMorphPtr->Name);
-			{
-				FString UniqueName = ShapeName;
-				int32 i = 0;
-				while (ShapeNameToShapeArray.Contains(UniqueName))
-				{
-					++i;
-					UniqueName = ShapeName + FString::FromInt(i);
-				}
-				ShapeName = UniqueName;
-			}
+			FString ShapeName = pmxMorphPtr->Name;
 			MMD4UE5::PMX_MORPH& ShapeArray = ShapeNameToShapeArray.FindOrAdd(ShapeName);
 			ShapeArray = *pmxMorphPtr;
 		}

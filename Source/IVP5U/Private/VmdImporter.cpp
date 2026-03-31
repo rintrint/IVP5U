@@ -423,14 +423,14 @@ namespace MMD4UE5
 		{
 			// Store both original and sanitized key
 			BoneNameToIndexMap.Add(keyBoneList[i].TrackName, i);
-			BoneNameToIndexMap.Add(NormalizeBoneAndMorphName(keyBoneList[i].TrackName), i);
+			BoneNameToIndexMap.Add(MMDNameUtils::ReplaceInvalidChars(keyBoneList[i].TrackName), i);
 		}
 
 		FaceNameToIndexMap.Empty(keyFaceList.Num());
 		for (int i = 0; i < keyFaceList.Num(); i++)
 		{
 			FaceNameToIndexMap.Add(keyFaceList[i].TrackName, i);
-			FaceNameToIndexMap.Add(NormalizeBoneAndMorphName(keyFaceList[i].TrackName), i);
+			FaceNameToIndexMap.Add(MMDNameUtils::ReplaceInvalidChars(keyFaceList[i].TrackName), i);
 		}
 	}
 
@@ -445,7 +445,7 @@ namespace MMD4UE5
 			if (FoundIndex)
 				return *FoundIndex;
 
-			FoundIndex = BoneNameToIndexMap.Find(NormalizeBoneAndMorphName(targetName));
+			FoundIndex = BoneNameToIndexMap.Find(MMDNameUtils::ReplaceInvalidChars(targetName));
 			if (FoundIndex)
 				return *FoundIndex;
 		}
@@ -455,7 +455,7 @@ namespace MMD4UE5
 			if (FoundIndex)
 				return *FoundIndex;
 
-			FoundIndex = FaceNameToIndexMap.Find(NormalizeBoneAndMorphName(targetName));
+			FoundIndex = FaceNameToIndexMap.Find(MMDNameUtils::ReplaceInvalidChars(targetName));
 			if (FoundIndex)
 				return *FoundIndex;
 		}

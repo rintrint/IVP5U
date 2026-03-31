@@ -2,6 +2,7 @@
 
 #include "PmdImporter.h"
 #include "MMDImportHelper.h"
+#include "MMDNameUtils.h"
 
 namespace MMD4UE5
 {
@@ -180,8 +181,7 @@ namespace MMD4UE5
 		PmdMeshInfo* pmdMeshInfoPtr = this;
 
 		pmxMeshInfoPtr->modelNameJP = ConvertMMDSJISToFString((uint8*)&(header.Name), sizeof(header.Name));
-
-		pmxMeshInfoPtr->modelNameJP = pmxMeshInfoPtr->modelNameJP.Replace(TEXT("."), TEXT("_")); // [.] is broken filepath for UE5
+		pmxMeshInfoPtr->modelNameJP = MMDNameUtils::ReplaceInvalidChars(pmxMeshInfoPtr->modelNameJP);
 
 		pmxMeshInfoPtr->modelCommentJP = ConvertMMDSJISToFString((uint8*)&(header.Comment), sizeof(header.Comment));
 
