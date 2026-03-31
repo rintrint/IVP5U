@@ -886,6 +886,8 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		PRAGMA_DISABLE_DEPRECATION_WARNINGS
 		SkeletalMesh->SaveLODImportedData(0, *SkelMeshImportDataPtr);
 		PRAGMA_ENABLE_DEPRECATION_WARNINGS
+		// TODO: 將整個導入流程改为使用新的 MeshDescription API
+		// 可參考FbxSkeletalMeshImport.cpp、InterchangeSkeletalMeshFactory.cpp、LODUtilities.cpp
 		// SkeletalMesh->CommitMeshDescription(0);
 
 		// Store the current file path and timestamp for re-import purposes
