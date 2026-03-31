@@ -824,7 +824,24 @@ void UPmxFactory::ImportMorphTargetsInternal(
 		// We do not need this data anymore empty it so we reduce the size of what we save into memory
 		ShapeImportData.PointToRawMap.Empty();
 		BaseImportData.MorphTargets.Add(ShapeImportData);
-		check(BaseImportData.MorphTargetNames.Num() == BaseImportData.MorphTargets.Num() && BaseImportData.MorphTargetNames.Num() == BaseImportData.MorphTargetModifiedPoints.Num());
+		if (!ensureMsgf(
+				BaseImportData.MorphTargetNames.Num() == BaseImportData.MorphTargets.Num()
+					&& BaseImportData.MorphTargetNames.Num() == BaseImportData.MorphTargetModifiedPoints.Num(),
+				TEXT("MorphTarget arrays out of sync: Names=%d Targets=%d ModifiedPoints=%d"),
+				BaseImportData.MorphTargetNames.Num(),
+				BaseImportData.MorphTargets.Num(),
+				BaseImportData.MorphTargetModifiedPoints.Num()))
+		{
+			const int32 SafeNum = FMath::Min3(
+				BaseImportData.MorphTargetNames.Num(),
+				BaseImportData.MorphTargets.Num(),
+				BaseImportData.MorphTargetModifiedPoints.Num());
+			BaseImportData.MorphTargetNames.SetNum(SafeNum);
+			BaseImportData.MorphTargets.SetNum(SafeNum);
+			BaseImportData.MorphTargetModifiedPoints.SetNum(SafeNum);
+			UE_LOG(LogMMD4UE5_PMXFactory, Warning,
+				TEXT("MorphTarget arrays truncated to SafeNum=%d to recover sync."), SafeNum);
+		}
 	}
 
 	if (BaseSkelMesh->GetImportedModel() && BaseSkelMesh->GetImportedModel()->LODModels.IsValidIndex(LODIndex))

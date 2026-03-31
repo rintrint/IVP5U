@@ -746,8 +746,11 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 
 	// Setup LOD Model
 	FSkeletalMeshModel* ImportedResource = SkeletalMesh->GetImportedModel();
-	check(ImportedResource->LODModels.Num() == 0);
-	ImportedResource->LODModels.Empty();
+	if (ImportedResource->LODModels.Num() != 0)
+	{
+		UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("ImportSkeletalMesh: LODModels was not empty (count=%d), clearing."), ImportedResource->LODModels.Num());
+		ImportedResource->LODModels.Empty();
+	}
 	ImportedResource->LODModels.Add(new FSkeletalMeshLODModel());
 
 	UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("ImportSkeletalMesh: Added new LODModel. Total LOD count is now: %d. The only valid index should be 0."), ImportedResource->LODModels.Num());
@@ -1048,10 +1051,9 @@ UMMDExtendAsset* UPmxFactory::CreateMMDExtendFromMMDModel(
 	const FName& BaseName)
 {
 	UMMDExtendAsset* NewMMDExtendAsset = nullptr;
-	check(SkeletalMesh->GetSkeleton());
-	// Add UE 4.9
 	if (SkeletalMesh->GetSkeleton() == nullptr)
 	{
+		UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("CreateMMDExtendFromMMDModel: SkeletalMesh has no Skeleton, aborting."));
 		return nullptr;
 	}
 

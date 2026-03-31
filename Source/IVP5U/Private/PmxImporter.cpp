@@ -725,11 +725,18 @@ namespace MMD4UE5
 					uint8_t targetType;
 					readBuffer(targetType);
 					if (targetType == 0)
+					{
 						Buffer += this->baseHeader.BoneIndexSize;
+					}
 					else if (targetType == 1)
+					{
 						Buffer += this->baseHeader.MorphIndexSize;
+					}
 					else
-						throw "Dispframe";
+					{
+						UE_LOG(LogMMD4UE5_PmxMeshInfo, Error, TEXT("PMX Import FAILED - Unknown Dispframe target type: %d (bone index: %d, frame: %d)"), (int32)targetType, i, j);
+						return false;
+					}
 				}
 			}
 		}

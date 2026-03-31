@@ -1209,7 +1209,6 @@ bool UVmdFactory::PrepareVMDBoneAnimData(
 								kybone.keyList[nextKeyIndex].Quaternion[1],
 								kybone.keyList[nextKeyIndex].Quaternion[3]));
 						// TBD:需要重新研究该路线存在的花纹、处理
-						// check(false);
 					}
 
 					FTransform tempTranceform(

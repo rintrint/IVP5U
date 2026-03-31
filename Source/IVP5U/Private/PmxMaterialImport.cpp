@@ -885,7 +885,6 @@ UMaterialInterface* UPmxMaterialImport::DuplicateBaseMaterial(
 
 	FAssetData AssetData = AssetRegistryModule.Get().GetAssetByObjectPath(FSoftObjectPath(*DupAssetBaseName));
 	BaseMatOriginal = Cast<UMaterial>(AssetData.GetAsset());
-	// check(BaseMatOriginal);
 	if (nullptr == BaseMatOriginal)
 	{
 		UE_LOG(LogCategoryPMXMaterialImport, Error, TEXT("[%s]: BaseMaterial Not Found. Path[%s]"),
