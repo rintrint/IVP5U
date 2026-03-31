@@ -15,6 +15,10 @@
 #include "Engine/StaticMesh.h"
 #include "Engine/CurveTable.h"
 
+#include "IMeshBuilderModule.h"
+#include "Interfaces/ITargetPlatform.h"
+#include "Interfaces/ITargetPlatformManagerModule.h"
+
 #include "Engine.h"
 #include "Editor.h"
 #include "ImportUtils/SkelImport.h"
@@ -638,8 +642,6 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 	bool bDiffPose;
 	int32 SkelType = 0; // 0 for skeletal mesh, 1 for rigid mesh
 
-	struct ExistingSkelMeshData* ExistSkelMeshDataPtr = nullptr;
-
 	FString FolderPath = FPackageName::GetLongPackagePath(InParent->GetOutermost()->GetName());
 	FString NewPackagePath = FString::Printf(TEXT("%s/%s"), *FolderPath, *Name.ToString());
 	UPackage* SkelMeshPackage = CreatePackage(*NewPackagePath);
@@ -783,64 +785,13 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 	LODModel.NumTexCoords = SkelMeshImportDataPtr->NumTexCoords;
 
 	{
-		TArray<FVector3f> LODPoints;
-		TArray<SkeletalMeshImportData::FMeshWedge> LODWedges;
-		TArray<SkeletalMeshImportData::FMeshFace> LODFaces;
-		TArray<SkeletalMeshImportData::FVertInfluence> LODInfluences;
-		TArray<int32> LODPointToRawMap;
-		SkelMeshImportDataPtr->CopyLODImportData(LODPoints, LODWedges, LODFaces, LODInfluences, LODPointToRawMap);
-
-		IMeshUtilities& MeshUtilities = FModuleManager::Get().LoadModuleChecked<IMeshUtilities>("MeshUtilities");
-
-		TArray<FText> WarningMessages;
-		TArray<FName> WarningNames;
-		// Create actual rendering data.
-
-		// Build render geometry
-		if (!MeshUtilities.BuildSkeletalMesh(
-				ImportedResource->LODModels[0], "MMDMeshName",
-				SkeletalMesh->GetRefSkeleton(),
-				LODInfluences,
-				LODWedges,
-				LODFaces,
-				LODPoints,
-				LODPointToRawMap))
-		{
-			SkeletalMesh->MarkAsGarbage();
-			return nullptr;
-		}
-
-		// Build succeeded (with or without warnings)
-		if (WarningMessages.Num() > 0 && WarningNames.Num() == WarningMessages.Num())
-		{
-			for (int32 MessageIdx = 0; MessageIdx < WarningMessages.Num(); ++MessageIdx)
-			{
-				AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Warning, WarningMessages[MessageIdx]), WarningNames[MessageIdx]);
-			}
-		}
-
-		// Presize the per-section shadow casting array with the number of sections in the imported LOD.
-		const int32 NumSections = LODModel.Sections.Num();
-		for (int32 SectionIndex = 0; SectionIndex < NumSections; ++SectionIndex)
-		{
-			SkeletalMesh->GetLODInfo(0)->LODMaterialMap.Add(SectionIndex);
-		}
-
-		// ==============================================================================
-		// 【核心修復 2】：Skeleton 必須在 SaveLODImportedData 以及 PostEditChange 之前建立並綁定！
-		// ==============================================================================
-		// see if we have skeleton set up
-		// if creating skeleton, create skeleeton
+		// --- Create & bind Skeleton (must exist before IMeshBuilderModule call) ---
 		USkeleton* Skeleton = nullptr;
 		FString SkelObjectName = FString::Printf(TEXT("SK_%s"), *BaseName.ToString());
 		Skeleton = CreateAsset<USkeleton>(InParent->GetName(), SkelObjectName, true);
 		if (!Skeleton)
 		{
-			// same object exists, try to see if it's skeleton, if so, load
 			Skeleton = LoadObject<USkeleton>(InParent, *SkelObjectName, nullptr, LOAD_NoWarn | LOAD_Quiet);
-
-			// if not skeleton, we're done, we can't create skeleton with same name
-			// @todo in the future, we'll allow them to rename
 			if (!Skeleton)
 			{
 				AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, FText::Format(LOCTEXT("FbxSkeletaLMeshimport_SkeletonRecreateError", "'{0}' already exists. It fails to recreate it."), FText::FromString(SkelObjectName))), "FFbxErrors::SkeletalMesh_SkeletonRecreateError");
@@ -848,7 +799,6 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 			}
 		}
 
-		// merge bones to the selected skeleton
 		if (!Skeleton->MergeAllBonesToBoneTree(SkeletalMesh))
 		{
 			if (EAppReturnType::Yes == FMessageDialog::Open(EAppMsgType::YesNo, LOCTEXT("SkeletonFailed_BoneMerge", "FAILED TO MERGE BONES:\n\n This could happen if significant hierarchical change has been made\n - i.e. inserting bone between nodes\n Would you like to regenerate Skeleton from this mesh? \n\n ***WARNING: THIS WILL REQUIRE RECOMPRESS ALL ANIMATION DATA AND POTENTIALLY INVALIDATE***\n")))
@@ -859,47 +809,64 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 				}
 			}
 		}
-		else
-		{
-			/*
-			// ask if they'd like to update their position form this mesh
-			if ( ImportOptions->SkeletonForAnimation && ImportOptions->bUpdateSkeletonReferencePose )
-			{
-				Skeleton->UpdateReferencePoseFromMesh(SkeletalMesh);
-				FAssetNotifications::SkeletonNeedsToBeSaved(Skeleton);
-			}
-			*/
-		}
 		SkeletalMesh->SetSkeleton(Skeleton);
 
-		// ==============================================================================
-		// 【核心修復 3】：將匯入 Morph Target 移動到這裡！這時還沒有 MeshDescription，能正確將資料附加到 LODModel！
-		// ==============================================================================
+		// --- Import morph targets (before MeshDescription is created) ---
 		if (ImportUI->SkeletalMeshImportData->bImportMorphTargets)
 		{
 			ImportFbxMorphTarget(*pmxMeshInfoPtr, SkeletalMesh, InParent, Filename, 0, *SkelMeshImportDataPtr);
 		}
 
-		// ==============================================================================
-		// 【核心修復 4】：等到所有資料 (基礎網格 + 形變目標) 都寫入 SkelMeshImportDataPtr 後，才呼叫 SaveLOD 寫入 UE5 描述！
-		// ==============================================================================
+		// --- Store the original PMX import data; SkelMeshImportDataPtr must not be modified after this ---
 		PRAGMA_DISABLE_DEPRECATION_WARNINGS
 		SkeletalMesh->SaveLODImportedData(0, *SkelMeshImportDataPtr);
 		PRAGMA_ENABLE_DEPRECATION_WARNINGS
-		// TODO: 將整個導入流程改为使用新的 MeshDescription API
-		// 可參考FbxSkeletalMeshImport.cpp、InterchangeSkeletalMeshFactory.cpp、LODUtilities.cpp
-		// SkeletalMesh->CommitMeshDescription(0);
 
-		// Store the current file path and timestamp for re-import purposes
+		// --- Convert to MeshDescription and commit ---
+		FMeshDescription MeshDescription;
+		if (SkelMeshImportDataPtr->GetMeshDescription(SkeletalMesh, &SkeletalMesh->GetLODInfo(0)->BuildSettings, MeshDescription))
+		{
+			SkeletalMesh->ModifyMeshDescription(0);
+			SkeletalMesh->CreateMeshDescription(0, MoveTemp(MeshDescription));
+			SkeletalMesh->CommitMeshDescription(0);
+		}
+		else
+		{
+			UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("Failed to generate MeshDescription from ImportData."));
+			SkeletalMesh->MarkAsGarbage();
+			return nullptr;
+		}
+
+		// --- Build render data via IMeshBuilderModule ---
+		IMeshBuilderModule& MeshBuilderModule = IMeshBuilderModule::GetForRunningPlatform();
+		FSkeletalMeshBuildParameters SkeletalMeshBuildParameters(SkeletalMesh, GetTargetPlatformManagerRef().GetRunningTargetPlatform(), 0, false);
+
+		// AllocateResourceForRendering() must be called before BuildSkeletalMesh()
+		SkeletalMesh->AllocateResourceForRendering();
+		bool bBuildSuccess = MeshBuilderModule.BuildSkeletalMesh(*SkeletalMesh->GetResourceForRendering(), SkeletalMeshBuildParameters);
+		SkeletalMesh->ReleaseResources();
+
+		if (!bBuildSuccess)
+		{
+			UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("IMeshBuilderModule::BuildSkeletalMesh Failed."));
+			SkeletalMesh->MarkAsGarbage();
+			return nullptr;
+		}
+
+		// Initialize material slot mapping (1:1 with sections)
+		const int32 NumSections = SkeletalMesh->GetImportedModel()->LODModels[0].Sections.Num();
+		for (int32 SectionIndex = 0; SectionIndex < NumSections; ++SectionIndex)
+		{
+			SkeletalMesh->GetLODInfo(0)->LODMaterialMap.Add(SectionIndex);
+		}
+
 		SkeletalMesh->GetAssetImportData()->Update(UFactory::CurrentFilename);
 		SkeletalMesh->CalculateInvRefMatrices();
-		SkeletalMesh->Build();
+		// Note: no need to call SkeletalMesh->Build(), IMeshBuilderModule handles it
 
-		// 最後觸發畫面更新，縮圖生成器因為有了合法的 Skeleton 跟 MeshDescription 將完美運作
 		SkeletalMesh->PostEditChange();
 		SkeletalMesh->MarkPackageDirty();
 
-		// Now iterate over all skeletal mesh components re-initialising them.
 		for (TObjectIterator<USkeletalMeshComponent> It; It; ++It)
 		{
 			USkeletalMeshComponent* SkelComp = *It;

@@ -94,8 +94,10 @@ namespace UnrealBuildTool.Rules
                     {
                         "EditorStyle",
                         "EditorWidgets",
+                        "MeshBuilder",
                         "MeshDescription",
                         "SkeletalMeshDescription",
+                        "TargetPlatform",
                     }
                 );
             }
