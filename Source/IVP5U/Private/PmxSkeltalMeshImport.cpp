@@ -529,7 +529,7 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 			TmpWedges[VertexIndex].UVs[0].Y = tempUV.Y;
 			FMemory::Memcpy(ImportData.Wedges[w].UVs,
 				TmpWedges[VertexIndex].UVs,
-				sizeof(FVector2D) * MAX_TEXCOORDS);
+				sizeof(FVector2f) * MAX_TEXCOORDS);
 
 			Triangle.WedgeIndex[VertexIndex] = w;
 		}
