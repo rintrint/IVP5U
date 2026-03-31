@@ -316,7 +316,7 @@ namespace MMD4UE5
 				PMX_MATERIAL& pmxMaterialPtr = pmxMeshInfoPtr->materialList[i];
 
 				// 材質名の取得
-				pmxMaterialPtr.Name = FString::Printf(TEXT("mat_%d"), i);
+				pmxMaterialPtr.Name = FString::Printf(TEXT("mat_%02d"), i);
 				pmxMaterialPtr.NameEng = pmxMaterialPtr.Name;
 
 				// Diffuse (R,G,B,A)

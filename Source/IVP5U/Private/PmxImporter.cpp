@@ -285,9 +285,9 @@ namespace MMD4UE5
 			for (uint32 i = 0; i < PmxMaterialNum; i++)
 			{
 				// 材质名称的取得
-				materialList[i].Name = FString::Printf(TEXT("%d_%s"), i, *PMXTexBufferToFString(&Buffer, pmxEncodeType));
+				materialList[i].Name = FString::Printf(TEXT("%02d_%s"), i, *PMXTexBufferToFString(&Buffer, pmxEncodeType));
 				materialList[i].Name = MMDNameUtils::SanitizeAndDeduplicate(materialList[i].Name, TEXT("Material"), MaterialNameSet);
-				materialList[i].NameEng = FString::Printf(TEXT("%d_%s"), i, *PMXTexBufferToFString(&Buffer, pmxEncodeType));
+				materialList[i].NameEng = FString::Printf(TEXT("%02d_%s"), i, *PMXTexBufferToFString(&Buffer, pmxEncodeType));
 				materialList[i].NameEng = MMDNameUtils::SanitizeAndDeduplicate(materialList[i].NameEng, TEXT("Material"), MaterialNameEngSet);
 
 				// Diffuse (R,G,B,A)
