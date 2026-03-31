@@ -508,6 +508,39 @@ void FVmdImporter::ImportVmdCamera(
 		CameraGuids,
 		CameraCenterGuids,
 		ImportVmdSettings);
+
+	// Auto-extend playback/view/working range
+	{
+		UMovieScene* MovieScene = InSequence->GetMovieScene();
+		const FFrameRate FrameRate = MovieScene->GetTickResolution();
+		const FFrameRate DisplayRate = MovieScene->GetDisplayRate();
+		const int32 FrameRatio = static_cast<int32>(FrameRate.AsDecimal() / DisplayRate.AsDecimal());
+
+		const TRange<FFrameNumber> CurrentPlaybackRange = MovieScene->GetPlaybackRange();
+		const FFrameNumber CurrentStart = CurrentPlaybackRange.GetLowerBoundValue();
+		const FFrameNumber CurrentEnd = CurrentPlaybackRange.GetUpperBoundValue();
+
+		const uint32 VmdLastFrame = InVmdParseResult.CameraKeyFrames.Last().FrameNumber;
+		const FFrameNumber VmdEndFrame = static_cast<int32>(VmdLastFrame + 1) * FrameRatio;
+		const FFrameNumber NewPlaybackEnd = FMath::Max(CurrentEnd, VmdEndFrame);
+		const double NewRangeEndSeconds = FrameRate.AsSeconds(NewPlaybackEnd + 15 * FrameRatio);
+
+		FMovieSceneEditorData EditorData = MovieScene->GetEditorData();
+		const double NewViewEnd = FMath::Max(EditorData.ViewEnd, NewRangeEndSeconds);
+		const double NewWorkEnd = FMath::Max(EditorData.WorkEnd, NewRangeEndSeconds);
+
+		{
+			MovieScene->Modify();
+
+			// Playback Range
+			MovieScene->SetPlaybackRange(TRange<FFrameNumber>(CurrentStart, NewPlaybackEnd));
+
+			// View Range + Working Range (each independently extended)
+			EditorData.ViewEnd = NewViewEnd;
+			EditorData.WorkEnd = NewWorkEnd;
+			MovieScene->SetEditorData(EditorData);
+		}
+	}
 }
 
 FArchive* FVmdImporter::OpenFile(const FString FilePath)
