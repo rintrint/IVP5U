@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "chrono": "cpp",
+        "xlocale": "cpp",
+        "*.rh": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "enabled",
+    "cmake.ignoreCMakeListsMissing": true,
+    "editor.detectIndentation": true,
+    "editor.formatOnPaste": true,
+    "markdown.preview.breaks": false,
+}
