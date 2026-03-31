@@ -185,24 +185,17 @@ namespace MMD4UE5
 					Buffer += memcopySize;
 					pmxVertexPtr.BoneWeight[1] = 1.0f - pmxVertexPtr.BoneWeight[0];
 
-					for (int bw = 0; bw < 1; ++bw)
-					{
-						memcopySize = sizeof(pmxVertexPtr.SDEF_C);
-						FMemory::Memcpy(&pmxVertexPtr.SDEF_C, Buffer, memcopySize);
-						Buffer += memcopySize;
-					}
-					for (int bw = 0; bw < 1; ++bw)
-					{
-						memcopySize = sizeof(pmxVertexPtr.SDEF_R0);
-						FMemory::Memcpy(&pmxVertexPtr.SDEF_R0, Buffer, memcopySize);
-						Buffer += memcopySize;
-					}
-					for (int bw = 0; bw < 1; ++bw)
-					{
-						memcopySize = sizeof(pmxVertexPtr.SDEF_R1);
-						FMemory::Memcpy(&pmxVertexPtr.SDEF_R1, Buffer, memcopySize);
-						Buffer += memcopySize;
-					}
+					memcopySize = sizeof(pmxVertexPtr.SDEF_C);
+					FMemory::Memcpy(&pmxVertexPtr.SDEF_C, Buffer, memcopySize);
+					Buffer += memcopySize;
+
+					memcopySize = sizeof(pmxVertexPtr.SDEF_R0);
+					FMemory::Memcpy(&pmxVertexPtr.SDEF_R0, Buffer, memcopySize);
+					Buffer += memcopySize;
+
+					memcopySize = sizeof(pmxVertexPtr.SDEF_R1);
+					FMemory::Memcpy(&pmxVertexPtr.SDEF_R1, Buffer, memcopySize);
+					Buffer += memcopySize;
 				}
 				else
 				{
@@ -710,8 +703,6 @@ namespace MMD4UE5
 			FMemory::Memcpy(&PmxMorphNum, Buffer, memcopySize);
 			Buffer += memcopySize;
 
-			morphList.AddZeroed(PmxMorphNum);
-
 			int32 PmxSkinNum = 0;
 			for (i = 0; i < PmxMorphNum; i++)
 			{
@@ -763,6 +754,11 @@ namespace MMD4UE5
 
 				rb.BoneIndex = MMDExtendBufferSizeToInt32(&Buffer, this->baseHeader.BoneIndexSize) + offsetBoneIndex;
 
+				if (!boneList.IsValidIndex(rb.BoneIndex))
+				{
+					UE_LOG(LogMMD4UE5_PmxMeshInfo, Error, TEXT("PMX Import FAILED - RigidBody[%d] invalid BoneIndex: %d"), i, rb.BoneIndex);
+					return false;
+				}
 				auto bone = boneList[rb.BoneIndex];
 				rb.fnName = FName(bone.Name);
 				readBuffer(rb.RigidBodyGroupIndex);
