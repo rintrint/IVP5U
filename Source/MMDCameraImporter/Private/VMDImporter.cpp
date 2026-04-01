@@ -4,17 +4,19 @@
 
 #include "CineCameraActor.h"
 #include "CineCameraComponent.h"
+#include "Framework/Notifications/NotificationManager.h"
 #include "ISequencerModule.h"
 #include "LevelEditorViewport.h"
-#include "MMDCameraImporter.h"
-#include "MMDImportHelper.h"
+#include "Misc/ScopedSlowTask.h"
 #include "MovieSceneToolHelpers.h"
+#include "Sections/MovieSceneCameraCutSection.h"
 #include "Sections/MovieSceneFloatSection.h"
 #include "Tracks/MovieScene3DTransformTrack.h"
 #include "Tracks/MovieSceneFloatTrack.h"
-#include "Framework/Notifications/NotificationManager.h"
-#include "Misc/ScopedSlowTask.h"
 #include "Widgets/Notifications/SNotificationList.h"
+
+#include "MMDCameraImporter.h"
+#include "MMDImportHelper.h"
 
 #define LOCTEXT_NAMESPACE "FMmdCameraImporterModule"
 
@@ -658,9 +660,18 @@ void FVmdImporter::CreateCameraCutTrack(
 	{
 		const TRange<uint32>& CameraCut = InCameraCuts[i];
 		const FGuid CameraBinding = ObjectBindings[i % ObjectBindings.Num()];
-		CameraCutTrack->AddNewCameraCut(
+
+		const FFrameNumber StartFrame(static_cast<int>(CameraCut.GetLowerBoundValue() * FrameRatio));
+		const FFrameNumber EndFrame(static_cast<int>(CameraCut.GetUpperBoundValue() * FrameRatio));
+
+		UMovieSceneCameraCutSection* CutSection = CameraCutTrack->AddNewCameraCut(
 			UE::MovieScene::FRelativeObjectBindingID(CameraBinding),
-			static_cast<int>(CameraCut.GetLowerBoundValue() * FrameRatio));
+			StartFrame.Value);
+
+		if (CutSection)
+		{
+			CutSection->SetRange(TRange<FFrameNumber>(StartFrame, EndFrame));
+		}
 	}
 }
 
