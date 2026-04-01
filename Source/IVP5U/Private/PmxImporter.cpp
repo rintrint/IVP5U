@@ -697,14 +697,14 @@ namespace MMD4UE5
 		{ // Displayframe
 			int32 i, j;
 
-			int32 PmxMorphNum = 0;
+			int32 PmxDisplayFrameNum = 0;
 
-			memcopySize = sizeof(PmxMorphNum);
-			FMemory::Memcpy(&PmxMorphNum, Buffer, memcopySize);
+			memcopySize = sizeof(PmxDisplayFrameNum);
+			FMemory::Memcpy(&PmxDisplayFrameNum, Buffer, memcopySize);
 			Buffer += memcopySize;
 
 			int32 PmxSkinNum = 0;
-			for (i = 0; i < PmxMorphNum; i++)
+			for (i = 0; i < PmxDisplayFrameNum; i++)
 			{
 				FString name = PMXTexBufferToFString(&Buffer, pmxEncodeType);
 				FString nameEng = PMXTexBufferToFString(&Buffer, pmxEncodeType);
