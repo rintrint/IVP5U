@@ -2,20 +2,19 @@
 
 #include "VmdFactory.h"
 
+#include "CoreMinimal.h"
+
+#include "AnimationUtils.h"
+#include "AssetRegistry/AssetRegistryModule.h"
+#include "Framework/Notifications/NotificationManager.h"
+#include "ImportUtils/SkelImport.h"
+#include "ObjectTools.h"
+#include "RigEditor/IKRigController.h"
+#include "Widgets/Notifications/SNotificationList.h"
+
 #include "MMDNameUtils.h"
 #include "VmdImporter.h"
-
-#include "CoreMinimal.h"
-#include "ImportUtils/SkelImport.h"
-#include "AnimationUtils.h"
-#include "ObjectTools.h"
-#include "AssetRegistry/AssetRegistryModule.h"
-
 #include "VmdImportUI.h"
-#include "RigEditor/IKRigController.h"
-
-#include "Framework/Notifications/NotificationManager.h"
-#include "Widgets/Notifications/SNotificationList.h"
 
 #define LOCTEXT_NAMESPACE "VMDImportFactory"
 

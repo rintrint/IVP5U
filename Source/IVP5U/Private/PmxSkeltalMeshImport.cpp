@@ -1,25 +1,18 @@
 // Copyright 2015-2026 IVP5U contributors
 
 #include "CoreMinimal.h"
-#include "Factories.h"
-
-#include "Misc/FbxErrors.h"
-#include "AssetRegistry/AssetRegistryModule.h"
-#include "Components/SkeletalMeshComponent.h"
-#include "Rendering/SkeletalMeshModel.h"
-
-#include "Engine.h"
-#include "ImportUtils/SkelImport.h"
-
-#include "Developer/MeshUtilities/Public/MeshUtilities.h"
 
 #include "Animation/MorphTarget.h"
-#include "ComponentReregisterContext.h"
-
-#include "MMDNameUtils.h"
-#include "PmxFactory.h"
-
+#include "AssetRegistry/AssetRegistryModule.h"
+#include "Developer/MeshUtilities/Public/MeshUtilities.h"
+#include "Engine.h"
+#include "Factories.h"
+#include "ImportUtils/SkelImport.h"
 #include "LODUtilities.h"
+#include "Misc/FbxErrors.h"
+#include "Rendering/SkeletalMeshModel.h"
+
+#include "PmxFactory.h"
 
 #define LOCTEXT_NAMESPACE "PMXSkeltalMeshImpoter"
 ////////////////////////////////////////////////////////////////////////////////////////////////

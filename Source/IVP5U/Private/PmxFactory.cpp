@@ -3,50 +3,36 @@
 // see S:\UE5SRC\EpicUE5\UE_5.0\Engine\Source\Editor\UnrealEd\Private\Fbx\FbxSkeletalMeshImport.cpp
 
 #include "PmxFactory.h"
-#include "IVP5USettings.h"
 
 #include "CoreMinimal.h"
-#include "Factories.h"
-#include "SSkeletonWidget.h"
 
-#include "AssetRegistry/AssetRegistryModule.h"
-#include "MeshDescription.h"
-#include "SkeletalMeshAttributes.h"
-#include "Engine/StaticMesh.h"
-#include "Engine/CurveTable.h"
-
-#include "IMeshBuilderModule.h"
-#include "Interfaces/ITargetPlatform.h"
-#include "Interfaces/ITargetPlatformManagerModule.h"
-
-#include "Engine.h"
+#include "Animation/Skeleton.h"
+#include "AssetNotifications.h"
+#include "ComponentReregisterContext.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Developer/PhysicsUtilities/Public/PhysicsAssetUtils.h"
 #include "Editor.h"
+#include "Engine.h"
+#include "Engine/StaticMesh.h"
+#include "Factories.h"
+#include "IMeshBuilderModule.h"
 #include "ImportUtils/SkelImport.h"
 #include "ImportUtils/SkeletalMeshImportUtils.h"
-
-#include "AssetNotifications.h"
+#include "Interfaces/ITargetPlatform.h"
+#include "Interfaces/ITargetPlatformManagerModule.h"
+#include "MeshDescription.h"
 #include "ObjectTools.h"
-
-#include "Developer/MeshUtilities/Public/MeshUtilities.h"
-#include "Developer/PhysicsUtilities/Public/PhysicsAssetUtils.h"
-
-#include "ComponentReregisterContext.h"
-
 #include "PhysicsEngine/PhysicsAsset.h"
 #include "PhysicsEngine/PhysicsConstraintTemplate.h"
 #include "PhysicsEngine/SkeletalBodySetup.h"
+#include "Rendering/SkeletalMeshModel.h"
 
-#include "Animation/Skeleton.h"
-
-#include "MMDNameUtils.h"
+#include "IVP5USettings.h"
+#include "MMDSkeletalMeshImportData.h"
+#include "MMDStaticMeshImportData.h"
 #include "PmdImporter.h"
 #include "PmxImporter.h"
 #include "PmxImportUI.h"
-#include "MMDSkeletalMeshImportData.h"
-#include "MMDStaticMeshImportData.h"
-
-#include "Components/SkeletalMeshComponent.h"
-#include "Rendering/SkeletalMeshModel.h"
 
 #define LOCTEXT_NAMESPACE "PMXImpoter"
 
