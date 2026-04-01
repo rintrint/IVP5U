@@ -87,15 +87,8 @@ UPmxFactory::UPmxFactory(const FObjectInitializer& ObjectInitializer)
 bool UPmxFactory::FactoryCanImport(const FString& Filename)
 {
 	const FString Extension = FPaths::GetExtension(Filename);
-
-	if (Extension == TEXT("pmd") || Extension == TEXT("pmx"))
-	{
-		UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("FactoryCanImport: Can import %s"), *Filename);
-		return true;
-	}
-
-	UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("FactoryCanImport: Cannot import %s (extension: %s)"), *Filename, *Extension);
-	return false;
+	return Extension.Equals(TEXT("pmd"), ESearchCase::IgnoreCase)
+		|| Extension.Equals(TEXT("pmx"), ESearchCase::IgnoreCase);
 }
 
 void UPmxFactory::PostInitProperties()
@@ -176,12 +169,7 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 					// For multiple files, use the same settings
 					bDetectImportTypeOnImport = false;
 					importAssetTypeMMD = E_MMD_TO_UE5_SKELTON;
-					bool bIsPmxFormat = true;
-					if (file.Find(TEXT(".pmx")) != INDEX_NONE)
-					{
-						// Is PMX format
-						bIsPmxFormat = true;
-					}
+					bool bIsPmxFormat = FPaths::GetExtension(file).Equals(TEXT("pmx"), ESearchCase::IgnoreCase);
 					// Load MMD Model From binary File
 					MMD4UE5::PmxMeshInfo pmxMeshInfoPtr;
 					// pmxMaterialImportHelper.InitializeBaseValue(InParent);
@@ -422,12 +410,7 @@ UObject* UPmxFactory::FactoryCreateBinary(
 	bDetectImportTypeOnImport = false;
 
 	// judge MMD format(pmx or pmd)
-	bool bIsPmxFormat = false;
-	if (FString(Type).Equals(TEXT("pmx"), ESearchCase::IgnoreCase))
-	{
-		// Is PMX format
-		bIsPmxFormat = true;
-	}
+	bool bIsPmxFormat = FString(Type).Equals(TEXT("pmx"), ESearchCase::IgnoreCase);
 	// Load MMD Model From binary File
 	MMD4UE5::PmxMeshInfo pmxMeshInfoPtr;
 	pmxMaterialImportHelper.InitializeBaseValue(InParent);
