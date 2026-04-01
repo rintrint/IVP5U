@@ -44,7 +44,7 @@ MMDBridge教程
 * 开启光线追踪阴影 - 解决阴影有锯齿的问题
 * Substrate GBuffer格式: Adaptive GBuffer
 * 关闭自动曝光
-* 关闭动态模煳
+* 关闭动态模糊
 
 导入模型后建议先存档并重启UE5  
 未重启就导入VMD会导致动画鬼畜，有时还会导致UE5卡死或闪退  
