@@ -5,8 +5,8 @@ Import VMD/PMX into UE5
 
 * 推荐使用UE5.7以获得完整支持和Bug修复
 
-| UE5版本   | 插件版本     |
-|-----------|-------------|
+| UE5版本   | 插件版本    |
+| --------- | ----------- |
 | UE5.7     | IVP5U_UE5.7 |
 
 可以搭配VRM4U使用:
@@ -42,9 +42,12 @@ MMDBridge教程
 
 * 开启支持16位骨骼索引 - 支持超过256根骨骼的模型(MMD模型基本都会超过)
 * 开启光线追踪阴影 - 解决阴影有锯齿的问题
-* Substrate GBuffer格式: Adaptive GBuffer
 * 关闭自动曝光
 * 关闭动态模糊
+* Substrate GBuffer格式: Adaptive GBuffer
+* Substrate Closure Per Pixel: 根据需求调大
+* Substrate Bytes Per Pixel: 根据需求调大
+* Near Clip Plane: 根据需求调小(解决镜头太靠近模型时发生裁剪问题)
 
 导入模型后建议先存档并重启UE5  
 未重启就导入VMD会导致动画鬼畜，有时还会导致UE5卡死或闪退  
