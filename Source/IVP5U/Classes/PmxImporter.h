@@ -293,10 +293,8 @@ namespace MMD4UE5
 		template <typename T>
 		void readBuffer(T& var)
 		{
-			size_t memcopySize = sizeof(var);
-			var = *(T*)Buffer;
-			// FMemory::Memcpy(&var, Buffer, memcopySize);
-			Buffer += memcopySize;
+			FMemory::Memcpy(&var, Buffer, sizeof(var));
+			Buffer += sizeof(var);
 		}
 
 		TArray<PMX_RIGIDBODY> findRigid(FName bname)
