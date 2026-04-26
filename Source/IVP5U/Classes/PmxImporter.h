@@ -347,7 +347,6 @@ struct PMXImportOptions
 	FVector ImportTranslation;
 	FRotator ImportRotation;
 	float ImportUniformScale;
-	EMMDNormalImportMethod NormalImportMethod;
 	// Static Mesh options
 	bool bCombineToSingle;
 	EVertexColorImportOptionMMD::Type VertexColorImportOption;

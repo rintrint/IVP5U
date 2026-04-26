@@ -714,6 +714,8 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 	NewLODInfo.ReductionSettings.NumOfVertPercentage = 1.0f;
 	NewLODInfo.ReductionSettings.MaxDeviationPercentage = 0.0f;
 	NewLODInfo.LODHysteresis = 0.02f;
+	NewLODInfo.BuildSettings.bRecomputeNormals = false;
+	NewLODInfo.BuildSettings.bRecomputeTangents = true;
 
 	// Setup LOD Model
 	FSkeletalMeshModel* ImportedResource = SkeletalMesh->GetImportedModel();

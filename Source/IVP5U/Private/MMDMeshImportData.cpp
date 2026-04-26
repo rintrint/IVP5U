@@ -6,7 +6,6 @@
 UMMDMeshImportData::UMMDMeshImportData(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	NormalImportMethod = MMDNIM_ComputeNormals;
 }
 
 bool UMMDMeshImportData::CanEditChange(const FProperty* InProperty) const

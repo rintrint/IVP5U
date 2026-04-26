@@ -383,8 +383,8 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 	// One UV set is required but only import up to MAX_TEXCOORDS number of uv layers
 	ImportData.NumTexCoords = FMath::Max<uint32>(ImportData.NumTexCoords, UniqueUVCount);
 
-	ImportData.bHasNormals = false;
-	ImportData.bHasTangents = true;
+	ImportData.bHasNormals = true;
+	ImportData.bHasTangents = false;
 
 	// create the points / wedges / faces
 	int32 ControlPointsCount =
@@ -430,7 +430,7 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 				int32 NormalIndex = UnrealVertexIndex;
 				// for (NormalIndex = 0; NormalIndex < 3; ++NormalIndex)
 				{
-					FVector3f TangentZ = PmxMeshInfo->vertexList[PmxMeshInfo->faseList[LocalIndex].VertexIndex[NormalIndex]].Normal;
+					FVector3f TangentZ = PmxMeshInfo->vertexList[PmxMeshInfo->faseList[LocalIndex].VertexIndex[VertexIndex]].Normal;
 
 					Triangle.TangentX[NormalIndex] = FVector3f::ZeroVector;
 					Triangle.TangentY[NormalIndex] = FVector3f::ZeroVector;

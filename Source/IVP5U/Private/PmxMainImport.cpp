@@ -180,7 +180,6 @@ void ApplyImportUIToImportOptions(
 	if (ImportUI->MeshTypeToImport == PMXIT_StaticMesh)
 	{
 		UMMDStaticMeshImportData* StaticMeshData = ImportUI->StaticMeshImportData;
-		InOutImportOptions.NormalImportMethod = StaticMeshData->NormalImportMethod;
 		InOutImportOptions.ImportTranslation = StaticMeshData->ImportTranslation;
 		InOutImportOptions.ImportRotation = StaticMeshData->ImportRotation;
 		InOutImportOptions.ImportUniformScale = StaticMeshData->ImportUniformScale;
@@ -188,7 +187,6 @@ void ApplyImportUIToImportOptions(
 	else if (ImportUI->MeshTypeToImport == PMXIT_SkeletalMesh)
 	{
 		UMMDSkeletalMeshImportData* SkeletalMeshData = ImportUI->SkeletalMeshImportData;
-		InOutImportOptions.NormalImportMethod = SkeletalMeshData->NormalImportMethod;
 		InOutImportOptions.ImportTranslation = SkeletalMeshData->ImportTranslation;
 		InOutImportOptions.ImportRotation = SkeletalMeshData->ImportRotation;
 		InOutImportOptions.ImportUniformScale = SkeletalMeshData->ImportUniformScale;
