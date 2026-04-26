@@ -852,7 +852,7 @@ bool UVmdFactory::PrepareVMDBoneAnimData(
 	if (!DestSeq || !Skeleton || !vmdMotionInfo)
 	{
 		UE_LOG(LogMMD4UE5_VMDFactory, Error,
-			TEXT("PrepareVMDBoneAnimData : Ref InParam is Null. DestSeq[%x],Skelton[%x],vmdMotionInfo[%x]"),
+			TEXT("PrepareVMDBoneAnimData : Ref InParam is Null. DestSeq[%x],Skeleton[%x],vmdMotionInfo[%x]"),
 			DestSeq, Skeleton, vmdMotionInfo);
 		// TBD:: ERR in Param...
 		return false;
@@ -1349,17 +1349,17 @@ bool UVmdFactory::FindTableRowMMD2UEName(
 }
 
 /*****************
- * 从Bone名称中搜索并获取与RefSkelton匹配的BoneIndex
+ * 从Bone名称中搜索并获取与RefSkeleton匹配的BoneIndex
  * Return :index, -1 is not found
  * @param :TargetName is Target Bone Name
  ****************/
 int32 UVmdFactory::FindRefBoneInfoIndexFromBoneName(
-	const FReferenceSkeleton& RefSkelton,
+	const FReferenceSkeleton& RefSkeleton,
 	const FName& TargetName)
 {
-	for (int i = 0; i < RefSkelton.GetRefBoneInfo().Num(); ++i)
+	for (int i = 0; i < RefSkeleton.GetRefBoneInfo().Num(); ++i)
 	{
-		if (RefSkelton.GetRefBoneInfo()[i].Name == TargetName)
+		if (RefSkeleton.GetRefBoneInfo()[i].Name == TargetName)
 		{
 			return i;
 		}

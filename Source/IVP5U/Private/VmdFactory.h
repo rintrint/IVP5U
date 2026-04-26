@@ -99,9 +99,9 @@ class IVP5U_API UVmdFactory : public UFactory
 		FName mmdName,
 		FName* ue5Name);
 
-	/*从Bone名称中搜索并获取与RefSkelton匹配的BoneIndex*/
+	/*从Bone名称中搜索并获取与RefSkeleton匹配的BoneIndex*/
 	int32 FindRefBoneInfoIndexFromBoneName(
-		const FReferenceSkeleton& RefSkelton,
+		const FReferenceSkeleton& RefSkeleton,
 		const FName& TargetName);
 
 	/*递归计算当前关键帧中指定Bone的Glb坐标*/

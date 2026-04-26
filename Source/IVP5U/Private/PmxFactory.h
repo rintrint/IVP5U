@@ -51,7 +51,7 @@ class IVP5U_API UPmxFactory : public UFactory, public FReimportHandler // public
 	enum E_LOAD_ASSETS_TYPE_MMD
 	{
 		E_MMD_TO_UE5_UNKOWN,
-		E_MMD_TO_UE5_SKELTON,
+		E_MMD_TO_UE5_SKELETON,
 		E_MMD_TO_UE5_STATICMESH,
 		E_MMD_TO_UE5_ANIMATION
 	};

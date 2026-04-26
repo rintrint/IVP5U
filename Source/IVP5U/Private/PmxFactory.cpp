@@ -118,7 +118,7 @@ int32 UPmxFactory::GetPriority() const
 //////////////////////////////////////////////
 // IVP5U Develop Temp Define
 //////////////////////////////////////////////
-#define DEBUG_MMD_PLUGIN_SKELTON (1)
+#define DEBUG_MMD_PLUGIN_SKELETON (1)
 //////////////////////////////////////////////
 
 bool UPmxFactory::FImportPmxFromFile(FString file)
@@ -154,7 +154,7 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 					EPMXImportType ForcedImportType = PMXIT_SkeletalMesh;
 					// For multiple files, use the same settings
 					bDetectImportTypeOnImport = false;
-					importAssetTypeMMD = E_MMD_TO_UE5_SKELTON;
+					importAssetTypeMMD = E_MMD_TO_UE5_SKELETON;
 					bool bIsPmxFormat = FPaths::GetExtension(file).Equals(TEXT("pmx"), ESearchCase::IgnoreCase);
 					// Load MMD Model From binary File
 					MMD4UE5::PmxMeshInfo pmxMeshInfoPtr;
@@ -215,9 +215,9 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 							// For animation and static mesh we assume there is at lease one interesting node by default
 							int32 InterestingNodeCount = 1;
 
-							if (importAssetTypeMMD == E_MMD_TO_UE5_SKELTON)
+							if (importAssetTypeMMD == E_MMD_TO_UE5_SKELETON)
 							{
-#ifdef DEBUG_MMD_PLUGIN_SKELTON
+#ifdef DEBUG_MMD_PLUGIN_SKELETON
 
 								InterestingNodeCount = 1; // test ? not Anime?
 
@@ -243,9 +243,9 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 								int32 ImportedMeshCount = 0;
 								UStaticMesh* NewStaticMesh = nullptr;
 
-								if (importAssetTypeMMD == E_MMD_TO_UE5_SKELTON) // skeletal mesh
+								if (importAssetTypeMMD == E_MMD_TO_UE5_SKELETON) // skeletal mesh
 								{
-#ifdef DEBUG_MMD_PLUGIN_SKELTON
+#ifdef DEBUG_MMD_PLUGIN_SKELETON
 									int32 TotalNumNodes = 0;
 
 									// for (int32 i = 0; i < SkelMeshArray.Num(); i++)
@@ -305,7 +305,7 @@ bool UPmxFactory::FImportPmxFromFile(FString file)
 							}
 							else
 							{
-								if (importAssetTypeMMD == E_MMD_TO_UE5_SKELTON)
+								if (importAssetTypeMMD == E_MMD_TO_UE5_SKELETON)
 								{
 									AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_InvalidBone", "Failed to find any bone hierarchy. Try disabling the \"Import As Skeletal\" option to import as a rigid mesh. ")), "FFbxErrors::SkeletalMesh_InvalidBone");
 								}
@@ -374,7 +374,7 @@ UObject* UPmxFactory::FactoryCreateBinary(
 	OutputName = FName(*FString::Printf(TEXT("SKM_%s"), *Name.ToString()));
 
 	// MMD Default
-	importAssetTypeMMD = E_MMD_TO_UE5_SKELTON;
+	importAssetTypeMMD = E_MMD_TO_UE5_SKELETON;
 
 	if (bOperationCanceled)
 	{
@@ -476,9 +476,9 @@ UObject* UPmxFactory::FactoryCreateBinary(
 			// For animation and static mesh we assume there is at lease one interesting node by default
 			int32 InterestingNodeCount = 1;
 
-			if (importAssetTypeMMD == E_MMD_TO_UE5_SKELTON)
+			if (importAssetTypeMMD == E_MMD_TO_UE5_SKELETON)
 			{
-#ifdef DEBUG_MMD_PLUGIN_SKELTON
+#ifdef DEBUG_MMD_PLUGIN_SKELETON
 
 				InterestingNodeCount = 1; // test ? not Anime?
 
@@ -504,9 +504,9 @@ UObject* UPmxFactory::FactoryCreateBinary(
 				if (importAssetTypeMMD == E_MMD_TO_UE5_STATICMESH) // static mesh
 				{
 				}
-				else if (importAssetTypeMMD == E_MMD_TO_UE5_SKELTON) // skeletal mesh
+				else if (importAssetTypeMMD == E_MMD_TO_UE5_SKELETON) // skeletal mesh
 				{
-#ifdef DEBUG_MMD_PLUGIN_SKELTON
+#ifdef DEBUG_MMD_PLUGIN_SKELETON
 					int32 TotalNumNodes = 0;
 					// for (int32 i = 0; i < SkelMeshArray.Num(); i++)
 					for (int32 i = 0; i < 1 /*SkelMeshArray.Num()*/; i++)
@@ -568,7 +568,7 @@ UObject* UPmxFactory::FactoryCreateBinary(
 			}
 			else
 			{
-				if (importAssetTypeMMD == E_MMD_TO_UE5_SKELTON)
+				if (importAssetTypeMMD == E_MMD_TO_UE5_SKELETON)
 				{
 					AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_InvalidBone", "Failed to find any bone hierarchy. Try disabling the \"Import As Skeletal\" option to import as a rigid mesh. ")), "FFbxErrors::SkeletalMesh_InvalidBone");
 				}
