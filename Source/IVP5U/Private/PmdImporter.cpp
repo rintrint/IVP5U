@@ -340,13 +340,13 @@ namespace MMD4UE5
 				0x01:両面描画, 0x02:地面影, 0x04:セルフシャドウマップへの描画, 0x08:セルフシャドウの描画,
 				0x10:エッジ描画
 				*/
-				tempAlphaStr = FString::Printf(TEXT("%.03f"), pmdMaterialPtr.Alpha);
+				const bool bSelfShadowDisabled = FMath::IsNearlyEqual(pmdMaterialPtr.Alpha, 0.98f, 1e-6f);
 				// pmxMaterialPtr.CullingOff = (pmdMaterialPtr.Alpha < 1.0f) ? 1 : 0;//本来の仕様のはず？だが裏地に黒エッジ出来ないので1.0fだと透ける
 				pmxMaterialPtr.CullingOff = 1; // 上記理由からPMDの場合両面にする。あとで適宜片面にするなどドローコールを減らしてもらいたい。。。
-				pmxMaterialPtr.GroundShadow = (0) ? 1 : 0;
-				pmxMaterialPtr.SelfShadowMap = tempAlphaStr.Equals("0.980") ? 1 : 0;
-				pmxMaterialPtr.SelfShadowDraw = tempAlphaStr.Equals("0.980") ? 1 : 0;
-				pmxMaterialPtr.EdgeDraw = (0) ? 1 : 0;
+				pmxMaterialPtr.SelfShadowMap = bSelfShadowDisabled ? 0 : 1;
+				pmxMaterialPtr.SelfShadowDraw = bSelfShadowDisabled ? 0 : 1;
+				pmxMaterialPtr.GroundShadow = (pmdMaterialPtr.Edge != 0) ? 1 : 0;
+				pmxMaterialPtr.EdgeDraw = (pmdMaterialPtr.Edge != 0) ? 1 : 0;
 
 				// エッジ色 (R,G,B,A)
 				pmxMaterialPtr.EdgeColor[0] = 0;
