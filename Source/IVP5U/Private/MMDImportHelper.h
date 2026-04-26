@@ -17,6 +17,9 @@ namespace MMD4UE5
 		PMXEncodeType_SJIS,		   // for PMD, VMD
 		PMXEncodeType_ERROR
 	};
+
+	DECLARE_LOG_CATEGORY_EXTERN(LogMMD4UE5_MMDImportHelper, Log, All);
+
 	class MMDImportHelper
 	{
 	public:

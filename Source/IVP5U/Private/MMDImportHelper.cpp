@@ -5,6 +5,8 @@
 
 namespace MMD4UE5
 {
+	DEFINE_LOG_CATEGORY(LogMMD4UE5_MMDImportHelper);
+
 	FVector3f MMDImportHelper::ConvertVectorAxisToUE5FromMMD(const FVector3f& vec)
 	{
 		return FVector3f(vec.X, -vec.Z, vec.Y);
@@ -20,26 +22,41 @@ namespace MMD4UE5
 	{
 		FString NewString;
 		uint32 size = 0;
-		// temp data
-		TArray<uint8> RawModData;
-
 		if (encodeType == PMXEncodeType_UTF16LE)
 		{
 			FMemory::Memcpy(&size, *buffer, sizeof(uint32));
 			*buffer += sizeof(uint32);
-			RawModData.Empty(size);
-			RawModData.AddUninitialized(size);
-			FMemory::Memcpy(RawModData.GetData(), *buffer, RawModData.Num());
-			RawModData.Add(0);
-			RawModData.Add(0);
-			NewString.Append((TCHAR*)RawModData.GetData());
+			if (size > 0)
+			{
+				const int32 NumChars = static_cast<int32>(size / sizeof(UTF16CHAR));
+				// Copy to an aligned TArray; raw buffer may not be 2-byte aligned (unaligned read fault on ARM)
+				TArray<UTF16CHAR> Utf16Buffer;
+				Utf16Buffer.AddUninitialized(NumChars);
+				FMemory::Memcpy(Utf16Buffer.GetData(), *buffer, size);
+				// On Windows TCHAR == UTF16CHAR (no-op); on platforms with 32-bit TCHAR this performs real conversion
+				const auto Converted = StringCast<TCHAR>(Utf16Buffer.GetData(), NumChars);
+				NewString = FString(Converted.Length(), Converted.Get());
+			}
+			*buffer += size;
+		}
+		else if (encodeType == PMXEncodeType_UTF8)
+		{
+			FMemory::Memcpy(&size, *buffer, sizeof(uint32));
+			*buffer += sizeof(uint32);
+			if (size > 0)
+			{
+				const FUTF8ToTCHAR Conv(reinterpret_cast<const ANSICHAR*>(*buffer), size);
+				NewString = FString(Conv.Length(), Conv.Get());
+			}
 			*buffer += size;
 		}
 		else
 		{
-			// this plugin  unsuported encodetype ( utf-8 etc.)
-			// Error ...
-			// UE_LOG(LogMMD4UE5_PmxMeshInfo, Error, TEXT("PMX Encode Type : not UTF-16 LE , unload"));
+			UE_LOG(LogMMD4UE5_MMDImportHelper, Warning, TEXT("PMXTexBufferToFString: unsupported encoding type %d, skipping field"), static_cast<int32>(encodeType));
+			// Still consume the field (4-byte size + payload) to keep buffer in sync; otherwise all subsequent parsing desyncs
+			FMemory::Memcpy(&size, *buffer, sizeof(uint32));
+			*buffer += sizeof(uint32);
+			*buffer += size;
 		}
 		return NewString;
 	}
