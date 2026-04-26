@@ -41,5 +41,5 @@ class UMMDSkeletalMeshImportData : public UMMDMeshImportData
 	/** Gets or creates MMD import data for the specified skeletal mesh */
 	static UMMDSkeletalMeshImportData* GetImportDataForSkeletalMesh(USkeletalMesh* SkeletalMesh, UMMDSkeletalMeshImportData* TemplateForCreation);
 
-	bool CanEditChange(const FProperty* InProperty) const;
+	virtual bool CanEditChange(const FProperty* InProperty) const override;
 };

@@ -26,5 +26,5 @@ class UMMDMeshImportData : public UAssetImportData // UMMDAssetImportData
 	UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = ImportSettings, meta = (OBJRestrict = "true", ImportType = "Mesh", ToolTip = "If enabled, creates LOD models for Unreal meshes from LODs in the import file; If not enabled, only the base mesh from the LOD group is imported"))
 	uint32 bImportMeshLODs : 1;
 
-	bool CanEditChange(const FProperty* InProperty) const;
+	virtual bool CanEditChange(const FProperty* InProperty) const override;
 };
