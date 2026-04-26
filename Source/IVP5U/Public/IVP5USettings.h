@@ -1,3 +1,5 @@
+// Copyright 2015-2026 IVP5U contributors
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -25,8 +27,4 @@ public:
 	/** create Unreal materials of Unlit Type */
 	UPROPERTY(config, EditAnywhere, Category = Settings)
 	bool bUnlitMaterials = true;
-
-#if WITH_EDITOR
-	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent);
-#endif
 };
