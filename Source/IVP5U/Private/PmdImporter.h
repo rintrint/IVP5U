@@ -253,7 +253,7 @@ namespace MMD4UE5
 		PMD_READ_IK_INFO	*Next;					// リストの次のデータへのアドレス
 	};
 
-	struct PMX_BONE_HIERARCKY
+	struct PMD_BONE_HIERARCKY
 	{
 	};
 #endif

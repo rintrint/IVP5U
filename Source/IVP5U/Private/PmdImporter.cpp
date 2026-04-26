@@ -169,7 +169,7 @@ namespace MMD4UE5
 		// 拡張仕様(ToonTexture)
 		// 拡張仕様(物理：剛体)
 		// 拡張仕様(物理：Joint)
-		UE_LOG(LogMMD4UE5_PmdMeshInfo, Warning, TEXT("PMX Importer Class Complete"));
+		UE_LOG(LogMMD4UE5_PmdMeshInfo, Warning, TEXT("PMD Importer Class Complete"));
 		return true;
 	}
 
@@ -247,10 +247,10 @@ namespace MMD4UE5
 				// エッジ倍率  材質のエッジサイズに対しての倍率値
 			}
 			UE_LOG(LogMMD4UE5_PmdMeshInfo, Warning,
-				TEXT("PMX convert [Vertex:: statics bone type, bdef1 = %u] Complete"), statics_bdef1);
+				TEXT("PMD convert [Vertex:: statics bone type, bdef1 = %u] Complete"), statics_bdef1);
 			UE_LOG(LogMMD4UE5_PmdMeshInfo, Warning,
-				TEXT("PMX convert [Vertex:: statics bone type, bdef2 = %u] Complete"), statics_bdef2);
-			UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX convert [VertexList] Complete"));
+				TEXT("PMD convert [Vertex:: statics bone type, bdef2 = %u] Complete"), statics_bdef2);
+			UE_LOG(LogMMD4UE5_PmdMeshInfo, Warning, TEXT("PMD convert [VertexList] Complete"));
 		}
 		{
 			/*
@@ -276,7 +276,7 @@ namespace MMD4UE5
 					pmxFaseListPtr.VertexIndex[SubNum] = pmdFaceListPtr.VertexIndx[SubNum];
 				}
 			}
-			UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX convert [faceList] Complete"));
+			UE_LOG(LogMMD4UE5_PmdMeshInfo, Warning, TEXT("PMD convert [faceList] Complete"));
 		}
 		/*
 		{
@@ -295,7 +295,7 @@ namespace MMD4UE5
 			{
 				textureList[i].TexturePath = PMXTexBufferToFString(&Buffer, pmxEncodeType);
 			}
-			UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX Import [textureList] Complete"));
+			UE_LOG(LogMMD4UE5_PmdMeshInfo, Warning, TEXT("PMD Import [textureList] Complete"));
 		}
 		*/
 		{
@@ -375,14 +375,14 @@ namespace MMD4UE5
 					{
 						// 加算でない場合
 						pmxMaterialPtr.SphereMode = 1;
-						UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning,
-							TEXT("PMX convert [materialList] multi texture[%s] / sphere[%s]"), *tempTex.TexturePath, *tempShaPathStr);
+						UE_LOG(LogMMD4UE5_PmdMeshInfo, Warning,
+							TEXT("PMD convert [materialList] multi texture[%s] / sphere[%s]"), *tempTex.TexturePath, *tempShaPathStr);
 					}
 					else
 					{
 						pmxMaterialPtr.SphereMode = 2;
-						UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning,
-							TEXT("PMX convert [materialList] add texture[%s] / sphere[%s]"), *tempTex.TexturePath, *tempShaPathStr);
+						UE_LOG(LogMMD4UE5_PmdMeshInfo, Warning,
+							TEXT("PMD convert [materialList] add texture[%s] / sphere[%s]"), *tempTex.TexturePath, *tempShaPathStr);
 					}
 				}
 				else if (tempTex.TexturePath.Split("*", &tempTexPathStr, &tempShaPathStr))
@@ -392,14 +392,14 @@ namespace MMD4UE5
 					{
 						// 加算でない場合
 						pmxMaterialPtr.SphereMode = 1;
-						UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning,
-							TEXT("PMX convert [materialList] multi texture[%s] / sphere[%s]"), *tempTex.TexturePath, *tempShaPathStr);
+						UE_LOG(LogMMD4UE5_PmdMeshInfo, Warning,
+							TEXT("PMD convert [materialList] multi texture[%s] / sphere[%s]"), *tempTex.TexturePath, *tempShaPathStr);
 					}
 					else
 					{
 						pmxMaterialPtr.SphereMode = 2;
-						UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning,
-							TEXT("PMX convert [materialList] add texture[%s] / sphere[%s]"), *tempTex.TexturePath, *tempShaPathStr);
+						UE_LOG(LogMMD4UE5_PmdMeshInfo, Warning,
+							TEXT("PMD convert [materialList] add texture[%s] / sphere[%s]"), *tempTex.TexturePath, *tempShaPathStr);
 					}
 				}
 				else
@@ -425,8 +425,8 @@ namespace MMD4UE5
 						// スフィアなし
 						tempShaPathStr = "";
 					}
-					UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning,
-						TEXT("PMX convert [materialList] texture[%s] mono sphere[%s]"), *tempTex.TexturePath, *tempShaPathStr);
+					UE_LOG(LogMMD4UE5_PmdMeshInfo, Warning,
+						TEXT("PMD convert [materialList] texture[%s] mono sphere[%s]"), *tempTex.TexturePath, *tempShaPathStr);
 					// tempTex.TexturePath = tempTexPathStr;
 				}
 				// 通常テクスチャ, テクスチャテーブルの参照Index
@@ -482,7 +482,7 @@ namespace MMD4UE5
 				// 材质对应的面（顶点）数（一定是3的倍数）
 				pmxMaterialPtr.MaterialFaceNum = pmdMaterialPtr.FaceVertexCount;
 			}
-			UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX convert [materialList] Complete"));
+			UE_LOG(LogMMD4UE5_PmdMeshInfo, Warning, TEXT("PMD convert [materialList] Complete"));
 		}
 		{
 			// 为UE5添加所有父Bone
@@ -687,7 +687,7 @@ namespace MMD4UE5
 				}
 #endif
 			}
-			UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX convert [BoneList] Complete"));
+			UE_LOG(LogMMD4UE5_PmdMeshInfo, Warning, TEXT("PMD convert [BoneList] Complete"));
 		}
 		{
 			// IK
@@ -772,7 +772,7 @@ namespace MMD4UE5
 					}
 				}
 			}
-			UE_LOG(LogMMD4UE5_PmxMeshInfo, Warning, TEXT("PMX convert [MorphList] Complete"));
+			UE_LOG(LogMMD4UE5_PmdMeshInfo, Warning, TEXT("PMD convert [MorphList] Complete"));
 		}
 		return true;
 	}
