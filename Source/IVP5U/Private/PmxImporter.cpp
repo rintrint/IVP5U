@@ -101,12 +101,12 @@ namespace MMD4UE5
 				// 位置(x,y,z)
 				memcopySize = sizeof(pmxVertexPtr.Position);
 				FMemory::Memcpy(&pmxVertexPtr.Position, Buffer, memcopySize);
-				pmxVertexPtr.Position = ConvertVectorAsixToUE5FromMMD(pmxVertexPtr.Position) * modelScale;
+				pmxVertexPtr.Position = ConvertVectorAxisToUE5FromMMD(pmxVertexPtr.Position) * modelScale;
 				Buffer += memcopySize;
 				// 法線(x,y,z)
 				memcopySize = sizeof(pmxVertexPtr.Normal);
 				FMemory::Memcpy(&pmxVertexPtr.Normal, Buffer, memcopySize);
-				pmxVertexPtr.Normal = ConvertVectorAsixToUE5FromMMD(pmxVertexPtr.Normal);
+				pmxVertexPtr.Normal = ConvertVectorAxisToUE5FromMMD(pmxVertexPtr.Normal);
 				Buffer += memcopySize;
 				// UV(u,v)
 				memcopySize = sizeof(pmxVertexPtr.UV);
@@ -395,7 +395,7 @@ namespace MMD4UE5
 
 				memcopySize = sizeof(boneList[i].Position);
 				FMemory::Memcpy(&boneList[i].Position, Buffer, memcopySize);
-				boneList[i].Position = ConvertVectorAsixToUE5FromMMD(boneList[i].Position) * modelScale;
+				boneList[i].Position = ConvertVectorAxisToUE5FromMMD(boneList[i].Position) * modelScale;
 				Buffer += memcopySize;
 
 				boneList[i].ParentBoneIndex = MMDExtendBufferSizeToInt32(&Buffer, this->baseHeader.BoneIndexSize) + offsetBoneIndex;
@@ -427,7 +427,7 @@ namespace MMD4UE5
 				{
 					memcopySize = sizeof(boneList[i].OffsetPosition);
 					FMemory::Memcpy(&boneList[i].OffsetPosition, Buffer, memcopySize);
-					boneList[i].OffsetPosition = ConvertVectorAsixToUE5FromMMD(boneList[i].OffsetPosition) * modelScale;
+					boneList[i].OffsetPosition = ConvertVectorAxisToUE5FromMMD(boneList[i].OffsetPosition) * modelScale;
 					Buffer += memcopySize;
 				}
 				else
@@ -512,7 +512,7 @@ namespace MMD4UE5
 								boneList[i].IKInfo.Link[j].RotLockMin[0],
 								boneList[i].IKInfo.Link[j].RotLockMin[1],
 								boneList[i].IKInfo.Link[j].RotLockMin[2]);
-							tempVecRot = ConvertVectorAsixToUE5FromMMD(tempVecRot);
+							tempVecRot = ConvertVectorAxisToUE5FromMMD(tempVecRot);
 							// fix to Dig From rad(pmx) for vmd ik
 							boneList[i].IKInfo.Link[j].RotLockMin[0] = FMath::RadiansToDegrees(tempVecRot.X);
 							boneList[i].IKInfo.Link[j].RotLockMin[1] = FMath::RadiansToDegrees(tempVecRot.Y);
@@ -525,7 +525,7 @@ namespace MMD4UE5
 								boneList[i].IKInfo.Link[j].RotLockMax[0],
 								boneList[i].IKInfo.Link[j].RotLockMax[1],
 								boneList[i].IKInfo.Link[j].RotLockMax[2]);
-							tempVecRot = ConvertVectorAsixToUE5FromMMD(tempVecRot);
+							tempVecRot = ConvertVectorAxisToUE5FromMMD(tempVecRot);
 							// 已修复vmd-ik从rad（pmx）挖掘的问题
 							boneList[i].IKInfo.Link[j].RotLockMax[0] = FMath::RadiansToDegrees(tempVecRot.X);
 							boneList[i].IKInfo.Link[j].RotLockMax[1] = FMath::RadiansToDegrees(tempVecRot.Y);
@@ -598,7 +598,7 @@ namespace MMD4UE5
 
 							memcopySize = sizeof(morphList[i].Vertex[j].Offset);
 							FMemory::Memcpy(&morphList[i].Vertex[j].Offset, Buffer, memcopySize);
-							morphList[i].Vertex[j].Offset = ConvertVectorAsixToUE5FromMMD(morphList[i].Vertex[j].Offset) * modelScale;
+							morphList[i].Vertex[j].Offset = ConvertVectorAxisToUE5FromMMD(morphList[i].Vertex[j].Offset) * modelScale;
 							Buffer += memcopySize;
 						}
 						break;
@@ -613,7 +613,7 @@ namespace MMD4UE5
 
 							memcopySize = sizeof(morphList[i].Bone[j].Offset);
 							FMemory::Memcpy(&morphList[i].Bone[j].Offset, Buffer, memcopySize);
-							morphList[i].Bone[j].Offset = ConvertVectorAsixToUE5FromMMD(morphList[i].Bone[j].Offset) * modelScale;
+							morphList[i].Bone[j].Offset = ConvertVectorAxisToUE5FromMMD(morphList[i].Bone[j].Offset) * modelScale;
 							Buffer += memcopySize;
 
 							memcopySize = sizeof(morphList[i].Bone[j].Quat);
@@ -767,8 +767,8 @@ namespace MMD4UE5
 				readBuffer(rb.Size);
 				rb.Size *= modelScale;
 				readBuffer(rb.Position);
-				rb.Position = ConvertVectorAsixToUE5FromMMD(rb.Position) * modelScale - bone.Position;
-				readBuffer(rb.Rotation); // rb.Rotation = ConvertVectorAsixToUE5FromMMD(rb.Rotation);
+				rb.Position = ConvertVectorAxisToUE5FromMMD(rb.Position) * modelScale - bone.Position;
+				readBuffer(rb.Rotation); // rb.Rotation = ConvertVectorAxisToUE5FromMMD(rb.Rotation);
 
 				FQuat qx = FQuat(FVector(1.0, 0.0, 0.0), rb.Rotation.X);
 				FQuat qy = FQuat(FVector(0.0, 1.0, 0.0), rb.Rotation.Y);

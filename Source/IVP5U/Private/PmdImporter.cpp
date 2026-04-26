@@ -199,11 +199,11 @@ namespace MMD4UE5
 				// 位置(x,y,z)
 				memcopySize = sizeof(pmxVertexPtr.Position);
 				FMemory::Memcpy(&pmxVertexPtr.Position, pmdVertexPtr.Position, memcopySize);
-				pmxVertexPtr.Position = ConvertVectorAsixToUE5FromMMD(pmxVertexPtr.Position) * modelScale;
+				pmxVertexPtr.Position = ConvertVectorAxisToUE5FromMMD(pmxVertexPtr.Position) * modelScale;
 				// 法線(x,y,z)
 				memcopySize = sizeof(pmxVertexPtr.Normal);
 				FMemory::Memcpy(&pmxVertexPtr.Normal, pmdVertexPtr.Normal, memcopySize);
-				pmxVertexPtr.Normal = ConvertVectorAsixToUE5FromMMD(pmxVertexPtr.Normal);
+				pmxVertexPtr.Normal = ConvertVectorAxisToUE5FromMMD(pmxVertexPtr.Normal);
 				// UV(u,v)
 				memcopySize = sizeof(pmxVertexPtr.UV);
 				FMemory::Memcpy(&pmxVertexPtr.UV, pmdVertexPtr.Uv, memcopySize);
@@ -516,7 +516,7 @@ namespace MMD4UE5
 
 				memcopySize = sizeof(pmxBonePtr.Position);
 				FMemory::Memcpy(&pmxBonePtr.Position, pmdBonePtr.HeadPos, memcopySize);
-				pmxBonePtr.Position = ConvertVectorAsixToUE5FromMMD(pmxBonePtr.Position) * modelScale;
+				pmxBonePtr.Position = ConvertVectorAxisToUE5FromMMD(pmxBonePtr.Position) * modelScale;
 
 				pmxBonePtr.ParentBoneIndex = pmdBonePtr.Parent + offsetBoneIndx;
 
@@ -587,7 +587,7 @@ namespace MMD4UE5
 				{
 					memcopySize = sizeof(pmxBonePtr.OffsetPosition);
 					FMemory::Memcpy(&pmxBonePtr.OffsetPosition, Buffer, memcopySize);
-					pmxBonePtr.OffsetPosition = ConvertVectorAsixToUE5FromMMD(pmxBonePtr.OffsetPosition) *modelScale;
+					pmxBonePtr.OffsetPosition = ConvertVectorAxisToUE5FromMMD(pmxBonePtr.OffsetPosition) *modelScale;
 					Buffer += memcopySize;
 				}
 				else
@@ -759,7 +759,7 @@ namespace MMD4UE5
 								tempVec.X = targetPmdMorphPtr->Vertex[j].Position[0];
 								tempVec.Y = targetPmdMorphPtr->Vertex[j].Position[1];
 								tempVec.Z = targetPmdMorphPtr->Vertex[j].Position[2];
-								tempVec = ConvertVectorAsixToUE5FromMMD(tempVec) * modelScale;
+								tempVec = ConvertVectorAxisToUE5FromMMD(tempVec) * modelScale;
 
 								pmxMeshInfoPtr->morphList[i].Vertex[j].Offset[0] = tempVec.X;
 								pmxMeshInfoPtr->morphList[i].Vertex[j].Offset[1] = tempVec.Y;

@@ -5,7 +5,7 @@
 
 namespace MMD4UE5
 {
-	FVector3f MMDImportHelper::ConvertVectorAsixToUE5FromMMD(
+	FVector3f MMDImportHelper::ConvertVectorAxisToUE5FromMMD(
 		FVector3f vec)
 	{
 		FVector3f temp;

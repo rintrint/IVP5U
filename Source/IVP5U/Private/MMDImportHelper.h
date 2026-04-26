@@ -20,10 +20,10 @@ namespace MMD4UE5
 	class MMDImportHelper
 	{
 	public:
-		// from MMD Asix To UE5 Asix
+		// from MMD Axis To UE5 Axis
 		// param  : vec , in vector
 		// return : convert vec ,out
-		FVector3f ConvertVectorAsixToUE5FromMMD(
+		FVector3f ConvertVectorAxisToUE5FromMMD(
 			FVector3f vec);
 
 		// from PMX Binary Buffer To String @ TextBuf

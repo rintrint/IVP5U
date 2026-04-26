@@ -292,7 +292,7 @@ bool UPmxFactory::ImportBone(
 			}
 		}
 
-		// test MMD , not rot asix and LocalAsix
+		// test MMD , not rot axis and LocalAxis
 		FVector3f TransTemp = PmxMeshInfo->boneList[LinkIndex].Position;
 		bool hasParent = ParentIndex != INDEX_NONE;
 		if (hasParent)

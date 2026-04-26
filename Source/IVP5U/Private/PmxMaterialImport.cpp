@@ -348,7 +348,7 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty(
 				UnrealTextureExpression->MaterialExpressionEditorX = -500; // FMath::TruncToInt(Location.X);
 				UnrealTextureExpression->MaterialExpressionEditorY = 0;	   // FMath::TruncToInt(Location.Y);
 				UnrealTextureExpression->SamplerSource = SSM_Wrap_WorldGroupSettings;
-				// For minus UV asix MMD(e.g. AnjeraBalz///)
+				// For minus UV axis MMD(e.g. AnjeraBalz///)
 
 				// MulExpression->B.Connect(UnrealTextureExpression->Outputs[4].Expression);
 
@@ -793,7 +793,7 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty_ForMmdAutolu
 				UnrealTextureExpression->MaterialExpressionEditorX = -500; // FMath::TruncToInt(Location.X);
 				UnrealTextureExpression->MaterialExpressionEditorY = 0;	   // FMath::TruncToInt(Location.Y);
 				UnrealTextureExpression->SamplerSource = SSM_Wrap_WorldGroupSettings;
-				// For minus UV asix MMD(e.g. AnjeraBalz///)
+				// For minus UV axis MMD(e.g. AnjeraBalz///)
 
 				// MulExpression->B.Connect(UnrealTextureExpression->Outputs[4].Expression);
 
