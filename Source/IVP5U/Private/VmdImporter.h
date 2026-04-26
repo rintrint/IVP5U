@@ -145,9 +145,9 @@ namespace MMD4UE5
 		// Track Name
 		FString TrackName;
 		// min Frame
-		uint32 minFrameCount;
+		uint32 minFrameCount = TNumericLimits<uint32>::Max();
 		// max Frame
-		uint32 maxFrameCount;
+		uint32 maxFrameCount = 0;
 		// Sorted Key Frame Data List
 		TArray<VMD_KEY> keyList;
 		// sort frame num
@@ -158,9 +158,9 @@ namespace MMD4UE5
 		// Track Name
 		FString TrackName;
 		// min Frame
-		uint32 minFrameCount;
+		uint32 minFrameCount = TNumericLimits<uint32>::Max();
 		// max Frame
-		uint32 maxFrameCount;
+		uint32 maxFrameCount = 0;
 		// Sorted Key Frame Data List
 		TArray<VMD_FACE_KEY> keyList;
 		// sort frame num
@@ -171,9 +171,9 @@ namespace MMD4UE5
 		// Track Name ( const MMDCAM)
 		FString TrackName;
 		// min Frame
-		uint32 minFrameCount;
+		uint32 minFrameCount = TNumericLimits<uint32>::Max();
 		// max Frame
-		uint32 maxFrameCount;
+		uint32 maxFrameCount = 0;
 		// Sorted Key Frame Data List
 		TArray<VMD_CAMERA> keyList;
 		// sort frame num
