@@ -64,14 +64,20 @@ namespace MMD4UE5
 	FString MMDImportHelper::ConvertMMDSJISToFString(const uint8* buffer, const uint32 size)
 	{
 		FString NewString;
-		TArray<char> RawModData;
+		if (size > 0)
 		{
-			RawModData.Empty(size);
-			RawModData.AddUninitialized(size);
-			FMemory::Memcpy(RawModData.GetData(), buffer, RawModData.Num());
-			RawModData.Add(0);
-			RawModData.Add(0);
-			NewString.Append((wchar_t*)saba::ConvertSjisToU16String(RawModData.GetData()).c_str());
+			// Copy to a null-terminated char buffer; saba's converter expects a C string
+			TArray<char> SjisBuffer;
+			SjisBuffer.AddUninitialized(size + 2);
+			FMemory::Memcpy(SjisBuffer.GetData(), buffer, size);
+			SjisBuffer[size] = 0;
+			SjisBuffer[size + 1] = 0;
+			const std::u16string Utf16 = saba::ConvertSjisToU16String(SjisBuffer.GetData());
+			// On Windows TCHAR == UTF16CHAR (no-op); on platforms with 32-bit TCHAR this performs real conversion
+			const auto Converted = StringCast<TCHAR>(
+				reinterpret_cast<const UTF16CHAR*>(Utf16.c_str()),
+				static_cast<int32>(Utf16.length()));
+			NewString = FString(Converted.Length(), Converted.Get());
 		}
 		return NewString;
 	}
