@@ -244,10 +244,8 @@ struct VMDImportOptions
 	FVector ImportTranslation;
 	FRotator ImportRotation;
 	float ImportUniformScale;
-	// EMMDNormalImportMethod NormalImportMethod;
 	//  Static Mesh options
 	bool bCombineToSingle;
-	// EVertexColorImportOptionMMD::Type VertexColorImportOption;
 	FColor VertexOverrideColor;
 	// Skeletal Mesh options
 	bool bImportMorph;
@@ -255,7 +253,6 @@ struct VMDImportOptions
 	// Animation option
 	USkeleton* SkeletonForAnimation;
 	USkeletalMesh* SkeletalMeshForAnimation;
-	// EFBXAnimationLengthImportType AnimationLengthImportType;
 	FIntPoint AnimationRange;
 	FString AnimationName;
 

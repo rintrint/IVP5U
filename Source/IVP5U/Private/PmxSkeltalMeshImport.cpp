@@ -224,13 +224,7 @@ bool UPmxFactory::ImportBone(
 	bool bDisableMissingBindPoseWarning,
 	bool& bUseTime0AsRefPose)
 {
-	bool GlobalLinkFoundFlag;
-
-	bool bAnyLinksNotInBindPose = false;
-	FString LinksWithoutBindPoses;
 	int32 NumberOfRoot = 0;
-
-	int32 RootIdx = -1;
 
 	for (int LinkIndex = 0; LinkIndex < PmxMeshInfo->boneList.Num(); LinkIndex++)
 	{
@@ -259,7 +253,6 @@ bool UPmxFactory::ImportBone(
 		if (ParentIndex == INDEX_NONE)
 		{
 			++NumberOfRoot;
-			RootIdx = LinkIndex;
 			if (NumberOfRoot > 1)
 			{
 				AddTokenizedErrorMessage(
@@ -270,8 +263,6 @@ bool UPmxFactory::ImportBone(
 				return false;
 			}
 		}
-
-		GlobalLinkFoundFlag = false;
 
 		// set bone
 		SkeletalMeshImportData::FBone& Bone = ImportData.RefBonesBinary[LinkIndex];
@@ -293,13 +284,11 @@ bool UPmxFactory::ImportBone(
 
 		// For MMD
 		FQuat4f ftr = FQuat4f(0, 0, 0, 1.0);
-		int childIdx = -1;
 		for (int32 ChildIndex = 0; ChildIndex < PmxMeshInfo->boneList.Num(); ChildIndex++)
 		{
 			if (LinkIndex == PmxMeshInfo->boneList[ChildIndex].ParentBoneIndex)
 			{
 				Bone.NumChildren++;
-				childIdx = ChildIndex;
 			}
 		}
 
@@ -416,7 +405,6 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 	int32 TriangleCount = PmxMeshInfo->faseList.Num(); // Mesh->GetPolygonCount();
 	int32 ExistFaceNum = ImportData.Faces.Num();
 	ImportData.Faces.AddUninitialized(TriangleCount);
-	int32 ExistWedgesNum = ImportData.Wedges.Num();
 	SkeletalMeshImportData::FVertex TmpWedges[3];
 
 	int32 facecount = 0;

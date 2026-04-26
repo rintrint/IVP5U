@@ -373,27 +373,11 @@ struct PMXImportOptions
 	UPhysicsAsset* PhysicsAsset;
 	// Animation option
 	USkeleton* SkeletonForAnimation;
-	// EFBXAnimationLengthImportType AnimationLengthImportType;
 	FIntPoint AnimationRange;
 	FString AnimationName;
 	bool bPreserveLocalTransform;
 	bool bImportCustomAttribute;
 
-	/*bool ShouldImportNormals()
-	{
-	return NormalImportMethod == FBXNIM_ImportNormals || NormalImportMethod == FBXNIM_ImportNormalsAndTangents;
-	}
-
-	bool ShouldImportTangents()
-	{
-	return NormalImportMethod == FBXNIM_ImportNormalsAndTangents;
-	}
-
-	void ResetForReimportAnimation()
-	{
-	bImportMorph = true;
-	AnimationLengthImportType = FBXALIT_ExportedTime;
-	}*/
 	UAnimSequence* AnimSequenceAsset;
 	UDataTable* MMD2UE5NameTableRow;
 	UMMDExtendAsset* MmdExtendAsset;

@@ -192,25 +192,6 @@ void ApplyImportUIToImportOptions(
 		InOutImportOptions.ImportTranslation = SkeletalMeshData->ImportTranslation;
 		InOutImportOptions.ImportRotation = SkeletalMeshData->ImportRotation;
 		InOutImportOptions.ImportUniformScale = SkeletalMeshData->ImportUniformScale;
-
-#if 0
-		if (ImportUI->bImportAnimations)
-		{
-			// Copy the transform information into the animation data to match the mesh.
-			UFbxAnimSequenceImportData* AnimData = ImportUI->AnimSequenceImportData;
-			AnimData->ImportTranslation = SkeletalMeshData->ImportTranslation;
-			AnimData->ImportRotation = SkeletalMeshData->ImportRotation;
-			AnimData->ImportUniformScale = SkeletalMeshData->ImportUniformScale;
-		}
-	}
-	else
-	{
-		UFbxAnimSequenceImportData* AnimData = ImportUI->AnimSequenceImportData;
-		InOutImportOptions.NormalImportMethod = FBXNIM_ComputeNormals;
-		InOutImportOptions.ImportTranslation = AnimData->ImportTranslation;
-		InOutImportOptions.ImportRotation = AnimData->ImportRotation;
-		InOutImportOptions.ImportUniformScale = AnimData->ImportUniformScale;
-#endif
 	}
 	// add self pre over write..
 	ImportUI->SkeletalMeshImportData->bImportMorphTargets = ImportUI->bImportMorphTargets;
@@ -233,15 +214,6 @@ void ApplyImportUIToImportOptions(
 	InOutImportOptions.bImportMeshesInBoneHierarchy = ImportUI->SkeletalMeshImportData->bImportMeshesInBoneHierarchy;
 	InOutImportOptions.bCreatePhysicsAsset = ImportUI->bCreatePhysicsAsset;
 	InOutImportOptions.PhysicsAsset = ImportUI->PhysicsAsset;
-#if 0
-	// animation options
-	InOutImportOptions.AnimationLengthImportType = ImportUI->AnimSequenceImportData->AnimationLength;
-	InOutImportOptions.AnimationRange.X = ImportUI->AnimSequenceImportData->StartFrame;
-	InOutImportOptions.AnimationRange.Y = ImportUI->AnimSequenceImportData->EndFrame;
-	InOutImportOptions.AnimationName = ImportUI->AnimationName;
-	InOutImportOptions.bPreserveLocalTransform = ImportUI->bPreserveLocalTransform;
-	InOutImportOptions.bImportCustomAttribute = ImportUI->AnimSequenceImportData->bImportCustomAttribute;
-#endif
 	// add self
 	InOutImportOptions.AnimSequenceAsset = ImportUI->AnimSequenceAsset;
 	InOutImportOptions.MMD2UE5NameTableRow = ImportUI->MMD2UE5NameTableRow;
@@ -251,31 +223,8 @@ void ApplyImportUIToImportOptions(
 TSharedPtr<FPmxImporter> FPmxImporter::StaticInstance;
 
 FPmxImporter::FPmxImporter()
-	: /* Scene(nullptr)
-	 , */
-	ImportOptions(nullptr)
-/*
-, GeometryConverter(nullptr)
-, SdkManager(nullptr)
-, Importer(nullptr)
-, bFirstMesh(true)
-, Logger(nullptr)
-*/
+	: ImportOptions(nullptr)
 {
-#if 0
-	// Create the SdkManager
-	SdkManager = FbxManager::Create();
-
-	// create an IOSettings object
-	FbxIOSettings * ios = FbxIOSettings::Create(SdkManager, IOSROOT);
-	SdkManager->SetIOSettings(ios);
-
-	// Create the geometry converter
-	GeometryConverter = new FbxGeometryConverter(SdkManager);
-	Scene = nullptr;
-
-	CurPhase = NOTSTARTED;
-#endif
 	ImportOptions = new PMXImportOptions();
 	FMemory::Memzero(*ImportOptions);
 }

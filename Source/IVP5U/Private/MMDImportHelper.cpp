@@ -54,22 +54,14 @@ namespace MMD4UE5
 		const uint32 size)
 	{
 		FString NewString;
-		// uint32 size = 0;
-		// temp data
 		TArray<char> RawModData;
-
 		{
-			// FMemory::Memcpy(&size, *buffer, sizeof(uint32));
-			//*buffer += sizeof(uint32);
-			// size = 20;
 			RawModData.Empty(size);
 			RawModData.AddUninitialized(size);
 			FMemory::Memcpy(RawModData.GetData(), buffer, RawModData.Num());
 			RawModData.Add(0);
 			RawModData.Add(0);
 			NewString.Append((wchar_t*)saba::ConvertSjisToU16String(RawModData.GetData()).c_str());
-			// NewString.Append(UTF8_TO_TCHAR(encodeHelper.convert_encoding(RawModData.GetData(), "shift-jis", "utf-8").c_str()));
-			// NewString.Append(RawModData.GetData());
 		}
 		return NewString;
 	}
