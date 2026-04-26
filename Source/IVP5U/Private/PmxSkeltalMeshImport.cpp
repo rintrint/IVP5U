@@ -231,22 +231,10 @@ bool UPmxFactory::ImportBone(
 		// Add a bone for each FBX Link
 		ImportData.RefBonesBinary.Add(SkeletalMeshImportData::FBone());
 
-		// Link = SortedLinks[LinkIndex];
-
-		// get the link parent and children
-		int32 ParentIndex = INDEX_NONE; // base value for root if no parent found
-		int32 LinkParent = PmxMeshInfo->boneList[LinkIndex].ParentBoneIndex;
-		if (LinkIndex)
-		{
-			for (int32 ll = 0; ll < LinkIndex; ++ll) // <LinkIndex because parent is guaranteed to be before child in sortedLink
-			{
-				if (ll == LinkParent)
-				{
-					ParentIndex = ll;
-					break;
-				}
-			}
-		}
+		// PMX format guarantees parent bone index < child bone index,
+		// so ParentBoneIndex can be used directly. INDEX_NONE means root.
+		const int32 LinkParent = PmxMeshInfo->boneList[LinkIndex].ParentBoneIndex;
+		const int32 ParentIndex = (LinkParent >= 0 && LinkParent < LinkIndex) ? LinkParent : INDEX_NONE;
 
 		// see how many root this has
 		// if more than
@@ -422,37 +410,17 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 
 		for (VertexIndex = 0; VertexIndex < 3; VertexIndex++)
 		{
-			// If there are odd number negative scale, invert the vertex order for triangles
-			int32 UnrealVertexIndex = OddNegativeScale ? 2 - VertexIndex : VertexIndex;
+			const int32 UnrealVertexIndex = OddNegativeScale ? 2 - VertexIndex : VertexIndex;
+			const FVector3f TangentZ = PmxMeshInfo->vertexList[PmxMeshInfo->faceList[LocalIndex].VertexIndex[VertexIndex]].Normal;
 
-			if (true)
-			{
-				int32 NormalIndex = UnrealVertexIndex;
-				// for (NormalIndex = 0; NormalIndex < 3; ++NormalIndex)
-				{
-					FVector3f TangentZ = PmxMeshInfo->vertexList[PmxMeshInfo->faceList[LocalIndex].VertexIndex[VertexIndex]].Normal;
-
-					Triangle.TangentX[NormalIndex] = FVector3f::ZeroVector;
-					Triangle.TangentY[NormalIndex] = FVector3f::ZeroVector;
-					Triangle.TangentZ[NormalIndex] = TangentZ.GetSafeNormal();
-				}
-			}
-			else
-			{
-				int32 NormalIndex;
-				for (NormalIndex = 0; NormalIndex < 3; ++NormalIndex)
-				{
-					Triangle.TangentX[NormalIndex] = FVector3f::ZeroVector;
-					Triangle.TangentY[NormalIndex] = FVector3f::ZeroVector;
-					Triangle.TangentZ[NormalIndex] = FVector3f::ZeroVector;
-				}
-			}
+			Triangle.TangentX[UnrealVertexIndex] = FVector3f::ZeroVector;
+			Triangle.TangentY[UnrealVertexIndex] = FVector3f::ZeroVector;
+			Triangle.TangentZ[UnrealVertexIndex] = TangentZ.GetSafeNormal();
 		}
 
 		// material index
 		Triangle.MatIndex = 0; // default value
 
-		if (true)
 		{
 			// for mmd
 
@@ -474,7 +442,7 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 		for (VertexIndex = 0; VertexIndex < 3; VertexIndex++)
 		{
 			// If there are odd number negative scale, invert the vertex order for triangles
-			int32 UnrealVertexIndex = OddNegativeScale ? 2 - VertexIndex : VertexIndex;
+			const int32 UnrealVertexIndex = OddNegativeScale ? 2 - VertexIndex : VertexIndex;
 
 			TmpWedges[UnrealVertexIndex].MatIndex = static_cast<uint8>(Triangle.MatIndex);
 			TmpWedges[UnrealVertexIndex].VertexIndex = PmxMeshInfo->faceList[LocalIndex].VertexIndex[VertexIndex];
@@ -611,21 +579,9 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 			}
 		}
 	}
-	else // for rigid mesh
+	else // for rigid mesh — no bones, bind all vertices to bone 0
 	{
-		// find the bone index
-		int32 BoneIndex = -1;
-		/*for (int32 LinkIndex = 0; LinkIndex < SortedLinks.Num(); LinkIndex++)
-		{
-			// the bone is the node itself
-			if (Node == SortedLinks[LinkIndex])
-			{
-				BoneIndex = LinkIndex;
-				break;
-			}
-		}*/
-		BoneIndex = 0;
-		//	for each vertex in the mesh
+		constexpr int32 BoneIndex = 0;
 		for (int32 ControlPointIndex = 0; ControlPointIndex < ControlPointsCount; ++ControlPointIndex)
 		{
 			ImportData.Influences.AddUninitialized();
@@ -634,15 +590,6 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 			ImportData.Influences.Last().VertexIndex = ExistPointNum + ControlPointIndex;
 		}
 	}
-	/*
-	// clean up
-	if (UniqueUVCount > 0)
-	{
-		delete[] LayerElementUV;
-		delete[] UVReferenceMode;
-		delete[] UVMappingMode;
-	}
-	*/
 
 	return true;
 }
