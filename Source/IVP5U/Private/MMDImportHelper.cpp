@@ -76,50 +76,73 @@ namespace MMD4UE5
 		return NewString;
 	}
 
-	uint32 MMDImportHelper::MMDExtendBufferSizeToUint32(const uint8** buffer, const uint8 blockSize)
+	uint32 MMDImportHelper::MMDExtendBufferSizeToUint32(
+		const uint8** buffer,
+		const uint8 blockSize)
 	{
 		uint32 retValue = 0;
 
 		switch (blockSize)
 		{
 			case 1:
-				retValue = (uint8)((*buffer)[0]);
+			{
+				uint8 v = (*buffer)[0];
+				retValue = v;
 				*buffer += blockSize;
 				break;
-
+			}
 			case 2:
-				retValue = (uint16)(((uint16*)*buffer)[0]);
+			{
+				uint16 v = 0;
+				FMemory::Memcpy(&v, *buffer, sizeof(v));
+				retValue = v;
 				*buffer += blockSize;
 				break;
-
+			}
 			case 4:
-				retValue = (uint32)((uint32*)*buffer)[0];
+			{
+				uint32 v = 0;
+				FMemory::Memcpy(&v, *buffer, sizeof(v));
+				retValue = v;
 				*buffer += blockSize;
 				break;
+			}
 		}
 
 		return retValue;
 	}
-	int32 MMDImportHelper::MMDExtendBufferSizeToInt32(const uint8** buffer, const uint8 blockSize)
+
+	int32 MMDImportHelper::MMDExtendBufferSizeToInt32(
+		const uint8** buffer,
+		const uint8 blockSize)
 	{
 		int32 retValue = 0;
 
 		switch (blockSize)
 		{
 			case 1:
-				retValue = (int8)((*buffer)[0]);
+			{
+				int8 v = static_cast<int8>((*buffer)[0]);
+				retValue = v;
 				*buffer += blockSize;
 				break;
-
+			}
 			case 2:
-				retValue = (int16)(((int16*)*buffer)[0]);
+			{
+				int16 v = 0;
+				FMemory::Memcpy(&v, *buffer, sizeof(v));
+				retValue = v;
 				*buffer += blockSize;
 				break;
-
+			}
 			case 4:
-				retValue = (int32)((int32*)*buffer)[0];
+			{
+				int32 v = 0;
+				FMemory::Memcpy(&v, *buffer, sizeof(v));
+				retValue = v;
 				*buffer += blockSize;
 				break;
+			}
 		}
 
 		return retValue;
