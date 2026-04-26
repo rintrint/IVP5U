@@ -221,10 +221,8 @@ void ApplyImportUIToImportOptions(
 TSharedPtr<FPmxImporter> FPmxImporter::StaticInstance;
 
 FPmxImporter::FPmxImporter()
-	: ImportOptions(nullptr)
+	: ImportOptions(new PMXImportOptions())
 {
-	ImportOptions = new PMXImportOptions();
-	FMemory::Memzero(*ImportOptions);
 }
 
 FPmxImporter::~FPmxImporter()

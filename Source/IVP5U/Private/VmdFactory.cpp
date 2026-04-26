@@ -1450,8 +1450,6 @@ bool UVmdFactory::ImportVmdFromFile(FString file, USkeletalMesh* SkeletalMesh)
 
 					// 創建一個默認的 ImportOptions
 					VMDImportOptions DefaultImportOptions;
-					FMemory::Memzero(DefaultImportOptions);			 // 初始化為零
-					DefaultImportOptions.ImportUniformScale = 0.08f; // 設置默認縮放為 0.08
 
 					VMDImportOptions* ImportOptions = &DefaultImportOptions;
 					UDataTable* MMD2UE5NameTable = nullptr;

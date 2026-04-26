@@ -335,49 +335,49 @@ namespace MMD4UE5
 struct PMXImportOptions
 {
 	// General options
-	bool bImportMaterials;
-	bool bInvertNormalMap;
-	bool bImportTextures;
-	bool bCreateMaterialInstanceMode;
-	bool bUnlitMaterials;
-	bool bImportLOD;
-	bool bUsedAsFullName;
-	bool bConvertScene;
-	bool bRemoveNameSpace;
-	FVector ImportTranslation;
-	FRotator ImportRotation;
-	float ImportUniformScale;
+	bool bImportMaterials = false;
+	bool bInvertNormalMap = false;
+	bool bImportTextures = false;
+	bool bCreateMaterialInstanceMode = false;
+	bool bUnlitMaterials = false;
+	bool bImportLOD = false;
+	bool bUsedAsFullName = false;
+	bool bConvertScene = false;
+	bool bRemoveNameSpace = false;
+	FVector ImportTranslation = FVector::ZeroVector;
+	FRotator ImportRotation = FRotator::ZeroRotator;
+	float ImportUniformScale = 1.0f;
 	// Static Mesh options
-	bool bCombineToSingle;
-	EVertexColorImportOptionMMD::Type VertexColorImportOption;
-	FColor VertexOverrideColor;
-	bool bRemoveDegenerates;
-	bool bGenerateLightmapUVs;
-	bool bOneConvexHullPerUCX;
-	bool bAutoGenerateCollision;
-	FName StaticMeshLODGroup;
+	bool bCombineToSingle = false;
+	EVertexColorImportOptionMMD::Type VertexColorImportOption = EVertexColorImportOptionMMD::Replace;
+	FColor VertexOverrideColor = FColor::White;
+	bool bRemoveDegenerates = false;
+	bool bGenerateLightmapUVs = false;
+	bool bOneConvexHullPerUCX = false;
+	bool bAutoGenerateCollision = false;
+	FName StaticMeshLODGroup = NAME_None;
 	// Skeletal Mesh options
-	bool bImportMorph;
-	bool bImportAnimations;
-	bool bUpdateSkeletonReferencePose;
-	bool bResample;
-	bool bImportRigidMesh;
-	bool bUseT0AsRefPose;
-	bool bPreserveSmoothingGroups;
-	bool bKeepOverlappingVertices;
-	bool bImportMeshesInBoneHierarchy;
-	bool bCreatePhysicsAsset;
-	UPhysicsAsset* PhysicsAsset;
+	bool bImportMorph = false;
+	bool bImportAnimations = false;
+	bool bUpdateSkeletonReferencePose = false;
+	bool bResample = false;
+	bool bImportRigidMesh = false;
+	bool bUseT0AsRefPose = false;
+	bool bPreserveSmoothingGroups = false;
+	bool bKeepOverlappingVertices = false;
+	bool bImportMeshesInBoneHierarchy = false;
+	bool bCreatePhysicsAsset = false;
+	UPhysicsAsset* PhysicsAsset = nullptr;
 	// Animation option
-	USkeleton* SkeletonForAnimation;
-	FIntPoint AnimationRange;
+	USkeleton* SkeletonForAnimation = nullptr;
+	FIntPoint AnimationRange = FIntPoint::ZeroValue;
 	FString AnimationName;
-	bool bPreserveLocalTransform;
-	bool bImportCustomAttribute;
+	bool bPreserveLocalTransform = false;
+	bool bImportCustomAttribute = false;
 
-	UAnimSequence* AnimSequenceAsset;
-	UDataTable* MMD2UE5NameTableRow;
-	UMMDExtendAsset* MmdExtendAsset;
+	UAnimSequence* AnimSequenceAsset = nullptr;
+	UDataTable* MMD2UE5NameTableRow = nullptr;
+	UMMDExtendAsset* MmdExtendAsset = nullptr;
 };
 
 PMXImportOptions* GetImportOptions(

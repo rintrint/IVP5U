@@ -86,14 +86,7 @@ VMDImportOptions* GetVMDImportOptions(
 		{
 			ImportUI->AnimSequenceAsset = nullptr;
 		}
-		if (ImportOptions->ImportUniformScale)
-		{
-			ImportUI->ImportUniformScale = ImportOptions->ImportUniformScale;
-		}
-		else
-		{
-			ImportUI->ImportUniformScale = 0.08f;
-		}
+		ImportUI->ImportUniformScale = ImportOptions->ImportUniformScale;
 
 		// ImportUI->bImportAsSkeletal = ImportUI->MeshTypeToImport == VMDIT_Animation;
 		ImportUI->bIsObjImport = bIsObjFormat;
@@ -191,10 +184,8 @@ void ApplyVMDImportUIToImportOptions(
 TSharedPtr<FVmdImporter> FVmdImporter::StaticInstance;
 
 FVmdImporter::FVmdImporter()
-	: ImportOptions(nullptr)
+	: ImportOptions(new VMDImportOptions())
 {
-	ImportOptions = new VMDImportOptions();
-	FMemory::Memzero(*ImportOptions);
 }
 
 FVmdImporter::~FVmdImporter()
