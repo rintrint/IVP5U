@@ -1,6 +1,6 @@
 // Copyright 2015-2026 IVP5U contributors
 
-#include "MmdUserImportVmdSettings.h"
+#include "MMDUserImportVMDSettings.h"
 #include "UObject/UnrealType.h"
 
 FFilmbackImportSettings::FFilmbackImportSettings()

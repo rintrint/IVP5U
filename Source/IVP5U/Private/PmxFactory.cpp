@@ -34,7 +34,7 @@
 #include "PmxImporter.h"
 #include "PmxImportUI.h"
 
-#define LOCTEXT_NAMESPACE "PMXImpoter"
+#define LOCTEXT_NAMESPACE "PMXImporter"
 
 DEFINE_LOG_CATEGORY(LogMMD4UE5_PMXFactory)
 

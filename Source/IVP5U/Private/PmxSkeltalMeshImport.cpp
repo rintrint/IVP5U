@@ -14,7 +14,7 @@
 
 #include "PmxFactory.h"
 
-#define LOCTEXT_NAMESPACE "PMXSkeltalMeshImpoter"
+#define LOCTEXT_NAMESPACE "PMXSkeletalMeshImporter"
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // FMorphMeshRawSource is removed after version 4.16. So added for only this plugin here.
 // Converts a mesh to raw vertex data used to generate a morph target mesh
