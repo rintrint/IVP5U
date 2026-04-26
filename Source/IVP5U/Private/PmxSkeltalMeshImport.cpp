@@ -402,7 +402,7 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 	bool OddNegativeScale = true; // IsOddNegativeScale(TotalMatrix);
 
 	int32 VertexIndex;
-	int32 TriangleCount = PmxMeshInfo->faseList.Num(); // Mesh->GetPolygonCount();
+	int32 TriangleCount = PmxMeshInfo->faceList.Num(); // Mesh->GetPolygonCount();
 	int32 ExistFaceNum = ImportData.Faces.Num();
 	ImportData.Faces.AddUninitialized(TriangleCount);
 	SkeletalMeshImportData::FVertex TmpWedges[3];
@@ -430,7 +430,7 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 				int32 NormalIndex = UnrealVertexIndex;
 				// for (NormalIndex = 0; NormalIndex < 3; ++NormalIndex)
 				{
-					FVector3f TangentZ = PmxMeshInfo->vertexList[PmxMeshInfo->faseList[LocalIndex].VertexIndex[VertexIndex]].Normal;
+					FVector3f TangentZ = PmxMeshInfo->vertexList[PmxMeshInfo->faceList[LocalIndex].VertexIndex[VertexIndex]].Normal;
 
 					Triangle.TangentX[NormalIndex] = FVector3f::ZeroVector;
 					Triangle.TangentY[NormalIndex] = FVector3f::ZeroVector;
@@ -477,7 +477,7 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 			int32 UnrealVertexIndex = OddNegativeScale ? 2 - VertexIndex : VertexIndex;
 
 			TmpWedges[UnrealVertexIndex].MatIndex = static_cast<uint8>(Triangle.MatIndex);
-			TmpWedges[UnrealVertexIndex].VertexIndex = PmxMeshInfo->faseList[LocalIndex].VertexIndex[VertexIndex];
+			TmpWedges[UnrealVertexIndex].VertexIndex = PmxMeshInfo->faceList[LocalIndex].VertexIndex[VertexIndex];
 			// = ExistPointNum + Mesh->GetPolygonVertex(LocalIndex, VertexIndex);
 			// Initialize all colors to white.
 			TmpWedges[UnrealVertexIndex].Color = FColor::White;

@@ -231,13 +231,13 @@ namespace MMD4UE5
 
 			PmxFaceNum /= 3;
 
-			faseList.AddZeroed(PmxFaceNum);
+			faceList.AddZeroed(PmxFaceNum);
 			for (uint32 FaceIndex = 0; FaceIndex < PmxFaceNum; ++FaceIndex)
 			{
-				PMX_FACE& pmxFaseListPtr = faseList[FaceIndex];
+				PMX_FACE& pmxFaceListPtr = faceList[FaceIndex];
 				for (int SubNum = 0; SubNum < 3; ++SubNum)
 				{
-					pmxFaseListPtr.VertexIndex[SubNum] = MMDExtendBufferSizeToUint32(&Buffer, this->baseHeader.VertexIndexSize);
+					pmxFaceListPtr.VertexIndex[SubNum] = MMDExtendBufferSizeToUint32(&Buffer, this->baseHeader.VertexIndexSize);
 				}
 			}
 		}

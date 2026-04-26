@@ -316,7 +316,7 @@ namespace MMD4UE5
 		FString modelCommentEng;
 
 		TArray<PMX_VERTEX> vertexList;
-		TArray<PMX_FACE> faseList;
+		TArray<PMX_FACE> faceList;
 
 		TArray<PMX_TEXTURE> textureList;
 		TArray<PMX_MATERIAL> materialList;
