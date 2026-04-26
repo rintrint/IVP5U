@@ -5,14 +5,9 @@
 
 namespace MMD4UE5
 {
-	FVector3f MMDImportHelper::ConvertVectorAxisToUE5FromMMD(
-		FVector3f vec)
+	FVector3f MMDImportHelper::ConvertVectorAxisToUE5FromMMD(const FVector3f& vec)
 	{
-		FVector3f temp;
-		temp.Y = vec.Z * (-1);
-		temp.X = vec.X * (1);
-		temp.Z = vec.Y * (1);
-		return temp;
+		return FVector3f(vec.X, -vec.Z, vec.Y);
 	}
 
 	//////////////////////////////////////
@@ -21,7 +16,7 @@ namespace MMD4UE5
 	// buf : top string (top data)
 	// encodeType : 0 utf-16, 1 utf-8
 	//////////////////////////////////////
-	FString MMDImportHelper::PMXTexBufferToFString(const uint8** buffer, PMXEncodeType encodeType)
+	FString MMDImportHelper::PMXTexBufferToFString(const uint8** buffer, const PMXEncodeType encodeType)
 	{
 		FString NewString;
 		uint32 size = 0;
@@ -49,9 +44,7 @@ namespace MMD4UE5
 		return NewString;
 	}
 
-	FString MMDImportHelper::ConvertMMDSJISToFString(
-		uint8* buffer,
-		const uint32 size)
+	FString MMDImportHelper::ConvertMMDSJISToFString(const uint8* buffer, const uint32 size)
 	{
 		FString NewString;
 		TArray<char> RawModData;
@@ -66,9 +59,7 @@ namespace MMD4UE5
 		return NewString;
 	}
 
-	uint32 MMDImportHelper::MMDExtendBufferSizeToUint32(
-		const uint8** buffer,
-		const uint8 blockSize)
+	uint32 MMDImportHelper::MMDExtendBufferSizeToUint32(const uint8** buffer, const uint8 blockSize)
 	{
 		uint32 retValue = 0;
 
@@ -92,9 +83,7 @@ namespace MMD4UE5
 
 		return retValue;
 	}
-	int32 MMDImportHelper::MMDExtendBufferSizeToInt32(
-		const uint8** buffer,
-		const uint8 blockSize)
+	int32 MMDImportHelper::MMDExtendBufferSizeToInt32(const uint8** buffer, const uint8 blockSize)
 	{
 		int32 retValue = 0;
 

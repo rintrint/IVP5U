@@ -23,34 +23,25 @@ namespace MMD4UE5
 		// from MMD Axis To UE5 Axis
 		// param  : vec , in vector
 		// return : convert vec ,out
-		FVector3f ConvertVectorAxisToUE5FromMMD(
-			FVector3f vec);
+		static FVector3f ConvertVectorAxisToUE5FromMMD(const FVector3f& vec);
 
 		// from PMX Binary Buffer To String @ TextBuf
 		// 4 + n: TexBuf
 		// buf : top string (top data)
 		// encodeType : 0 utf-16, 1 utf-8
-		FString PMXTexBufferToFString(
-			const uint8** buffer,
-			PMXEncodeType encodeType);
+		static FString PMXTexBufferToFString(const uint8** buffer, const PMXEncodeType encodeType);
 
 		// from MMD char (SJIS) To FString
 		// 4 + n: TexBuf
 		// buf : top string (top data)
 		// encodeType : SJIS
 		// for Pmd , Vmd format
-		FString ConvertMMDSJISToFString(
-			uint8* buffer,
-			const uint32 size);
+		static FString ConvertMMDSJISToFString(const uint8* buffer, const uint32 size);
 
 		// import uint
-		uint32 MMDExtendBufferSizeToUint32(
-			const uint8** buffer,
-			const uint8 blockSize);
+		static uint32 MMDExtendBufferSizeToUint32(const uint8** buffer, const uint8 blockSize);
 
 		// import int
-		int32 MMDExtendBufferSizeToInt32(
-			const uint8** buffer,
-			const uint8 blockSize);
+		static int32 MMDExtendBufferSizeToInt32(const uint8** buffer, const uint8 blockSize);
 	};
 } // namespace MMD4UE5
