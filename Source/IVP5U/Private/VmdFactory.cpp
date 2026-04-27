@@ -870,6 +870,13 @@ bool UVmdFactory::PrepareVMDBoneAnimData(
 			TEXT("PrepareVMDBoneAnimData : Target MMDExtendAsset is null."));
 	}
 
+	if (!ImportOptions)
+	{
+		UE_LOG(LogMMD4UE5_VMDFactory, Log,
+			TEXT("PrepareVMDBoneAnimData : ImportOptions is null, falling back to default scale."));
+	}
+	const float UniformScale = ImportOptions ? ImportOptions->ImportUniformScale : 0.08f;
+
 	uint32 ResampleRate = 30;
 
 	auto& adc = DestSeq->GetController();
@@ -1065,7 +1072,7 @@ bool UVmdFactory::PrepareVMDBoneAnimData(
 								kybone.keyList[nextKeyIndex].Position[0],
 								kybone.keyList[nextKeyIndex].Position[2] * (-1),
 								kybone.keyList[nextKeyIndex].Position[1])
-								* 100.0f * ImportOptions->ImportUniformScale,
+								* 100.0f * UniformScale,
 							FVector(1, 1, 1));
 
 						// 將從引用姿勢移動了Key的姿勢的值作為初始值
@@ -1212,7 +1219,7 @@ bool UVmdFactory::PrepareVMDBoneAnimData(
 
 					FTransform tempTranceform(
 						NowTranc.GetRotation(),
-						NowTranc.GetTranslation() * 100.0f * ImportOptions->ImportUniformScale,
+						NowTranc.GetTranslation() * 100.0f * UniformScale,
 						FVector(1, 1, 1));
 					// 将从引用姿势移动了Key的姿势的值作为初始值
 					RawTrack.PosKeys.Add(FVector3f(tempTranceform.GetTranslation() + refTranslation));
