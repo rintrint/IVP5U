@@ -121,7 +121,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "IVP5U")
 	static bool ImportPmxFromFile(FString file);
 
-	bool FImportPmxFromFile(FString file);
+	bool FImportPmxFromFile(const FString& file);
 
 protected:
 	bool bDetectImportTypeOnImport;

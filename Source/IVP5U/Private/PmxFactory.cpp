@@ -121,7 +121,7 @@ int32 UPmxFactory::GetPriority() const
 #define DEBUG_MMD_PLUGIN_SKELETON (1)
 //////////////////////////////////////////////
 
-bool UPmxFactory::FImportPmxFromFile(FString file)
+bool UPmxFactory::FImportPmxFromFile(const FString& file)
 {
 	if (!FPaths::FileExists(file))
 	{
