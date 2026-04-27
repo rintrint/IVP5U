@@ -436,7 +436,7 @@ namespace MMD4UE5
 
 	// 优化：使用哈希映射加速名称查找
 	int32 VmdMotionInfo::FindKeyTrackName(
-		FString targetName,
+		const FString& targetName,
 		EVMDKEYFRAMETYPE listType)
 	{
 		if (listType == EVMDKEYFRAMETYPE::EVMD_KEYBONE)

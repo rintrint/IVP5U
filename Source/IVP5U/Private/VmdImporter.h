@@ -204,7 +204,7 @@ namespace MMD4UE5
 
 		// 如果在指定列表中有相应的Frame名称，则返回该索引值。异常值=-1。
 		int32 FindKeyTrackName(
-			FString targetName,
+			const FString& targetName,
 			EVMDKEYFRAMETYPE listType);
 
 		// vmd Target Model Name
