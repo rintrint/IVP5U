@@ -137,7 +137,7 @@ public:
 		const UMmdUserImportVmdSettings* ImportVmdSettings);
 
 private:
-	static FArchive* OpenFile(FString FilePath);
+	static FArchive* OpenFile(const FString& FilePath);
 
 	static void ImportVmdCameraToExisting(
 		const FVmdParseResult& InVmdParseResult,

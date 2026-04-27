@@ -545,7 +545,7 @@ void FVmdImporter::ImportVmdCamera(
 	}
 }
 
-FArchive* FVmdImporter::OpenFile(const FString FilePath)
+FArchive* FVmdImporter::OpenFile(const FString& FilePath)
 {
 	return IFileManager::Get().CreateFileReader(*FilePath);
 }
