@@ -123,234 +123,209 @@ int32 UPmxFactory::GetPriority() const
 
 bool UPmxFactory::FImportPmxFromFile(FString file)
 {
-	FString filepath = file;
-	FName Name = "";
-	FName OutputName = "";
-	int32 indexs = -1;
-	if (filepath.FindLastChar('\\', indexs))
+	if (!FPaths::FileExists(file))
 	{
-		filepath = filepath.Right(filepath.Len() - indexs - 1);
-		if (filepath.FindLastChar('.', indexs))
+		UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("PMX Import error: FIle is not exist."));
+		return false;
+	}
+
+	const FString filepath = FPaths::GetBaseFilename(file);
+	const FName Name(*filepath);
+	const FName OutputName(*FString::Printf(TEXT("SKM_%s"), *Name.ToString()));
+
+	const FString _path = FPaths::ConvertRelativePathToFull(FPaths::ProjectDir() + TEXT("Content/") + filepath);
+	if (!FPlatformFileManager::Get().GetPlatformFile().DirectoryExists(*_path))
+	{
+		FPlatformFileManager::Get().GetPlatformFile().CreateDirectory(*_path);
+	}
+
+	TArray<uint8> File_Result;
+	if (!FFileHelper::LoadFileToArray(File_Result, *file))
+	{
+		UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("PMX Import error: LoadFileToArray."));
+		return false;
+	}
+
+	const uint8* DataPtr = File_Result.GetData();
+	UObject* NewObject = nullptr;
+	FPmxImporter* PmxImporter = FPmxImporter::GetInstance();
+	EPMXImportType ForcedImportType = PMXIT_SkeletalMesh;
+	// For multiple files, use the same settings
+	bDetectImportTypeOnImport = false;
+	importAssetTypeMMD = E_MMD_TO_UE5_SKELETON;
+	bool bIsPmxFormat = FPaths::GetExtension(file).Equals(TEXT("pmx"), ESearchCase::IgnoreCase);
+	// Load MMD Model From binary File
+	MMD4UE5::PmxMeshInfo pmxMeshInfoPtr;
+	// pmxMaterialImportHelper.InitializeBaseValue(InParent);
+	bool pmxImportResult = false;
+	if (bIsPmxFormat)
+	{
+		// pmx ver
+		pmxImportResult = pmxMeshInfoPtr.PMXLoaderBinary(DataPtr, nullptr);
+	}
+	else
+	{
+		// pmd ver
+		MMD4UE5::PmdMeshInfo PmdMeshInfo;
+		if (PmdMeshInfo.PMDLoaderBinary(DataPtr, nullptr))
 		{
-			filepath = filepath.Left(indexs);
-			Name = FName(*filepath);
-			OutputName = FName(*FString::Printf(TEXT("SKM_%s"), *Name.ToString()));
-			if (FPaths::FileExists(file))
-			{
-				FString _path = filepath;
-				_path = FPaths::ProjectDir() + TEXT("Content/") + *_path;
-				_path = FPaths::ConvertRelativePathToFull(*_path);
-				if (!FPlatformFileManager::Get().GetPlatformFile().DirectoryExists(*_path))
-				{
-					FPlatformFileManager::Get().GetPlatformFile().CreateDirectory(*_path);
-				}
+			// Up convert From PMD to PMX format gfor UE5
+			pmxImportResult = PmdMeshInfo.ConvertToPmxFormat(&pmxMeshInfoPtr);
+		}
+	}
+	if (!pmxImportResult)
+	{
+		UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("PMX Import error: PMXLoaderBinary."));
+		return false;
+	}
 
-				TArray<uint8> File_Result;
-				if (FFileHelper::LoadFileToArray(File_Result, *file))
-				{
-					const uint8* DataPtr = File_Result.GetData();
-					UObject* NewObject = nullptr;
-					FPmxImporter* PmxImporter = FPmxImporter::GetInstance();
-					EPMXImportType ForcedImportType = PMXIT_SkeletalMesh;
-					// For multiple files, use the same settings
-					bDetectImportTypeOnImport = false;
-					importAssetTypeMMD = E_MMD_TO_UE5_SKELETON;
-					bool bIsPmxFormat = FPaths::GetExtension(file).Equals(TEXT("pmx"), ESearchCase::IgnoreCase);
-					// Load MMD Model From binary File
-					MMD4UE5::PmxMeshInfo pmxMeshInfoPtr;
-					// pmxMaterialImportHelper.InitializeBaseValue(InParent);
-					bool pmxImportResult = false;
-					if (bIsPmxFormat)
-					{
-						// pmx ver
-						pmxImportResult = pmxMeshInfoPtr.PMXLoaderBinary(DataPtr, nullptr);
-					}
-					else
-					{
-						// pmd ver
-						MMD4UE5::PmdMeshInfo PmdMeshInfo;
-						if (PmdMeshInfo.PMDLoaderBinary(DataPtr, nullptr))
-						{
-							// Up convert From PMD to PMX format gfor UE5
-							pmxImportResult = PmdMeshInfo.ConvertToPmxFormat(&pmxMeshInfoPtr);
-						}
-					}
-					if (pmxImportResult)
-					{
-						// show Import Option Slate
-						bool bImportAll = false;
-						ImportUI->bIsObjImport = true; // obj mode
-						ImportUI->OriginalImportType = EPMXImportType::PMXIT_SkeletalMesh;
-						ImportUI->bImportMaterials = true;
-						ImportUI->bImportMorphTargets = true;
-						ImportUI->bImportTextures = true;
-						ImportUI->SkeletalMeshImportData->bImportMorphTargets = true;
+	// show Import Option Slate
+	bool bImportAll = false;
+	ImportUI->bIsObjImport = true; // obj mode
+	ImportUI->OriginalImportType = EPMXImportType::PMXIT_SkeletalMesh;
+	ImportUI->bImportMaterials = true;
+	ImportUI->bImportMorphTargets = true;
+	ImportUI->bImportTextures = true;
+	ImportUI->SkeletalMeshImportData->bImportMorphTargets = true;
 
-						FString packpath = "/Game/" + filepath + "/" + filepath;
+	FString packpath = "/Game/" + filepath + "/" + filepath;
 
-						UObject* InParent = CreatePackage(*packpath);
-						// UObject* InParent = LoadObject<UObject>(ParentPackage, *Name.ToString(), nullptr, LOAD_NoWarn | LOAD_Quiet);
-						// InParent->MarkPackageDirty();
+	UObject* InParent = CreatePackage(*packpath);
+	// UObject* InParent = LoadObject<UObject>(ParentPackage, *Name.ToString(), nullptr, LOAD_NoWarn | LOAD_Quiet);
+	// InParent->MarkPackageDirty();
 
-						PMXImportOptions* ImportOptions = GetImportOptions(
-							PmxImporter,
-							ImportUI,
-							false, // bShowImportDialog,
-							InParent->GetPathName(),
-							bOperationCanceled,
-							bImportAll,
-							ImportUI->bIsObjImport, // bIsPmxFormat,
-							bIsPmxFormat,
-							ForcedImportType);
-						if (bImportAll)
-						{
-							// If the user chose to import all, we don't show the dialog again and use the same settings for each object until importing another set of files
-							// bShowOption = false;
-						}
+	PMXImportOptions* ImportOptions = GetImportOptions(
+		PmxImporter,
+		ImportUI,
+		false, // bShowImportDialog,
+		InParent->GetPathName(),
+		bOperationCanceled,
+		bImportAll,
+		ImportUI->bIsObjImport, // bIsPmxFormat,
+		bIsPmxFormat,
+		ForcedImportType);
+	if (bImportAll)
+	{
+		// If the user chose to import all, we don't show the dialog again and use the same settings for each object until importing another set of files
+		// bShowOption = false;
+	}
 
-						if (ImportOptions)
-						{
-							// Warn->BeginSlowTask(NSLOCTEXT("PmxFactory", "BeginImportingPmxMeshTask", "Importing Pmx mesh"), true);
+	if (ImportOptions)
+	{
+		// Warn->BeginSlowTask(NSLOCTEXT("PmxFactory", "BeginImportingPmxMeshTask", "Importing Pmx mesh"), true);
 
-							// For animation and static mesh we assume there is at lease one interesting node by default
-							int32 InterestingNodeCount = 1;
+		// For animation and static mesh we assume there is at lease one interesting node by default
+		int32 InterestingNodeCount = 1;
 
-							if (importAssetTypeMMD == E_MMD_TO_UE5_SKELETON)
-							{
+		if (importAssetTypeMMD == E_MMD_TO_UE5_SKELETON)
+		{
 #ifdef DEBUG_MMD_PLUGIN_SKELETON
 
-								InterestingNodeCount = 1; // test ? not Anime?
+			InterestingNodeCount = 1; // test ? not Anime?
 
 #endif
-							}
-							else if (importAssetTypeMMD == E_MMD_TO_UE5_STATICMESH)
-							{
-							}
+		}
+		else if (importAssetTypeMMD == E_MMD_TO_UE5_STATICMESH)
+		{
+		}
 
-							if (InterestingNodeCount > 1)
-							{
-								// the option only works when there are only one asset
-								//				ImportOptions->bUsedAsFullName = false;
-							}
-							UFactory::CurrentFilename = file;
-							FString Filename(UFactory::CurrentFilename);
+		if (InterestingNodeCount > 1)
+		{
+			// the option only works when there are only one asset
+			//				ImportOptions->bUsedAsFullName = false;
+		}
+		UFactory::CurrentFilename = file;
+		FString Filename(UFactory::CurrentFilename);
 
-							UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("PMX Import: %s"), *Filename);
-							if (InterestingNodeCount > 0)
-							{
-								int32 NodeIndex = 0;
+		UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("PMX Import: %s"), *Filename);
+		if (InterestingNodeCount > 0)
+		{
+			int32 NodeIndex = 0;
 
-								int32 ImportedMeshCount = 0;
-								UStaticMesh* NewStaticMesh = nullptr;
+			int32 ImportedMeshCount = 0;
+			UStaticMesh* NewStaticMesh = nullptr;
 
-								if (importAssetTypeMMD == E_MMD_TO_UE5_SKELETON) // skeletal mesh
-								{
-#ifdef DEBUG_MMD_PLUGIN_SKELETON
-									int32 TotalNumNodes = 0;
-
-									// for (int32 i = 0; i < SkelMeshArray.Num(); i++)
-									for (int32 i = 0; i < 1; i++)
-									{
-										int32 LODIndex = 0;
-
-										// for MMD?
-										int32 MaxLODLevel = 1;
-										FSkeletalMeshImportData smid;
-										USkeletalMesh* NewMesh = nullptr;
-										if (LODIndex == 0)
-										{
-											NewMesh = ImportSkeletalMesh(
-												InParent,
-												&pmxMeshInfoPtr,
-												OutputName,
-												Name,
-												RF_Public | RF_Standalone | RF_MarkAsNative | RF_Transactional,
-												FPaths::GetBaseFilename(Filename),
-												&smid);
-											NewObject = NewMesh;
-										}
-
-										// add self
-										if (NewObject)
-										{
-											// MMD Extend asset
-											CreateMMDExtendFromMMDModel(
-												InParent,
-												Cast<USkeletalMesh>(NewObject),
-												&pmxMeshInfoPtr,
-												Name);
-										}
-
-										// end phese
-										if (NewObject)
-										{
-											TotalNumNodes++;
-											NodeIndex++;
-											FFormatNamedArguments Args;
-											Args.Add(TEXT("NodeIndex"), NodeIndex);
-											Args.Add(TEXT("ArrayLength"), 1); // SkelMeshArray.Num());
-											GWarn->StatusUpdate(NodeIndex, 1, FText::Format(NSLOCTEXT("UnrealEd", "Importingf", "Importing ({NodeIndex} of {ArrayLength})"), Args));
-										}
-
-										// MarkPackageDirty();
-									}
-
-									// if total nodes we found is 0, we didn't find anything.
-									if (TotalNumNodes == 0)
-									{
-										AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoMeshFoundOnRoot", "Could not find any valid mesh on the root hierarchy. If you have mesh in the sub hierarchy, please enable option of [Import Meshes In Bone Hierarchy] when import.")), "FFbxErrors::SkeletalMesh_NoMeshFoundOnRoot");
-									}
-#endif
-								}
-							}
-							else
-							{
-								if (importAssetTypeMMD == E_MMD_TO_UE5_SKELETON)
-								{
-									AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_InvalidBone", "Failed to find any bone hierarchy. Try disabling the \"Import As Skeletal\" option to import as a rigid mesh. ")), "FFbxErrors::SkeletalMesh_InvalidBone");
-								}
-								else
-								{
-									AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_InvalidNode", "Could not find any node.")), "FFbxErrors::SkeletalMesh_InvalidNode");
-								}
-							}
-						}
-
-						if (NewObject == nullptr)
-						{
-							AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoObject", "Import failed.")), "FFbxErrors::Generic_ImportingNewObjectFailed");
-							return false;
-						}
-
-						InParent->MarkPackageDirty();
-						return true;
-					}
-					else
-					{
-						UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("PMX Import error: PMXLoaderBinary."));
-					}
-				}
-				else
-				{
-					UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("PMX Import error: LoadFileToArray."));
-				}
-			}
-			else
+			if (importAssetTypeMMD == E_MMD_TO_UE5_SKELETON) // skeletal mesh
 			{
-				UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("PMX Import error: FIle is not exist."));
+#ifdef DEBUG_MMD_PLUGIN_SKELETON
+				int32 TotalNumNodes = 0;
+
+				// for (int32 i = 0; i < SkelMeshArray.Num(); i++)
+				for (int32 i = 0; i < 1; i++)
+				{
+					int32 LODIndex = 0;
+
+					// for MMD?
+					int32 MaxLODLevel = 1;
+					FSkeletalMeshImportData smid;
+					USkeletalMesh* NewMesh = nullptr;
+					if (LODIndex == 0)
+					{
+						NewMesh = ImportSkeletalMesh(
+							InParent,
+							&pmxMeshInfoPtr,
+							OutputName,
+							Name,
+							RF_Public | RF_Standalone | RF_MarkAsNative | RF_Transactional,
+							FPaths::GetBaseFilename(Filename),
+							&smid);
+						NewObject = NewMesh;
+					}
+
+					// add self
+					if (NewObject)
+					{
+						// MMD Extend asset
+						CreateMMDExtendFromMMDModel(
+							InParent,
+							Cast<USkeletalMesh>(NewObject),
+							&pmxMeshInfoPtr,
+							Name);
+					}
+
+					// end phese
+					if (NewObject)
+					{
+						TotalNumNodes++;
+						NodeIndex++;
+						FFormatNamedArguments Args;
+						Args.Add(TEXT("NodeIndex"), NodeIndex);
+						Args.Add(TEXT("ArrayLength"), 1); // SkelMeshArray.Num());
+						GWarn->StatusUpdate(NodeIndex, 1, FText::Format(NSLOCTEXT("UnrealEd", "Importingf", "Importing ({NodeIndex} of {ArrayLength})"), Args));
+					}
+
+					// MarkPackageDirty();
+				}
+
+				// if total nodes we found is 0, we didn't find anything.
+				if (TotalNumNodes == 0)
+				{
+					AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoMeshFoundOnRoot", "Could not find any valid mesh on the root hierarchy. If you have mesh in the sub hierarchy, please enable option of [Import Meshes In Bone Hierarchy] when import.")), "FFbxErrors::SkeletalMesh_NoMeshFoundOnRoot");
+				}
+#endif
 			}
 		}
 		else
 		{
-			UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("PMX Import error: filepath type error."));
+			if (importAssetTypeMMD == E_MMD_TO_UE5_SKELETON)
+			{
+				AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_InvalidBone", "Failed to find any bone hierarchy. Try disabling the \"Import As Skeletal\" option to import as a rigid mesh. ")), "FFbxErrors::SkeletalMesh_InvalidBone");
+			}
+			else
+			{
+				AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_InvalidNode", "Could not find any node.")), "FFbxErrors::SkeletalMesh_InvalidNode");
+			}
 		}
 	}
-	else
+
+	if (NewObject == nullptr)
 	{
-		UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("PMX Import error: filepath error.%d,%s"), indexs, *Name.ToString());
+		AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoObject", "Import failed.")), "FFbxErrors::Generic_ImportingNewObjectFailed");
+		return false;
 	}
 
-	return false;
+	InParent->MarkPackageDirty();
+	return true;
 }
 
 bool UPmxFactory::ImportPmxFromFile(FString file)

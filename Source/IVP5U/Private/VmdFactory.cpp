@@ -1428,80 +1428,53 @@ FTransform UVmdFactory::CalcGlbTransformFromBoneName(
 }
 bool UVmdFactory::ImportVmdFromFile(FString file, USkeletalMesh* SkeletalMesh)
 {
+	if (!FPaths::FileExists(file))
+	{
+		UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("VMD Import error: FIle is not exist."));
+		return false;
+	}
+
+	const FString filepath = FPaths::GetBaseFilename(file);
+
+	TArray<uint8> File_Result;
+	if (!FFileHelper::LoadFileToArray(File_Result, *file))
+	{
+		UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("VMD Import error: LoadFileToArray."));
+		return false;
+	}
+
 	MMD4UE5::VmdMotionInfo vmdMotionInfo;
+	const uint8* DataPtr = File_Result.GetData();
+	if (vmdMotionInfo.VMDLoaderBinary(DataPtr, nullptr) == false)
+	{
+		UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("VMD Import error: vmd data load faile."));
+		return false;
+	}
+
+	if (!SkeletalMesh)
+	{
+		UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("VMD Import error: SkeletalMesh is null."));
+		return false;
+	}
+
+	// 創建一個默認的 ImportOptions
+	VMDImportOptions DefaultImportOptions;
+	VMDImportOptions* ImportOptions = &DefaultImportOptions;
+	UDataTable* MMD2UE5NameTable = nullptr;
 
 	UVmdFactory* MyFactory = NewObject<UVmdFactory>();
-	TArray<uint8> File_Result;
+	USkeleton* Skeleton = SkeletalMesh->GetSkeleton();
 
-	FString filepath = file;
-	int32 indexs = -1;
-	if (filepath.FindLastChar('\\', indexs))
-	{
-		filepath = filepath.Right(filepath.Len() - indexs - 1);
-		if (filepath.FindLastChar('.', indexs))
-		{
-			filepath = filepath.Left(indexs);
-			if (FPaths::FileExists(file))
-			{
-				if (FFileHelper::LoadFileToArray(File_Result, *file))
-				{
-					const uint8* DataPtr = File_Result.GetData();
-					if (vmdMotionInfo.VMDLoaderBinary(DataPtr, nullptr) == false)
-					{
-						UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("VMD Import error: vmd data load faile."));
-						return false;
-					}
-					UAnimSequence* LastCreatedAnim = nullptr;
-					USkeleton* Skeleton = nullptr;
-					// UIKRigDefinition* IKRig = nullptr;
-
-					// 創建一個默認的 ImportOptions
-					VMDImportOptions DefaultImportOptions;
-
-					VMDImportOptions* ImportOptions = &DefaultImportOptions;
-					UDataTable* MMD2UE5NameTable = nullptr;
-					// UMMDExtendAsset* MMDasset = nullptr;
-					if (SkeletalMesh)
-					{
-						Skeleton = SkeletalMesh->GetSkeleton();
-
-						LastCreatedAnim = MyFactory->ImportAnimations(
-							Skeleton,
-							SkeletalMesh,
-							nullptr,
-							filepath,
-							nullptr,
-							MMD2UE5NameTable,
-							nullptr,
-							&vmdMotionInfo,
-							ImportOptions);
-						return true;
-					}
-					else
-					{
-						UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("VMD Import error: SkeletalMesh is null."));
-					}
-				}
-				else
-				{
-					UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("VMD Import error: LoadFileToArray."));
-				}
-			}
-			else
-			{
-				UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("VMD Import error: FIle is not exist."));
-			}
-		}
-		else
-		{
-			UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("VMD Import error: filepath type error."));
-		}
-	}
-	else
-	{
-		UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("VMD Import error: filepath error.%d,%s"), indexs, *filepath);
-	}
-
-	return false;
+	MyFactory->ImportAnimations(
+		Skeleton,
+		SkeletalMesh,
+		nullptr,
+		filepath,
+		nullptr,
+		MMD2UE5NameTable,
+		nullptr,
+		&vmdMotionInfo,
+		ImportOptions);
+	return true;
 }
 #undef LOCTEXT_NAMESPACE
