@@ -90,17 +90,27 @@ mp4
 ffmpeg -hide_banner -y -init_hw_device vulkan -thread_queue_size 32768 -r 60 -i NewLevelSequence.%4d.exr -i NewLevelSequence.wav -c:v hevc_nvenc -c:a aac -qp 20 -vf "libplacebo=colorspace=bt709:color_primaries=bt709:color_trc=iec61966-2-1:range=tv:format=yuv444p16le" -pix_fmt yuv420p -g 60 -b:a 320k -ar 48000 -movflags +faststart -flags +cgop -coder cabac "qp 20.mp4"
 ```
 
-渲染时开启抗锯齿选项将重载抗锯齿打勾，将抗锯齿方法设为无来关闭抗锯齿  
-将空间採样数提高到8以上来解决锯齿和闪烁  
-採样数越高画质越高，这会显着增加渲染时间  
+### 渲染设置建议
+
+渲染时开启抗锯齿选项将重载抗锯齿打勾，将抗锯齿方法设为无来关闭抗锯齿。  
+将空间採样数提高到 8 以上来解决锯齿和闪烁。  
+採样数越高画质越高，这会显着增加渲染时间。  
+
 ![Pending_MoviePipelinePrimaryConfig](docs/images/Pending_MoviePipelinePrimaryConfig.png)
 
-后期处理体积(Post Process Volume):  
-勾选无限范围  
-可以些微拉高对比  
-可以拉高Lumen的质量  
+**后期处理体积 (Post Process Volume)**:
 
-## Reference
+* 勾选无限范围
+* 可以些微拉高对比
+* 可以拉高 Lumen 的质量
+
+## License
+
+MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Acknowledgements
+
+This project is based on the work of:
 
 * <https://github.com/bm9/IM4U>
 * <https://github.com/axilesoft/IM-for-UE5>
