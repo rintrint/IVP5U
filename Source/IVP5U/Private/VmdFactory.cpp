@@ -1426,7 +1426,7 @@ FTransform UVmdFactory::CalcGlbTransformFromBoneName(
 
 	return resultTrans;
 }
-bool UVmdFactory::ImportVmdFromFile(FString file, USkeletalMesh* SkeletalMesh)
+bool UVmdFactory::ImportVmdFromFile(const FString& file, USkeletalMesh* SkeletalMesh)
 {
 	if (!FPaths::FileExists(file))
 	{

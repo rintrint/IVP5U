@@ -114,5 +114,5 @@ class IVP5U_API UVmdFactory : public UFactory
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "IVP5U")
-	static bool ImportVmdFromFile(FString file, USkeletalMesh* SkeletalMesh);
+	static bool ImportVmdFromFile(const FString& file, USkeletalMesh* SkeletalMesh);
 };
