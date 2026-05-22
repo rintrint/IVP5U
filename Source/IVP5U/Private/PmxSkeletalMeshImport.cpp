@@ -350,7 +350,7 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 				// material asset set flag for morph target
 				if (ImportUI->bImportMorphTargets)
 				{
-					if (UMaterial* UnrealMaterialPtr = Cast<UMaterial>(Materials[MaterialIndex]))
+					if (UMaterialInterface* UnrealMaterialPtr = Materials[MaterialIndex])
 					{
 						UnrealMaterialPtr->CheckMaterialUsage(MATUSAGE_MorphTargets);
 					}
