@@ -352,7 +352,7 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 				{
 					if (UMaterial* UnrealMaterialPtr = Cast<UMaterial>(Materials[MaterialIndex]))
 					{
-						UnrealMaterialPtr->bUsedWithMorphTargets = 1;
+						UnrealMaterialPtr->CheckMaterialUsage(MATUSAGE_MorphTargets);
 					}
 				}
 
