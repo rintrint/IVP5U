@@ -13,7 +13,6 @@
 #include "VMDImporter.h"
 #include "DesktopPlatformModule.h"
 #include "IDesktopPlatform.h"
-#include "Runtime/Launch/Resources/Version.h"
 
 DEFINE_LOG_CATEGORY(LogMMDCameraImporter);
 

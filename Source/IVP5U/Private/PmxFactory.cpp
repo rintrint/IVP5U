@@ -26,8 +26,6 @@
 #include "Rendering/SkeletalMeshModel.h"
 
 #include "IVP5USettings.h"
-#include "MMDSkeletalMeshImportData.h"
-#include "MMDStaticMeshImportData.h"
 #include "PmdImporter.h"
 #include "PmxImporter.h"
 #include "PmxImportUI.h"

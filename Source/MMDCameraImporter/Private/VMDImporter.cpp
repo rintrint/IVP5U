@@ -5,7 +5,6 @@
 #include "CineCameraActor.h"
 #include "CineCameraComponent.h"
 #include "Framework/Notifications/NotificationManager.h"
-#include "ISequencerModule.h"
 #include "LevelEditorViewport.h"
 #include "Misc/ScopedSlowTask.h"
 #include "MovieSceneToolHelpers.h"

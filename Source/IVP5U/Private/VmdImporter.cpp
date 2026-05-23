@@ -4,8 +4,6 @@
 #include "MMDImportHelper.h"
 #include "MMDNameUtils.h"
 
-#include "Animation/AnimSequenceBase.h"
-
 namespace MMD4UE5
 {
 	DEFINE_LOG_CATEGORY(LogMMD4UE5_VmdMotionInfo)

@@ -6,17 +6,10 @@ Main implementation of FVmdImporter : import VMD data to Unreal
 
 #include "CoreMinimal.h"
 
-#include "Factories.h"
 #include "Engine.h"
-#include "ImportUtils/SkelImport.h"
 #include "VmdImporter.h"
 #include "VmdOptionWindow.h"
 #include "MainFrame.h"
-#include "EngineAnalytics.h"
-#include "Runtime/Analytics/Analytics/Public/Interfaces/IAnalyticsProvider.h"
-
-#include "MMDSkeletalMeshImportData.h"
-#include "MMDStaticMeshImportData.h"
 
 // DEFINE_LOG_CATEGORY(LogPmx);
 

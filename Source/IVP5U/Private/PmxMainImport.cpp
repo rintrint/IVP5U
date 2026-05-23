@@ -6,15 +6,11 @@ Main implementation of FPmxImporter : import PMX data to Unreal
 
 #include "CoreMinimal.h"
 
-#include "Factories.h"
 #include "Engine.h"
-#include "ImportUtils/SkelImport.h"
 #include "PmxImporter.h"
 #include "PmxFactory.h"
 #include "PmxOptionWindow.h"
 #include "MainFrame.h"
-#include "EngineAnalytics.h"
-#include "Runtime/Analytics/Analytics/Public/Interfaces/IAnalyticsProvider.h"
 
 #include "MMDSkeletalMeshImportData.h"
 #include "MMDStaticMeshImportData.h"

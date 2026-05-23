@@ -3,8 +3,6 @@
 #include "VmdOptionWindow.h"
 
 #include "CoreMinimal.h"
-#include "Editor/ContentBrowser/Public/ContentBrowserModule.h"
-#include "IDocumentation.h"
 #include "PropertyEditorModule.h"
 #include "IDetailsView.h"
 
