@@ -200,22 +200,17 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 		{
 			int32 NodeIndex = 0;
 			int32 TotalNumNodes = 0;
-			int32 LODIndex = 0;
 
 			FSkeletalMeshImportData smid;
-			USkeletalMesh* NewMesh = nullptr;
-			if (LODIndex == 0)
-			{
-				NewMesh = ImportSkeletalMesh(
-					InParent,
-					&pmxMeshInfoPtr,
-					OutputName,
-					Name,
-					RF_Public | RF_Standalone | RF_MarkAsNative | RF_Transactional,
-					FPaths::GetBaseFilename(Filename),
-					&smid);
-				NewObject = NewMesh;
-			}
+			USkeletalMesh* NewMesh = ImportSkeletalMesh(
+				InParent,
+				&pmxMeshInfoPtr,
+				OutputName,
+				Name,
+				RF_Public | RF_Standalone | RF_MarkAsNative | RF_Transactional,
+				FPaths::GetBaseFilename(Filename),
+				&smid);
+			NewObject = NewMesh;
 
 			// add self
 			if (NewObject)
@@ -369,25 +364,20 @@ UObject* UPmxFactory::FactoryCreateBinary(
 			{
 				int32 NodeIndex = 0;
 				int32 TotalNumNodes = 0;
-				int32 LODIndex = 0;
+
+				UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("PMX Import: %s"), *OutputName.ToString());
 
 				FSkeletalMeshImportData smid;
-				USkeletalMesh* NewMesh = nullptr;
-				if (LODIndex == 0)
-				{
-					UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("PMX Import: %s"), *OutputName.ToString());
-
-					NewMesh = ImportSkeletalMesh(
-						InParent,
-						&pmxMeshInfoPtr,
-						OutputName,
-						Name,
-						Flags,
-						// ImportUI->SkeletalMeshImportData,
-						FPaths::GetBaseFilename(Filename),
-						&smid);
-					NewObject = NewMesh;
-				}
+				USkeletalMesh* NewMesh = ImportSkeletalMesh(
+					InParent,
+					&pmxMeshInfoPtr,
+					OutputName,
+					Name,
+					Flags,
+					// ImportUI->SkeletalMeshImportData,
+					FPaths::GetBaseFilename(Filename),
+					&smid);
+				NewObject = NewMesh;
 
 				// add self
 				if (NewObject)
