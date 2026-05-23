@@ -20,7 +20,10 @@ enum EPMXImportType
 UCLASS(config = EditorUserSettings, AutoExpandCategories = (FTransform), HideCategories = Object, MinimalAPI)
 class UPmxImportUI : public UObject
 {
-	GENERATED_UCLASS_BODY()
+	GENERATED_BODY()
+
+public:
+	UPmxImportUI(const FObjectInitializer& ObjectInitializer);
 
 	/** Type of asset to import from the FBX file */
 	// UPROPERTY()

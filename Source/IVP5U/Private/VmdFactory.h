@@ -27,7 +27,10 @@ DECLARE_LOG_CATEGORY_EXTERN(LogMMD4UE5_VMDFactory, Log, All)
 UCLASS()
 class IVP5U_API UVmdFactory : public UFactory
 {
-	GENERATED_UCLASS_BODY()
+	GENERATED_BODY()
+
+public:
+	UVmdFactory(const FObjectInitializer& ObjectInitializer);
 
 	class UVmdImportUI* ImportUI;
 	// Begin UFactory Interface
