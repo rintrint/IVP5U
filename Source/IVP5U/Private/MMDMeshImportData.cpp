@@ -3,11 +3,6 @@
 #include "MMDMeshImportData.h"
 #include "CoreMinimal.h"
 
-UMMDMeshImportData::UMMDMeshImportData(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
-{
-}
-
 bool UMMDMeshImportData::CanEditChange(const FProperty* InProperty) const
 {
 	bool bMutable = Super::CanEditChange(InProperty);

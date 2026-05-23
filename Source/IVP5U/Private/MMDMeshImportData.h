@@ -11,7 +11,8 @@
 UCLASS(config = EditorUserSettings, configdonotcheckdefaults, abstract)
 class UMMDMeshImportData : public UAssetImportData // UMMDAssetImportData
 {
-	GENERATED_UCLASS_BODY()
+	GENERATED_BODY()
 
+public:
 	virtual bool CanEditChange(const FProperty* InProperty) const override;
 };
