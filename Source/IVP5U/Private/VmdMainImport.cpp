@@ -160,15 +160,6 @@ void ApplyVMDImportUIToImportOptions(
 	InOutImportOptions.SkeletonForAnimation = ImportUI->Skeleton;
 	InOutImportOptions.SkeletalMeshForAnimation = ImportUI->SkeletonMesh;
 
-#if 0
-	// animation options
-	InOutImportOptions.AnimationLengthImportType = ImportUI->AnimSequenceImportData->AnimationLength;
-	InOutImportOptions.AnimationRange.X = ImportUI->AnimSequenceImportData->StartFrame;
-	InOutImportOptions.AnimationRange.Y = ImportUI->AnimSequenceImportData->EndFrame;
-	InOutImportOptions.AnimationName = ImportUI->AnimationName;
-	InOutImportOptions.bPreserveLocalTransform = ImportUI->bPreserveLocalTransform;
-	InOutImportOptions.bImportCustomAttribute = ImportUI->AnimSequenceImportData->bImportCustomAttribute;
-#endif
 	// add self
 	InOutImportOptions.AnimSequenceAsset = ImportUI->AnimSequenceAsset;
 	InOutImportOptions.MMD2UE5NameTableRow = ImportUI->MMD2UE5NameTableRow;

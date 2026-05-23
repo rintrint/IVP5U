@@ -241,19 +241,10 @@ namespace MMD4UE5
 struct VMDImportOptions
 {
 	// General options
-	FVector ImportTranslation = FVector::ZeroVector;
-	FRotator ImportRotation = FRotator::ZeroRotator;
 	float ImportUniformScale = 0.08f;
-	//  Static Mesh options
-	bool bCombineToSingle = false;
-	FColor VertexOverrideColor = FColor::White;
-	// Skeletal Mesh options
-	bool bImportAnimations = false;
 	// Animation option
 	USkeleton* SkeletonForAnimation = nullptr;
 	USkeletalMesh* SkeletalMeshForAnimation = nullptr;
-	FIntPoint AnimationRange = FIntPoint::ZeroValue;
-	FString AnimationName;
 
 	UAnimSequence* AnimSequenceAsset = nullptr;
 	UDataTable* MMD2UE5NameTableRow = nullptr;
