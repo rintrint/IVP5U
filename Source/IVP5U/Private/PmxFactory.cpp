@@ -199,13 +199,9 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 		UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("PMX Import: %s"), *Filename);
 		{
 			int32 NodeIndex = 0;
-			int32 ImportedMeshCount = 0;
-			UStaticMesh* NewStaticMesh = nullptr;
 			int32 TotalNumNodes = 0;
 			int32 LODIndex = 0;
 
-			// for MMD?
-			int32 MaxLODLevel = 1;
 			FSkeletalMeshImportData smid;
 			USkeletalMesh* NewMesh = nullptr;
 			if (LODIndex == 0)
@@ -372,13 +368,9 @@ UObject* UPmxFactory::FactoryCreateBinary(
 			const FString Filename(UFactory::CurrentFilename);
 			{
 				int32 NodeIndex = 0;
-				int32 ImportedMeshCount = 0;
-				UStaticMesh* NewStaticMesh = nullptr;
 				int32 TotalNumNodes = 0;
 				int32 LODIndex = 0;
 
-				// for MMD?
-				int32 MaxLODLevel = 1;
 				FSkeletalMeshImportData smid;
 				USkeletalMesh* NewMesh = nullptr;
 				if (LODIndex == 0)
