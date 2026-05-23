@@ -386,7 +386,6 @@ PMXImportOptions* GetImportOptions(
 	const FString& FullPath,
 	bool& bOutOperationCanceled,
 	bool& bOutImportAll,
-	bool bIsObjFormat,
 	bool bForceImportType = false,
 	EPMXImportType ImportType = PMXIT_StaticMesh);
 

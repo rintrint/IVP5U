@@ -31,7 +31,6 @@ VMDImportOptions* GetVMDImportOptions(
 	const FString& FullPath,
 	bool& bOutOperationCanceled,
 	bool& bOutImportAll,
-	bool bIsObjFormat,
 	bool bForceImportType,
 	EVMDImportType ImportType)
 {
@@ -89,7 +88,6 @@ VMDImportOptions* GetVMDImportOptions(
 		ImportUI->ImportUniformScale = ImportOptions->ImportUniformScale;
 
 		// ImportUI->bImportAsSkeletal = ImportUI->MeshTypeToImport == VMDIT_Animation;
-		ImportUI->bIsObjImport = bIsObjFormat;
 
 		TSharedPtr<SWindow> ParentWindow;
 
@@ -109,8 +107,7 @@ VMDImportOptions* GetVMDImportOptions(
 				.ImportUI(ImportUI)
 				.WidgetWindow(Window)
 				.FullPath(FText::FromString(FullPath))
-				.ForcedImportType(bForceImportType ? MakeShared<TOptional<EVMDImportType>>(ImportType) : MakeShared<TOptional<EVMDImportType>>())
-				.IsObjFormat(bIsObjFormat));
+				.ForcedImportType(bForceImportType ? MakeShared<TOptional<EVMDImportType>>(ImportType) : MakeShared<TOptional<EVMDImportType>>()));
 
 		// @todo: we can make this slow as showing progress bar later
 		FSlateApplication::Get().AddModalWindow(Window, ParentWindow, false);
@@ -253,11 +250,6 @@ bool UVmdImportUI::CanEditChange(const FProperty* InProperty) const
 		else if (PropName == TEXT("bImportCustomAttribute") || PropName == TEXT("AnimationLength"))
 		{
 			bIsMutable = bImportAnimations;
-		}
-
-		if (bIsObjImport == false && InProperty->GetBoolMetaData(TEXT("OBJRestrict")))
-		{
-			bIsMutable = false;
 		}
 	}
 

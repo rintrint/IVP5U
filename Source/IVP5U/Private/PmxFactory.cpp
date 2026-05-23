@@ -181,7 +181,6 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 
 	// show Import Option Slate
 	bool bImportAll = false;
-	ImportUI->bIsObjImport = true; // obj mode
 	ImportUI->OriginalImportType = EPMXImportType::PMXIT_SkeletalMesh;
 	ImportUI->bImportMaterials = true;
 	ImportUI->bImportTextures = true;
@@ -199,7 +198,6 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 		InParent->GetPathName(),
 		bOperationCanceled,
 		bImportAll,
-		ImportUI->bIsObjImport, // bIsPmxFormat,
 		bIsPmxFormat,
 		ForcedImportType);
 	if (bImportAll)
@@ -418,7 +416,6 @@ UObject* UPmxFactory::FactoryCreateBinary(
 
 	// show Import Option Slate
 	bool bImportAll = false;
-	ImportUI->bIsObjImport = true; // obj mode
 	ImportUI->OriginalImportType = EPMXImportType::PMXIT_SkeletalMesh;
 	ImportUI->bImportMaterials = true;
 	ImportUI->bImportTextures = true;
@@ -431,7 +428,6 @@ UObject* UPmxFactory::FactoryCreateBinary(
 		InParent->GetPathName(),
 		bOperationCanceled,
 		bImportAll,
-		ImportUI->bIsObjImport, // bIsPmxFormat,
 		bIsPmxFormat,
 		ForcedImportType);
 	if (bImportAll)

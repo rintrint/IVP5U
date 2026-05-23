@@ -11,7 +11,7 @@ class SPmxOptionWindow : public SCompoundWidget
 {
 public:
 	SLATE_BEGIN_ARGS(SPmxOptionWindow)
-		: _ImportUI(nullptr), _WidgetWindow(), _FullPath(), _ForcedImportType(), _IsObjFormat(false)
+		: _ImportUI(nullptr), _WidgetWindow(), _FullPath(), _ForcedImportType()
 	{
 	}
 
@@ -19,7 +19,6 @@ public:
 	SLATE_ARGUMENT(TSharedPtr<SWindow>, WidgetWindow)
 	SLATE_ARGUMENT(FText, FullPath)
 	SLATE_ARGUMENT(TOptional<EPMXImportType>, ForcedImportType)
-	SLATE_ARGUMENT(bool, IsObjFormat)
 	SLATE_END_ARGS()
 
 public:
@@ -87,5 +86,4 @@ private:
 	TSharedPtr<SButton> ImportButton;
 	bool bShouldImport;
 	bool bShouldImportAll;
-	bool bIsObjFormat;
 };

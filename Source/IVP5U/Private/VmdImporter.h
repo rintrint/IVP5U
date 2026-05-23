@@ -267,7 +267,6 @@ VMDImportOptions* GetVMDImportOptions(
 	const FString& FullPath,
 	bool& bOutOperationCanceled,
 	bool& bOutImportAll,
-	bool bIsObjFormat,
 	bool bForceImportType = false,
 	EVMDImportType ImportType = VMDIT_Animation);
 

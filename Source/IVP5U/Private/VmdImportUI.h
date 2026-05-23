@@ -18,10 +18,6 @@ class UVmdImportUI : public UObject
 {
 	GENERATED_UCLASS_BODY()
 
-	/** Whether or not the imported file is in OBJ format */
-	// UPROPERTY()
-	bool bIsObjImport;
-
 	/** The original detected type of this import */
 	// UPROPERTY()
 	TEnumAsByte<enum EVMDImportType> OriginalImportType;
@@ -31,18 +27,18 @@ class UVmdImportUI : public UObject
 	TEnumAsByte<enum EVMDImportType> MeshTypeToImport;
 
 	/** Use the string in "Name" field as full name of mesh. The option only works when the scene contains one mesh. */
-	// UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = Miscellaneous, meta = (OBJRestrict = "true"))
+	// UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = Miscellaneous)
 	uint32 bOverrideFullName : 1;
 
 	/** Skeleton to use for imported asset. When importing a mesh, leaving this as "None" will create a new skeleton. When importing and animation this MUST be specified to import the asset. */
-	UPROPERTY(EditAnywhere, Category = Mesh, meta = (OBJRestrict = "false"))
+	UPROPERTY(EditAnywhere, Category = Mesh)
 	class USkeleton* Skeleton;
 
 	/** SkeletonMesh to use for imported asset. When importing a mesh, leaving this as "None" will create a new skeleton. When importing and animation this MUST be specified to import the asset. */
-	UPROPERTY(EditAnywhere, Category = Mesh, meta = (OBJRestrict = "false"))
+	UPROPERTY(EditAnywhere, Category = Mesh)
 	class USkeletalMesh* SkeletonMesh;
 
-	// UPROPERTY(EditAnywhere, Category = Mesh, meta = (OBJRestrict = "false"))
+	// UPROPERTY(EditAnywhere, Category = Mesh)
 	class UIKRigDefinition* IKRig;
 
 	/** True to import animations from the FBX File */
@@ -74,11 +70,11 @@ class UVmdImportUI : public UObject
 	/** Whether to automatically create Unreal materials for materials found in the FBX scene */
 
 	/** Skeleton to use for imported asset. When importing a mesh, leaving this as "None" will create a new skeleton. When importing and animation this MUST be specified to import the asset. */
-	UPROPERTY(EditAnywhere, Category = Animation, meta = (OBJRestrict = "false"))
+	UPROPERTY(EditAnywhere, Category = Animation)
 	class UAnimSequence* AnimSequenceAsset;
 
 	/** Import uniform scale for the asset */
-	UPROPERTY(EditAnywhere, Category = Transform, meta = (OBJRestrict = "false", ClampMin = "0.0", UIMin = "0.0"))
+	UPROPERTY(EditAnywhere, Category = Transform, meta = (ClampMin = "0.0", UIMin = "0.0"))
 	float ImportUniformScale;
 
 	/** Skeleton to use for imported asset. When importing a mesh, leaving this as "None" will create a new skeleton. When importing and animation this MUST be specified to import the asset. */
@@ -86,11 +82,11 @@ class UVmdImportUI : public UObject
 	TArray<class UMMDSkeletalMeshImportData*> TestArrayList;
 
 	/** MMD2UE5NameTableRow to use for imported asset. When importing a Anim, leaving this as "None" will create a new skeleton. When importing and animation this MUST be specified to import the asset. */
-	UPROPERTY(EditAnywhere, Category = Animation, meta = (OBJRestrict = "false"))
+	UPROPERTY(EditAnywhere, Category = Animation)
 	UDataTable* MMD2UE5NameTableRow;
 
 	/** mmd extend assset to use for calc ik . */
-	// UPROPERTY(EditAnywhere, Category = Animation, meta = (OBJRestrict = "false"))
+	// UPROPERTY(EditAnywhere, Category = Animation)
 	class UMMDExtendAsset* MmdExtendAsset;
 
 	// struct FTableRowBase MMD2UE5NameTableRowDmmy;

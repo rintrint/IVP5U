@@ -34,7 +34,6 @@ PMXImportOptions* GetImportOptions(
 	const FString& FullPath,
 	bool& bOutOperationCanceled,
 	bool& bOutImportAll,
-	bool bIsObjFormat,
 	bool bForceImportType,
 	EPMXImportType ImportType)
 {
@@ -95,7 +94,6 @@ PMXImportOptions* GetImportOptions(
 		}
 
 		ImportUI->bImportAsSkeletal = ImportUI->MeshTypeToImport == PMXIT_SkeletalMesh;
-		ImportUI->bIsObjImport = bIsObjFormat;
 
 		TSharedPtr<SWindow> ParentWindow;
 
@@ -116,8 +114,7 @@ PMXImportOptions* GetImportOptions(
 				.ImportUI(ImportUI)
 				.WidgetWindow(Window)
 				.FullPath(FText::FromString(FullPath))
-				.ForcedImportType(bForceImportType ? TOptional<EPMXImportType>(ImportType) : TOptional<EPMXImportType>())
-				.IsObjFormat(bIsObjFormat));
+				.ForcedImportType(bForceImportType ? TOptional<EPMXImportType>(ImportType) : TOptional<EPMXImportType>()));
 
 		// @todo: we can make this slow as showing progress bar later
 		FSlateApplication::Get().AddModalWindow(Window, ParentWindow, false);
@@ -295,11 +292,6 @@ bool UPmxImportUI::CanEditChange(const FProperty* InProperty) const
 		else if (PropName == TEXT("bImportCustomAttribute") || PropName == TEXT("AnimationLength"))
 		{
 			bIsMutable = bImportAnimations;
-		}
-
-		if (bIsObjImport == false && InProperty->GetBoolMetaData(TEXT("OBJRestrict")))
-		{
-			bIsMutable = false;
 		}
 	}
 

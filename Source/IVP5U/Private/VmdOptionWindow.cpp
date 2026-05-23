@@ -16,7 +16,6 @@ void SVmdOptionWindow::Construct(const FArguments& InArgs)
 {
 	ImportUI = InArgs._ImportUI;
 	WidgetWindow = InArgs._WidgetWindow;
-	bIsObjFormat = InArgs._IsObjFormat;
 
 	check(ImportUI);
 

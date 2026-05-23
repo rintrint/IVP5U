@@ -34,11 +34,11 @@ class UMMDStaticMeshImportData : public UMMDMeshImportData
 	FName StaticMeshLODGroup;
 
 	/** Specify how vertex colors should be imported */
-	UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = ImportSettings, meta = (OBJRestrict = "true", ImportType = "StaticMesh"))
+	UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = ImportSettings, meta = (ImportType = "StaticMesh"))
 	TEnumAsByte<EVertexColorImportOptionMMD::Type> VertexColorImportOption;
 
 	/** Specify override color in the case that VertexColorImportOption is set to Override */
-	UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = ImportSettings, meta = (OBJRestrict = "true", ImportType = "StaticMesh"))
+	UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = ImportSettings, meta = (ImportType = "StaticMesh"))
 	FColor VertexOverrideColor;
 
 	/** Disabling this option will keep degenerate triangles found.  In general you should leave this option on. */
@@ -49,11 +49,11 @@ class UMMDStaticMeshImportData : public UMMDMeshImportData
 	uint32 bGenerateLightmapUVs : 1;
 
 	/** If checked, one convex hull per UCX_ prefixed collision mesh will be generated instead of decomposing into multiple hulls */
-	UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = ImportSettings, meta = (OBJRestrict = "true", ImportType = "StaticMesh"))
+	UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = ImportSettings, meta = (ImportType = "StaticMesh"))
 	uint32 bOneConvexHullPerUCX : 1;
 
 	/** If checked, collision will automatically be generated (ignored if custom collision is imported or used). */
-	UPROPERTY(EditAnywhere, config, Category = ImportSettings, meta = (OBJRestrict = "true", ImportType = "StaticMesh"))
+	UPROPERTY(EditAnywhere, config, Category = ImportSettings, meta = (ImportType = "StaticMesh"))
 	uint32 bAutoGenerateCollision : 1;
 
 	/** Gets or creates MMD import data for the specified static mesh */

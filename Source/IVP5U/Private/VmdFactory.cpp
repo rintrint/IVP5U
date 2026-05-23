@@ -152,7 +152,6 @@ UObject* UVmdFactory::FactoryCreateBinary(
 		bool bIsPmxFormat = true;
 		// show Import Option Slate
 		bool bImportAll = false;
-		ImportUI->bIsObjImport = false; // anim mode
 		ImportUI->OriginalImportType = EVMDImportType::VMDIT_Animation;
 
 		// 显示导入选项对话框，等待用户操作
@@ -164,7 +163,6 @@ UObject* UVmdFactory::FactoryCreateBinary(
 			InParent->GetPathName(),
 			bOperationCanceled,
 			bImportAll,
-			ImportUI->bIsObjImport, // bIsPmxFormat,
 			bIsPmxFormat,
 			ForcedImportType);
 
@@ -193,7 +191,6 @@ UObject* UVmdFactory::FactoryCreateBinary(
 					InParent->GetPathName(),
 					bOperationCanceled,
 					bImportAll,
-					ImportUI->bIsObjImport, // bIsPmxFormat,
 					bIsPmxFormat,
 					ForcedImportType);
 

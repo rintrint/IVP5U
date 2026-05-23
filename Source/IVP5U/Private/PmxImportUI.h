@@ -22,10 +22,6 @@ class UPmxImportUI : public UObject
 {
 	GENERATED_UCLASS_BODY()
 
-	/** Whether or not the imported file is in OBJ format */
-	// UPROPERTY()
-	bool bIsObjImport;
-
 	/** The original detected type of this import */
 	// UPROPERTY()
 	TEnumAsByte<enum EPMXImportType> OriginalImportType;
@@ -35,11 +31,11 @@ class UPmxImportUI : public UObject
 	TEnumAsByte<enum EPMXImportType> MeshTypeToImport;
 
 	/** Use the string in "Name" field as full name of mesh. The option only works when the scene contains one mesh. */
-	// UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = Miscellaneous, meta = (OBJRestrict = "true"))
+	// UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = Miscellaneous)
 	uint32 bOverrideFullName : 1;
 
 	/** Whether to convert scene from FBX scene. */
-	// UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = Miscellaneous, meta = (OBJRestrict = "true", ToolTip = "Convert the scene from FBX coordinate system to UE5 coordinate system"))
+	// UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = Miscellaneous, meta = (ToolTip = "Convert the scene from FBX coordinate system to UE5 coordinate system"))
 	uint32 bConvertScene : 1;
 
 	/** Whether to import the incoming FBX as a skeletal object */
@@ -55,11 +51,11 @@ class UPmxImportUI : public UObject
 	uint32 bCombineMeshes : 1;
 
 	/** Skeleton to use for imported asset. When importing a mesh, leaving this as "None" will create a new skeleton. When importing and animation this MUST be specified to import the asset. */
-	// UPROPERTY(EditAnywhere, Category = Mesh, meta = (OBJRestrict = "false"))
+	// UPROPERTY(EditAnywhere, Category = Mesh)
 	class USkeleton* Skeleton;
 
 	/** If checked, create new PhysicsAsset if it doesn't have it */
-	UPROPERTY(EditAnywhere, config, Category = Mesh, meta = (OBJRestrict = "true", ImportType = "SkeletalMesh"))
+	UPROPERTY(EditAnywhere, config, Category = Mesh, meta = (ImportType = "SkeletalMesh"))
 	uint32 bCreatePhysicsAsset : 1;
 
 	/** If this is set, use this PhysicsAsset. It is possible bCreatePhysicsAsset == false, and PhysicsAsset == nullptr. It is possible they do not like to create anything. */
@@ -83,19 +79,19 @@ class UPmxImportUI : public UObject
 	uint32 bUseDefaultSampleRate : 1;
 
 	/** Whether to automatically create Unreal materials for materials found in the FBX scene */
-	// UPROPERTY(EditAnywhere, config, Category = Material, meta = (OBJRestrict = "true"))
+	// UPROPERTY(EditAnywhere, config, Category = Material)
 	uint32 bImportMaterials : 1;
 
 	/** The option works only when option "Import UMaterial" is OFF. If "Import UMaterial" is ON, textures are always imported. */
-	// UPROPERTY(EditAnywhere, config, Category = Material, meta = (OBJRestrict = "true"))
+	// UPROPERTY(EditAnywhere, config, Category = Material)
 	uint32 bImportTextures : 1;
 
 	/** create Unreal materials of MaterialInst Type */
-	UPROPERTY(EditAnywhere, config, Category = Material, meta = (OBJRestrict = "true", ToolTip = "If enabled, Create Material Instance and Duplicate Mat-Assets from IVP5U Base Mat. "))
+	UPROPERTY(EditAnywhere, config, Category = Material, meta = (ToolTip = "If enabled, Create Material Instance and Duplicate Mat-Assets from IVP5U Base Mat. "))
 	uint32 bCreateMaterialInstanceMode : 1;
 
 	/** create Unreal materials of Unlit Type */
-	UPROPERTY(EditAnywhere, config, Category = Material, meta = (OBJRestrict = "true", ToolTip = "If CreateMaterialInstMode enabled, effective. Create Mat Shading Model is Unlit."))
+	UPROPERTY(EditAnywhere, config, Category = Material, meta = (ToolTip = "If CreateMaterialInstMode enabled, effective. Create Mat Shading Model is Unlit."))
 	uint32 bUnlitMaterials : 1;
 
 	/** Import data used when importing static meshes */
@@ -118,11 +114,11 @@ class UPmxImportUI : public UObject
 
 	/** Whether to automatically create Unreal materials for materials found in the FBX scene */
 
-	// UPROPERTY(EditAnywhere, config, Category = MaterialAdvMMD, meta = (OBJRestrict = "true"))
+	// UPROPERTY(EditAnywhere, config, Category = MaterialAdvMMD)
 	uint32 bImportAutoLuminousMaterials : 1;
 
 	/** Skeleton to use for imported asset. When importing a mesh, leaving this as "None" will create a new skeleton. When importing and animation this MUST be specified to import the asset. */
-	// UPROPERTY(EditAnywhere, Category = Animation, meta = (OBJRestrict = "false"))
+	// UPROPERTY(EditAnywhere, Category = Animation)
 	class UAnimSequence* AnimSequenceAsset;
 
 	/** Skeleton to use for imported asset. When importing a mesh, leaving this as "None" will create a new skeleton. When importing and animation this MUST be specified to import the asset. */
@@ -130,11 +126,11 @@ class UPmxImportUI : public UObject
 	TArray<class UMMDSkeletalMeshImportData*> TestArrayList;
 
 	/** MMD2UE5NameTableRow to use for imported asset. When importing a Anim, leaving this as "None" will create a new skeleton. When importing and animation this MUST be specified to import the asset. */
-	// UPROPERTY(EditAnywhere, Category = Animation, meta = (OBJRestrict = "false"))
+	// UPROPERTY(EditAnywhere, Category = Animation)
 	UDataTable* MMD2UE5NameTableRow;
 
 	/** mmd extend assset to use for calc ik . */
-	// UPROPERTY(EditAnywhere, Category = Animation, meta = (OBJRestrict = "false"))
+	// UPROPERTY(EditAnywhere, Category = Animation)
 	class UMMDExtendAsset* MmdExtendAsset;
 
 	// struct FTableRowBase MMD2UE5NameTableRowDmmy;
