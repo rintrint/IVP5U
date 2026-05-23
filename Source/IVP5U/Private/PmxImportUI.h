@@ -22,10 +22,6 @@ class UPmxImportUI : public UObject
 {
 	GENERATED_UCLASS_BODY()
 
-	/** The original detected type of this import */
-	// UPROPERTY()
-	TEnumAsByte<enum EPMXImportType> OriginalImportType;
-
 	/** Type of asset to import from the FBX file */
 	// UPROPERTY()
 	TEnumAsByte<enum EPMXImportType> MeshTypeToImport;
@@ -38,10 +34,6 @@ class UPmxImportUI : public UObject
 	// UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = Miscellaneous, meta = (ToolTip = "Convert the scene from FBX coordinate system to UE5 coordinate system"))
 	uint32 bConvertScene : 1;
 
-	/** For static meshes, enabling this option will combine all meshes in the FBX into a single monolithic mesh in Unreal */
-	// UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = Mesh, meta = (ToolTip = "If enabled, combines all meshes into a single mesh", ImportType = "StaticMesh"))
-	uint32 bCombineMeshes : 1;
-
 	/** Skeleton to use for imported asset. When importing a mesh, leaving this as "None" will create a new skeleton. When importing and animation this MUST be specified to import the asset. */
 	// UPROPERTY(EditAnywhere, Category = Mesh)
 	class USkeleton* Skeleton;
@@ -53,14 +45,6 @@ class UPmxImportUI : public UObject
 	/** If this is set, use this PhysicsAsset. It is possible bCreatePhysicsAsset == false, and PhysicsAsset == nullptr. It is possible they do not like to create anything. */
 	// UPROPERTY(EditAnywhere, AdvancedDisplay, Category = Mesh, meta = (ImportType = "SkeletalMesh", editcondition = "!bCreatePhysicsAsset"))
 	class UPhysicsAsset* PhysicsAsset;
-
-	/** True to import animations from the FBX File */
-	// UPROPERTY(EditAnywhere, config, Category = Animation, meta = (ImportType = "SkeletalMesh|Animation"))
-	uint32 bImportAnimations : 1;
-
-	/** Enable this option to use default sample rate for the imported animation at 30 frames per second */
-	// UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = Animation, meta = (editcondition = "bImportAnimations", ToolTip = "If enabled, samples all animation curves to 30 FPS", ImportType = "SkeletalMesh|Animation"))
-	uint32 bUseDefaultSampleRate : 1;
 
 	/** The option works only when option "Import UMaterial" is OFF. If "Import UMaterial" is ON, textures are always imported. */
 	// UPROPERTY(EditAnywhere, config, Category = Material)

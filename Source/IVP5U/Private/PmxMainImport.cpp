@@ -64,7 +64,6 @@ PMXImportOptions* GetImportOptions(
 		if (bForceImportType)
 		{
 			ImportUI->MeshTypeToImport = ImportType;
-			ImportUI->OriginalImportType = ImportType;
 		}
 
 		// last select asset ref
@@ -231,8 +230,6 @@ PMXImportOptions* FPmxImporter::GetImportOptions() const
 UPmxImportUI::UPmxImportUI(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	bCombineMeshes = true;
-
 	const UIVP5USettings* Settings = GetDefault<UIVP5USettings>();
 	bCreatePhysicsAsset = Settings->bCreatePhysicsAsset;
 	bCreateMaterialInstanceMode = Settings->bCreateMaterialInstanceMode;
