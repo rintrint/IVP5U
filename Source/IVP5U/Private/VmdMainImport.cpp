@@ -234,24 +234,4 @@ UVmdImportUI::UVmdImportUI(const FObjectInitializer& ObjectInitializer)
 	ImportUniformScale = 0.08f;
 }
 
-bool UVmdImportUI::CanEditChange(const FProperty* InProperty) const
-{
-	bool bIsMutable = Super::CanEditChange(InProperty);
-	if (bIsMutable && InProperty != nullptr)
-	{
-		FName PropName = InProperty->GetFName();
-
-		if (PropName == TEXT("StartFrame") || PropName == TEXT("EndFrame"))
-		{
-			// bIsMutable = AnimSequenceImportData->AnimationLength == FBXALIT_SetRange && bImportAnimations;
-		}
-		else if (PropName == TEXT("bImportCustomAttribute") || PropName == TEXT("AnimationLength"))
-		{
-			bIsMutable = bImportAnimations;
-		}
-	}
-
-	return bIsMutable;
-}
-
 #undef LOCTEXT_NAMESPACE

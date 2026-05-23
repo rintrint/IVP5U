@@ -108,7 +108,5 @@ public:
 	UPROPERTY(EditAnywhere, Category = IK)
 	TArray<FMMD_IKInfo> IkInfoList;
 
-	// TBD::用途不明
-	//	bool CanEditChange( const FProperty* InProperty ) const;
 private:
 };

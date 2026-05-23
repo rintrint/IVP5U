@@ -53,10 +53,6 @@ class UVmdImportUI : public UObject
 	// UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = Animation, meta = (editcondition = "bImportAnimations", ImportType = "SkeletalMesh|Animation"))
 	bool bPreserveLocalTransform;
 
-	// Begin UObject Interface
-	virtual bool CanEditChange(const FProperty* InProperty) const override;
-	// End UObject Interface
-
 	/////////////////////////
 
 	/** Skeleton to use for imported asset. When importing a mesh, leaving this as "None" will create a new skeleton. When importing and animation this MUST be specified to import the asset. */
