@@ -18,10 +18,6 @@ class UVmdImportUI : public UObject
 {
 	GENERATED_UCLASS_BODY()
 
-	/** Type of asset to import from the FBX file */
-	// UPROPERTY()
-	TEnumAsByte<enum EVMDImportType> MeshTypeToImport;
-
 	/** Skeleton to use for imported asset. When importing a mesh, leaving this as "None" will create a new skeleton. When importing and animation this MUST be specified to import the asset. */
 	UPROPERTY(EditAnywhere, Category = Mesh)
 	class USkeleton* Skeleton;
@@ -32,26 +28,6 @@ class UVmdImportUI : public UObject
 
 	// UPROPERTY(EditAnywhere, Category = Mesh)
 	class UIKRigDefinition* IKRig;
-
-	/** True to import animations from the FBX File */
-	// UPROPERTY(EditAnywhere, config, Category = Animation, meta = (ImportType = "SkeletalMesh|Animation"))
-	uint32 bImportAnimations : 1;
-
-	/** Override for the name of the animation to import **/
-	// UPROPERTY(EditAnywhere, AdvancedDisplay, Category = Animation, meta = (editcondition = "bImportAnimations", ImportType = "SkeletalMesh"))
-	FString AnimationName;
-
-	/** Import data used when importing static meshes */
-	// UPROPERTY(EditAnywhere, Instanced, Category = Mesh, meta = (ImportType = "StaticMesh"))
-	class UMMDStaticMeshImportData* StaticMeshImportData;
-
-	/** Import data used when importing skeletal meshes */
-	// UPROPERTY(EditAnywhere, Instanced, Category = Mesh, meta = (ImportType = "SkeletalMesh"))
-	class UMMDSkeletalMeshImportData* SkeletalMeshImportData;
-
-	/** Type of asset to import from the FBX file */
-	// UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = Animation, meta = (editcondition = "bImportAnimations", ImportType = "SkeletalMesh|Animation"))
-	bool bPreserveLocalTransform;
 
 	/////////////////////////
 

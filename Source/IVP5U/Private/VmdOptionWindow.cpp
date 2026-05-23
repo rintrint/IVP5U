@@ -111,24 +111,6 @@ void SVmdOptionWindow::Construct(const FArguments& InArgs)
 
 bool SVmdOptionWindow::CanImport()  const
 {
-#if 0
-	// do test to see if we are ready to import
-	if (ImportUI->MeshTypeToImport == PMXIT_Animation)
-	{
-		if (ImportUI->Skeleton == nullptr || !ImportUI->bImportAnimations)
-		{
-			return false;
-		}
-	}
-
-	if (ImportUI->AnimSequenceImportData->AnimationLength == FBXALIT_SetRange)
-	{
-		if (ImportUI->AnimSequenceImportData->StartFrame > ImportUI->AnimSequenceImportData->EndFrame)
-		{
-			return false;
-		}
-	}
-#endif
 	return true;
 }
 

@@ -112,16 +112,6 @@ VMDImportOptions* GetVMDImportOptions(
 
 		ImportUI->SaveConfig();
 
-		if (ImportUI->StaticMeshImportData)
-		{
-			ImportUI->StaticMeshImportData->SaveConfig();
-		}
-
-		if (ImportUI->SkeletalMeshImportData)
-		{
-			ImportUI->SkeletalMeshImportData->SaveConfig();
-		}
-
 		if (VmdOptionWindow->ShouldImport())
 		{
 			bOutImportAll = VmdOptionWindow->ShouldImportAll();
