@@ -64,8 +64,6 @@ UPmxFactory::UPmxFactory(const FObjectInitializer& ObjectInitializer)
 
 	const UIVP5USettings* Settings = GetDefault<UIVP5USettings>();
 	ImportPriority = FMath::Max(1, Settings->ImportPriority);
-
-	// ImportUI = NewObject<UPmxImportUI>(this, NAME_None, RF_NoFlags);
 }
 
 bool UPmxFactory::FactoryCanImport(const FString& Filename)
@@ -366,7 +364,6 @@ UObject* UPmxFactory::FactoryCreateBinary(
 					OutputName,
 					Name,
 					Flags,
-					// ImportUI->SkeletalMeshImportData,
 					FPaths::GetBaseFilename(Filename),
 					&smid);
 				NewObject = NewMesh;
