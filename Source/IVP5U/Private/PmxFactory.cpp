@@ -565,7 +565,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		// if any other object exists, we can't import with this name
 		else if (ExistingObject)
 		{
-			AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Warning, FText::Format(LOCTEXT("FbxSkeletaLMeshimport_OverlappingName", "Same name but different class: '{0}' already exists"), FText::FromString(ExistingObject->GetName()))), "FFbxErrors::Generic_SameNameAssetExists");
+			AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Warning, FText::Format(LOCTEXT("PmxSkeletaLMeshimport_OverlappingName", "Same name but different class: '{0}' already exists"), FText::FromString(ExistingObject->GetName()))), "FFbxErrors::Generic_SameNameAssetExists");
 			return nullptr;
 		}
 	}
@@ -583,7 +583,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 	// from popping up again on each additional pass.
 	if (!ImportBone(pmxMeshInfoPtr, *SkelMeshImportDataPtr, bDiffPose, false, bUseTime0AsRefPose))
 	{
-		AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FbxSkeletaLMeshimport_MultipleRootFound", "Multiple roots found")), "FFbxErrors::SkeletalMesh_MultipleRoots");
+		AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("PmxSkeletaLMeshimport_MultipleRootFound", "Multiple roots found")), "FFbxErrors::SkeletalMesh_MultipleRoots");
 		// I can't delete object here since this is middle of import
 		// but I can move to transient package, and GC will automatically collect it
 		SkeletalMesh->ClearFlags(RF_Standalone);
@@ -605,7 +605,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		// but I can move to transient package, and GC will automatically collect it
 		SkeletalMesh->ClearFlags(RF_Standalone);
 		SkeletalMesh->Rename(nullptr, GetTransientPackage());
-		UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("FillSkelMeshImporterFromFbx_out"));
+		UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("FillSkelMeshImporterFromPmx_out"));
 		return nullptr;
 	}
 	else
@@ -704,7 +704,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 			Skeleton = LoadObject<USkeleton>(InParent, *SkelObjectName, nullptr, LOAD_NoWarn | LOAD_Quiet);
 			if (!Skeleton)
 			{
-				AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, FText::Format(LOCTEXT("FbxSkeletaLMeshimport_SkeletonRecreateError", "'{0}' already exists. It fails to recreate it."), FText::FromString(SkelObjectName))), "FFbxErrors::SkeletalMesh_SkeletonRecreateError");
+				AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, FText::Format(LOCTEXT("PmxSkeletaLMeshimport_SkeletonRecreateError", "'{0}' already exists. It fails to recreate it."), FText::FromString(SkelObjectName))), "FFbxErrors::SkeletalMesh_SkeletonRecreateError");
 				return SkeletalMesh;
 			}
 		}
