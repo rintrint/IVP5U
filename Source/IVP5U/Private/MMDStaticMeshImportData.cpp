@@ -7,12 +7,6 @@
 UMMDStaticMeshImportData::UMMDStaticMeshImportData(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	StaticMeshLODGroup = NAME_None;
-	bRemoveDegenerates = true;
-	bGenerateLightmapUVs = true;
-	bOneConvexHullPerUCX = true;
-	bAutoGenerateCollision = true;
-	VertexOverrideColor = FColor(255, 255, 255, 255);
 }
 
 UMMDStaticMeshImportData* UMMDStaticMeshImportData::GetImportDataForStaticMesh(UStaticMesh* StaticMesh, UMMDStaticMeshImportData* TemplateForCreation)
