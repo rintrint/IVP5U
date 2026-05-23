@@ -1365,7 +1365,7 @@ bool UVmdFactory::ImportVmdFromFile(const FString& file, USkeletalMesh* Skeletal
 {
 	if (!FPaths::FileExists(file))
 	{
-		UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("VMD Import error: FIle is not exist."));
+		UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("VMD Import error: File does not exist."));
 		return false;
 	}
 

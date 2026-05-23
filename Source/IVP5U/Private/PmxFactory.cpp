@@ -112,7 +112,7 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 {
 	if (!FPaths::FileExists(file))
 	{
-		UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("PMX Import error: FIle is not exist."));
+		UE_LOG(LogMMD4UE5_PMXFactory, Error, TEXT("PMX Import error: File does not exist."));
 		return false;
 	}
 
