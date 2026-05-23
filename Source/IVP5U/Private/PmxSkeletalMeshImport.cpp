@@ -322,8 +322,6 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 		{
 			pmxMaterialImportHelper.AssetsCreateTexture(
 				InParent,
-				// Flags,
-				// Warn,
 				FPaths::GetPath(GetCurrentFilename()),
 				PmxMeshInfo->textureList[k].TexturePath,
 				textureAssetList);
@@ -335,7 +333,6 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 	{
 		pmxMaterialImportHelper.CreateUnrealMaterial(
 			PmxMeshInfo->modelNameJP,
-			// InParent,
 			PmxMeshInfo->materialList[k],
 			ImportUI->bCreateMaterialInstanceMode,
 			ImportUI->bUnlitMaterials,
