@@ -194,9 +194,11 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 		UFactory::CurrentFilename = file;
 		FString Filename(UFactory::CurrentFilename);
 
-		UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("PMX Import: %s"), *Filename);
+		UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("PMX Import: %s"), *Filename);
 		{
 			int32 NodeIndex = 0;
+
+			UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("PMX Import: %s"), *OutputName.ToString());
 
 			FSkeletalMeshImportData smid;
 			USkeletalMesh* NewMesh = ImportSkeletalMesh(
