@@ -634,61 +634,6 @@ UObject* UPmxFactory::CreateAssetOfClass(
 	return Object;
 }
 
-/**
- * A class encapsulating morph target processing that occurs during import on a separate thread
- */
-class FAsyncImportMorphTargetWork : public FNonAbandonableTask
-{
-public:
-	FAsyncImportMorphTargetWork(
-		USkeletalMesh* InTempSkelMesh,
-		int32 InLODIndex,
-		FSkeletalMeshImportData& InImportData,
-		bool bInKeepOverlappingVertices)
-		: TempSkeletalMesh(InTempSkelMesh), ImportData(InImportData), LODIndex(InLODIndex), bKeepOverlappingVertices(bInKeepOverlappingVertices)
-	{
-		MeshUtilities = &FModuleManager::Get().LoadModuleChecked<IMeshUtilities>("MeshUtilities");
-	}
-
-	void DoWork()
-	{
-		TArray<FVector3f> LODPoints;
-		TArray<SkeletalMeshImportData::FMeshWedge> LODWedges;
-		TArray<SkeletalMeshImportData::FMeshFace> LODFaces;
-		TArray<SkeletalMeshImportData::FVertInfluence> LODInfluences;
-		TArray<int32> LODPointToRawMap;
-		ImportData.CopyLODImportData(LODPoints, LODWedges, LODFaces, LODInfluences, LODPointToRawMap);
-
-		ImportData.Empty();
-
-		MeshUtilities->BuildSkeletalMesh(
-			TempSkeletalMesh->GetImportedModel()->LODModels[0], "MMDSKMS",
-			TempSkeletalMesh->GetRefSkeleton(),
-			LODInfluences,
-			LODWedges,
-			LODFaces,
-			LODPoints,
-			LODPointToRawMap);
-	}
-
-	static const TCHAR* Name()
-	{
-		return TEXT("FAsyncImportMorphTargetWork");
-	}
-
-	FORCEINLINE TStatId GetStatId() const
-	{
-		RETURN_QUICK_DECLARE_CYCLE_STAT(FAsyncImportMorphTargetWork, STATGROUP_ThreadPoolAsyncTasks);
-	}
-
-private:
-	USkeletalMesh* TempSkeletalMesh;
-	FSkeletalMeshImportData ImportData;
-	IMeshUtilities* MeshUtilities;
-	int32 LODIndex;
-	bool bKeepOverlappingVertices;
-};
-
 void UPmxFactory::ImportMorphTargetsInternal(
 	MMD4UE5::PmxMeshInfo& PmxMeshInfo,
 	USkeletalMesh* BaseSkelMesh,

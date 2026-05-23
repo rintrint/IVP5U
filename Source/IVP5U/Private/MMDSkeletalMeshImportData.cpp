@@ -4,7 +4,7 @@
 #include "CoreMinimal.h"
 
 UMMDSkeletalMeshImportData::UMMDSkeletalMeshImportData(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer), bImportMeshesInBoneHierarchy(true)
+	: Super(ObjectInitializer)
 {
 }
 
