@@ -181,7 +181,6 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 
 	// show Import Option Slate
 	bool bImportAll = false;
-	ImportUI->bImportTextures = true;
 
 	FString packpath = "/Game/" + filepath + "/" + filepath;
 
@@ -407,7 +406,6 @@ UObject* UPmxFactory::FactoryCreateBinary(
 
 	// show Import Option Slate
 	bool bImportAll = false;
-	ImportUI->bImportTextures = true;
 	UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("PMX Import: %s"), *(InParent->GetPathName()));
 
 	PMXImportOptions* ImportOptions = GetImportOptions(

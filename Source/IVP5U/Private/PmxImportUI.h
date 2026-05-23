@@ -38,10 +38,6 @@ class UPmxImportUI : public UObject
 	// UPROPERTY(EditAnywhere, AdvancedDisplay, Category = Mesh, meta = (ImportType = "SkeletalMesh", editcondition = "!bCreatePhysicsAsset"))
 	class UPhysicsAsset* PhysicsAsset;
 
-	/** The option works only when option "Import UMaterial" is OFF. If "Import UMaterial" is ON, textures are always imported. */
-	// UPROPERTY(EditAnywhere, config, Category = Material)
-	uint32 bImportTextures : 1;
-
 	/** create Unreal materials of MaterialInst Type */
 	UPROPERTY(EditAnywhere, config, Category = Material, meta = (ToolTip = "If enabled, Create Material Instance and Duplicate Mat-Assets from IVP5U Base Mat. "))
 	uint32 bCreateMaterialInstanceMode : 1;

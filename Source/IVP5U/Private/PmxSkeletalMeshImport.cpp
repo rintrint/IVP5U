@@ -316,16 +316,13 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 
 #if 1 // test Material Textuere
 	TArray<UTexture*> textureAssetList;
-	if (ImportUI->bImportTextures)
+	for (int k = 0; k < PmxMeshInfo->textureList.Num(); ++k)
 	{
-		for (int k = 0; k < PmxMeshInfo->textureList.Num(); ++k)
-		{
-			pmxMaterialImportHelper.AssetsCreateTexture(
-				InParent,
-				FPaths::GetPath(GetCurrentFilename()),
-				PmxMeshInfo->textureList[k].TexturePath,
-				textureAssetList);
-		}
+		pmxMaterialImportHelper.AssetsCreateTexture(
+			InParent,
+			FPaths::GetPath(GetCurrentFilename()),
+			PmxMeshInfo->textureList[k].TexturePath,
+			textureAssetList);
 	}
 
 	TArray<FString> UVSets;
