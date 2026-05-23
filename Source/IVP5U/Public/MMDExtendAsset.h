@@ -90,7 +90,6 @@ struct FMMD_IKInfo
 /**********************
  * MMD Extend Info : Asset class
  ***********************/
-// UCLASS(hidecategories = Object)
 UCLASS()
 class UMMDExtendAsset : public UObject
 {
