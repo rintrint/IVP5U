@@ -77,10 +77,6 @@ class UVmdImportUI : public UObject
 	UPROPERTY(EditAnywhere, Category = Transform, meta = (ClampMin = "0.0", UIMin = "0.0"))
 	float ImportUniformScale;
 
-	/** Skeleton to use for imported asset. When importing a mesh, leaving this as "None" will create a new skeleton. When importing and animation this MUST be specified to import the asset. */
-	// UPROPERTY(EditAnywhere, Category = AnimationList, meta = (ImportType = "Animation"))
-	TArray<class UMMDSkeletalMeshImportData*> TestArrayList;
-
 	/** MMD2UE5NameTableRow to use for imported asset. When importing a Anim, leaving this as "None" will create a new skeleton. When importing and animation this MUST be specified to import the asset. */
 	UPROPERTY(EditAnywhere, Category = Animation)
 	UDataTable* MMD2UE5NameTableRow;

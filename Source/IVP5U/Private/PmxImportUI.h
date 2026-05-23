@@ -42,10 +42,6 @@ class UPmxImportUI : public UObject
 	// UPROPERTY(EditAnywhere, Category = Mesh, meta = (ImportType = "StaticMesh|SkeletalMesh"))
 	bool bImportAsSkeletal;
 
-	/** Whether to import the mesh. Allows animation only import when importing a skeletal mesh. */
-	// UPROPERTY(EditAnywhere, config, Category = Mesh, meta = (ImportType = "SkeletalMesh"))
-	bool bImportMesh;
-
 	/** For static meshes, enabling this option will combine all meshes in the FBX into a single monolithic mesh in Unreal */
 	// UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = Mesh, meta = (ToolTip = "If enabled, combines all meshes into a single mesh", ImportType = "StaticMesh"))
 	uint32 bCombineMeshes : 1;
@@ -112,18 +108,9 @@ class UPmxImportUI : public UObject
 
 	/////////////////////////
 
-	/** Whether to automatically create Unreal materials for materials found in the FBX scene */
-
-	// UPROPERTY(EditAnywhere, config, Category = MaterialAdvMMD)
-	uint32 bImportAutoLuminousMaterials : 1;
-
 	/** Skeleton to use for imported asset. When importing a mesh, leaving this as "None" will create a new skeleton. When importing and animation this MUST be specified to import the asset. */
 	// UPROPERTY(EditAnywhere, Category = Animation)
 	class UAnimSequence* AnimSequenceAsset;
-
-	/** Skeleton to use for imported asset. When importing a mesh, leaving this as "None" will create a new skeleton. When importing and animation this MUST be specified to import the asset. */
-	// UPROPERTY(EditAnywhere, Category = AnimationList, meta = (ImportType = "Animation"))
-	TArray<class UMMDSkeletalMeshImportData*> TestArrayList;
 
 	/** MMD2UE5NameTableRow to use for imported asset. When importing a Anim, leaving this as "None" will create a new skeleton. When importing and animation this MUST be specified to import the asset. */
 	// UPROPERTY(EditAnywhere, Category = Animation)
