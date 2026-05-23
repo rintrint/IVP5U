@@ -935,15 +935,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst(
 		UMaterialInstanceConstantFactoryNew* Factory =
 			NewObject<UMaterialInstanceConstantFactoryNew>();
 		Factory->InitialParent = ParentMaterial;
-#if 0 // 简易版，这样不也可以吗？
-		UObject* NewAsset = AssetToolsModule.Get().CreateAsset(
-			NewMICName,
-			TargetPathName,
-			UMaterialInstanceConstant::StaticClass(),
-			Factory
-		);
 
-#else // 与SetDirtyFlag一致的模式
 		const FString Suffix(TEXT(""));
 		FString FinalPackageName;
 		AssetToolsModule.Get().CreateUniqueAssetName(TargetPathName, Suffix, FinalPackageName, NewMICName);
@@ -960,7 +952,6 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst(
 			// Set the dirty flag so this package will get saved later
 			Package->SetDirtyFlag(true);
 		}
-#endif
 		NewMIC = Cast<UMaterialInstanceConstant>(NewAsset);
 	}
 	if (nullptr == NewMIC)
