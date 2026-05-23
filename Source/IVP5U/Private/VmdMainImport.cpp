@@ -185,23 +185,8 @@ void FVmdImporter::DeleteInstance()
 
 void FVmdImporter::CleanUp()
 {
-#if 0
-	ClearTokenizedErrorMessages();
-	ReleaseScene();
-
-	delete GeometryConverter;
-	GeometryConverter = nullptr;
-#endif
 	delete ImportOptions;
 	ImportOptions = nullptr;
-#if 0
-	if (SdkManager)
-	{
-		SdkManager->Destroy();
-	}
-	SdkManager = nullptr;
-	Logger = nullptr;
-#endif
 }
 
 VMDImportOptions* FVmdImporter::GetImportOptions() const
