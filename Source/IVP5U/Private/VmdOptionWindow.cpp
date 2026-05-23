@@ -65,10 +65,6 @@ void SVmdOptionWindow::Construct(const FArguments& InArgs)
 				[
 					SNew(SUniformGridPanel)
 					.SlotPadding(2)
-					/*+ SUniformGridPanel::Slot(0, 0)
-					[
-						IDocumentation::Get()->CreateAnchor(FString("Engine/Content/FBX/ImportOptions"))
-					]*/
 					+ SUniformGridPanel::Slot(0, 0)
 						[
 							SNew(SButton)

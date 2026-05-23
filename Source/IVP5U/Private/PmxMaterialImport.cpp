@@ -166,7 +166,7 @@ UTexture* UPmxMaterialImport::ImportTexture(
 {
 	// create an unreal texture asset
 	UTexture* UnrealTexture = nullptr;
-	FString Filename1 = InTextureFileName; // ANSI_TO_TCHAR(FbxTexture->GetFileName());
+	FString Filename1 = InTextureFileName;
 	FString Extension = FPaths::GetExtension(Filename1).ToLower();
 	// name the texture with file name
 	FString TextureName = FPaths::GetBaseFilename(Filename1);
@@ -206,26 +206,7 @@ UTexture* UPmxMaterialImport::ImportTexture(
 	// try opening from absolute path
 	FString Filename = Filename1;
 	TArray<uint8> DataBinary;
-	if (!FFileHelper::LoadFileToArray(DataBinary, *Filename))
-	{
-#if 0 // test
-	  //  try fbx file base path + relative path
-		FString Filename2 = FileBasePath / ANSI_TO_TCHAR(FbxTexture->GetRelativeFileName());
-		Filename = Filename2;
-		if (!FFileHelper::LoadFileToArray(DataBinary, *Filename))
-		{
-			// try fbx file base path + texture file name (no path)
-			FString Filename3 = ANSI_TO_TCHAR(FbxTexture->GetRelativeFileName());
-			FString FileOnly = FPaths::GetCleanFilename(Filename3);
-			Filename3 = FileBasePath / FileOnly;
-			Filename = Filename3;
-			if (!FFileHelper::LoadFileToArray(DataBinary, *Filename))
-			{
-				UE_LOG(LogFbxMaterialImport, Warning, TEXT("Unable to find TEXTure file %s. Tried:\n - %s\n - %s\n - %s"), *FileOnly, *Filename1, *Filename2, *Filename3);
-			}
-		}
-#endif
-	}
+	FFileHelper::LoadFileToArray(DataBinary, *Filename);
 	if (DataBinary.Num() > 0)
 	{
 		UE_LOG(LogCategoryPMXMaterialImport, Log,
@@ -290,13 +271,11 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty(
 		// for (int32 TextureIndex = 0; TextureIndex<TextureCount; ++TextureIndex)
 		{
 			// create an unreal texture asset
-			UTexture* UnrealTexture = textureAssetList[TextureCount]; // ImportTexture(FbxTexture, bSetupAsNormalMap);
+			UTexture* UnrealTexture = textureAssetList[TextureCount];
 
 			if (UnrealTexture)
 			{
 				UnrealMaterial->BlendMode = BLEND_Masked;
-				// float ScaleU = FbxTexture->GetScaleU();
-				// float ScaleV = FbxTexture->GetScaleV();
 
 				// Multipule
 				UMaterialExpressionMultiply* MulExpression = NewObject<UMaterialExpressionMultiply>(UnrealMaterial);
@@ -367,26 +346,6 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty(
 				MyColorExpression->MaterialExpressionEditorX = -500;
 				MyColorExpression->MaterialExpressionEditorY = 300;
 				MyColorExpression->SetEditableName("DiffuseColor");
-				/*
-				// add/find UVSet and set it to the texture
-				FbxString UVSetName = FbxTexture->UVSet.Get();
-				FString LocalUVSetName = ANSI_TO_TCHAR(UVSetName.Buffer());
-				int32 SetIndex = UVSet.Find(LocalUVSetName);
-				if ((SetIndex != 0 && SetIndex != INDEX_NONE) || ScaleU != 1.0f || ScaleV != 1.0f)
-				{
-				// Create a texture coord node for the texture sample
-				UMaterialExpressionTextureCoordinate* MyCoordExpression = ConstructObject<UMaterialExpressionTextureCoordinate>(UMaterialExpressionTextureCoordinate::StaticClass(), UnrealMaterial);
-				UnrealMaterial->Expressions.Add(MyCoordExpression);
-				MyCoordExpression->CoordinateIndex = (SetIndex >= 0) ? SetIndex : 0;
-				MyCoordExpression->UTiling = ScaleU;
-				MyCoordExpression->VTiling = ScaleV;
-				UnrealTextureExpression->Coordinates.Expression = MyCoordExpression;
-				MyCoordExpression->MaterialExpressionEditorX = FMath::TruncToInt(Location.X - 175);
-				MyCoordExpression->MaterialExpressionEditorY = FMath::TruncToInt(Location.Y);
-
-				}
-
-				*/
 				bCreated = true;
 			}
 		}
@@ -458,19 +417,6 @@ void UPmxMaterialImport::FixupMaterial(
 		MyColorExpression->SetEditableName("AmbientColor");
 
 		bool bFoundDiffuseColor = true;
-		/*
-		if (PmxMaterial.GetClassId().Is(FbxSurfacePhong::ClassId))
-		{
-		DiffuseColor = ((FbxSurfacePhong&)(PmxMaterial)).Diffuse.Get();
-		}
-		else if (PmxMaterial.GetClassId().Is(FbxSurfaceLambert::ClassId))
-		{
-		DiffuseColor = ((FbxSurfaceLambert&)(PmxMaterial)).Diffuse.Get();
-		}
-		else
-		{
-		bFoundDiffuseColor = false;
-		}*/
 		if (bFoundDiffuseColor)
 		{
 			MyColorExpression->DefaultValue.R = PmxMaterial.Ambient[0];
@@ -625,7 +571,6 @@ void UPmxMaterialImport::CreateUnrealMaterial(
 		UnrealMaterial->PreEditChange(nullptr);
 		UnrealMaterial->PostEditChange();
 		UnrealMaterial->MarkPackageDirty();
-		// ImportedMaterialData.AddImportedMaterial( FbxMaterial, *UnrealMaterial );
 
 		OutMaterials.Add(UnrealMaterial);
 	}
@@ -722,13 +667,11 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty_ForMmdAutolu
 		if (PmxMaterial.SphereMode == 2) // auto luminus
 		{
 			// create an unreal texture asset
-			UTexture* UnrealTexture = textureAssetList[TextureCount]; // ImportTexture(FbxTexture, bSetupAsNormalMap);
+			UTexture* UnrealTexture = textureAssetList[TextureCount];
 
 			if (UnrealTexture)
 			{
 				UnrealMaterial->BlendMode = BLEND_Masked;
-				// float ScaleU = FbxTexture->GetScaleU();
-				// float ScaleV = FbxTexture->GetScaleV();
 
 				// Multipule
 				UMaterialExpressionMultiply* MulExpression = NewObject<UMaterialExpressionMultiply>(UnrealMaterial);

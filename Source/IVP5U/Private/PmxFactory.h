@@ -18,7 +18,7 @@
 DECLARE_LOG_CATEGORY_EXTERN(LogMMD4UE5_PMXFactory, Log, All)
 
 UCLASS()
-class IVP5U_API UPmxFactory : public UFactory, public FReimportHandler // public UFbxFactory
+class IVP5U_API UPmxFactory : public UFactory, public FReimportHandler
 {
 	GENERATED_BODY()
 

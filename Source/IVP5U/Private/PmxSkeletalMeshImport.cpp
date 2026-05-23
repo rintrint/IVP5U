@@ -601,21 +601,7 @@ UObject* UPmxFactory::CreateAssetOfClass(
 	// if object with same name but different class exists, warn user
 	if ((Object != nullptr) && (Object->GetClass() != AssetClass))
 	{
-		// UnFbx::FFbxImporter* FFbxImporter = UnFbx::FFbxImporter::GetInstance();
-		// FFbxImporter->AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("Error_AssetExist", "Asset with same name exists. Can't overwrite another asset")), FFbxErrors::Generic_SameNameAssetExists);
 		return nullptr;
-	}
-
-	// if object with same name exists, warn user
-	if (Object != nullptr && !bAllowReplace)
-	{
-		// until we have proper error message handling so we don't ask every time, but once, I'm disabling it.
-		// 		if ( EAppReturnType::Yes != FMessageDialog::Open( EAppMsgType::YesNo, LocalizeSecure(NSLOCTEXT("UnrealEd", "Error_AssetExistAsk", "Asset with the name (`~) exists. Would you like to overwrite?").ToString(), *ParentPath) ) )
-		// 		{
-		// 			return nullptr;
-		// 		}
-		// UnFbx::FFbxImporter* FFbxImporter = UnFbx::FFbxImporter::GetInstance();
-		// FFbxImporter->AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Warning, FText::Format(LOCTEXT("FbxSkeletaLMeshimport_SameNameExist", "Asset with the name ('{0}') exists. Overwriting..."), FText::FromString(ParentPath))), FFbxErrors::Generic_SameNameAssetOverriding);
 	}
 
 	if (Object == nullptr)
