@@ -113,12 +113,6 @@ int32 UPmxFactory::GetPriority() const
 	return CurrentImportPriority;
 }
 
-//////////////////////////////////////////////
-// IVP5U Develop Temp Define
-//////////////////////////////////////////////
-#define DEBUG_MMD_PLUGIN_SKELETON (1)
-//////////////////////////////////////////////
-
 bool UPmxFactory::FImportPmxFromFile(const FString& file)
 {
 	if (!FPaths::FileExists(file))
@@ -200,26 +194,10 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 	{
 		// Warn->BeginSlowTask(NSLOCTEXT("PmxFactory", "BeginImportingPmxMeshTask", "Importing Pmx mesh"), true);
 
-		// For animation and static mesh we assume there is at lease one interesting node by default
-		int32 InterestingNodeCount = 1;
-
-		if (importAssetTypeMMD == E_MMD_TO_UE5_SKELETON)
-		{
-#ifdef DEBUG_MMD_PLUGIN_SKELETON
-
-			InterestingNodeCount = 1; // test ? not Anime?
-
-#endif
-		}
-		else if (importAssetTypeMMD == E_MMD_TO_UE5_STATICMESH)
-		{
-		}
-
 		UFactory::CurrentFilename = file;
 		FString Filename(UFactory::CurrentFilename);
 
 		UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("PMX Import: %s"), *Filename);
-		if (InterestingNodeCount > 0)
 		{
 			int32 NodeIndex = 0;
 
@@ -228,7 +206,6 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 
 			if (importAssetTypeMMD == E_MMD_TO_UE5_SKELETON) // skeletal mesh
 			{
-#ifdef DEBUG_MMD_PLUGIN_SKELETON
 				int32 TotalNumNodes = 0;
 
 				// for (int32 i = 0; i < SkelMeshArray.Num(); i++)
@@ -283,18 +260,6 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 				{
 					AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoMeshFoundOnRoot", "Could not find any valid mesh on the root hierarchy. If you have mesh in the sub hierarchy, please enable option of [Import Meshes In Bone Hierarchy] when import.")));
 				}
-#endif
-			}
-		}
-		else
-		{
-			if (importAssetTypeMMD == E_MMD_TO_UE5_SKELETON)
-			{
-				AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_InvalidBone", "Failed to find any bone hierarchy. Try disabling the \"Import As Skeletal\" option to import as a rigid mesh. ")));
-			}
-			else
-			{
-				AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_InvalidNode", "Could not find any node.")));
 			}
 		}
 	}
@@ -418,34 +383,14 @@ UObject* UPmxFactory::FactoryCreateBinary(
 	{
 		Warn->BeginSlowTask(NSLOCTEXT("PmxFactory", "BeginImportingPmxMeshTask", "Importing Pmx mesh"), true);
 		{
-			// For animation and static mesh we assume there is at lease one interesting node by default
-			int32 InterestingNodeCount = 1;
-
-			if (importAssetTypeMMD == E_MMD_TO_UE5_SKELETON)
-			{
-#ifdef DEBUG_MMD_PLUGIN_SKELETON
-
-				InterestingNodeCount = 1; // test ? not Anime?
-
-#endif
-			}
-			else if (importAssetTypeMMD == E_MMD_TO_UE5_STATICMESH)
-			{
-			}
-
 			const FString Filename(UFactory::CurrentFilename);
-			if (/*RootNodeToImport &&*/ InterestingNodeCount > 0)
 			{
 				int32 NodeIndex = 0;
 
 				int32 ImportedMeshCount = 0;
 				UStaticMesh* NewStaticMesh = nullptr;
-				if (importAssetTypeMMD == E_MMD_TO_UE5_STATICMESH) // static mesh
+				if (importAssetTypeMMD == E_MMD_TO_UE5_SKELETON) // skeletal mesh
 				{
-				}
-				else if (importAssetTypeMMD == E_MMD_TO_UE5_SKELETON) // skeletal mesh
-				{
-#ifdef DEBUG_MMD_PLUGIN_SKELETON
 					int32 TotalNumNodes = 0;
 					// for (int32 i = 0; i < SkelMeshArray.Num(); i++)
 					for (int32 i = 0; i < 1 /*SkelMeshArray.Num()*/; i++)
@@ -502,18 +447,6 @@ UObject* UPmxFactory::FactoryCreateBinary(
 					{
 						AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoMeshFoundOnRoot", "Could not find any valid mesh on the root hierarchy. If you have mesh in the sub hierarchy, please enable option of [Import Meshes In Bone Hierarchy] when import.")));
 					}
-#endif
-				}
-			}
-			else
-			{
-				if (importAssetTypeMMD == E_MMD_TO_UE5_SKELETON)
-				{
-					AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_InvalidBone", "Failed to find any bone hierarchy. Try disabling the \"Import As Skeletal\" option to import as a rigid mesh. ")));
-				}
-				else
-				{
-					AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_InvalidNode", "Could not find any node.")));
 				}
 			}
 		}
