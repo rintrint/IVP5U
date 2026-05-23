@@ -343,15 +343,6 @@ struct PMXImportOptions
 	FVector ImportTranslation = FVector::ZeroVector;
 	FRotator ImportRotation = FRotator::ZeroRotator;
 	float ImportUniformScale = 1.0f;
-	// Static Mesh options
-	bool bCombineToSingle = false;
-	EVertexColorImportOptionMMD::Type VertexColorImportOption = EVertexColorImportOptionMMD::Replace;
-	FColor VertexOverrideColor = FColor::White;
-	bool bRemoveDegenerates = false;
-	bool bGenerateLightmapUVs = false;
-	bool bOneConvexHullPerUCX = false;
-	bool bAutoGenerateCollision = false;
-	FName StaticMeshLODGroup = NAME_None;
 	// Skeletal Mesh options
 	bool bImportAnimations = false;
 	bool bUpdateSkeletonReferencePose = false;
