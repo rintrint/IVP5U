@@ -737,21 +737,21 @@ UMaterialInterface* UPmxMaterialImport::DuplicateBaseMaterial(
 
 	FString DupAssetBaseName;
 
-	if (EDuplicateBaseMatTypeIndex::E_DupBaseMat_Typ_Normal == targetMatIndex)
+	if (EDuplicateBaseMatTypeIndex::E_DupBaseMat_Typ_Lit == targetMatIndex)
 	{
-		DupAssetBaseName = D_IVP5U_MMDBaseMat_Path_Normal;
+		DupAssetBaseName = D_IVP5U_MMD_Base_Path_Lit;
 	}
-	else if (EDuplicateBaseMatTypeIndex::E_DupBaseMat_Typ_Luminous == targetMatIndex)
+	else if (EDuplicateBaseMatTypeIndex::E_DupBaseMat_Typ_Lit_AutoLuminous == targetMatIndex)
 	{
-		DupAssetBaseName = D_IVP5U_MMDBaseMat_Path_Luminou;
+		DupAssetBaseName = D_IVP5U_MMD_Base_Path_Lit_AutoLuminous;
 	}
-	else if (EDuplicateBaseMatTypeIndex::E_DupBaseMat_Typ_Unlit_Normal == targetMatIndex)
+	else if (EDuplicateBaseMatTypeIndex::E_DupBaseMat_Typ_UnLit == targetMatIndex)
 	{
-		DupAssetBaseName = D_IVP5U_MMDBaseMat_Path_Unlit_Normal;
+		DupAssetBaseName = D_IVP5U_MMD_Base_Path_UnLit;
 	}
-	else if (EDuplicateBaseMatTypeIndex::E_DupBaseMat_Typ_Unlit_Luminous == targetMatIndex)
+	else if (EDuplicateBaseMatTypeIndex::E_DupBaseMat_Typ_UnLit_AutoLuminous == targetMatIndex)
 	{
-		DupAssetBaseName = D_IVP5U_MMDBaseMat_Path_Unlit_Luminou;
+		DupAssetBaseName = D_IVP5U_MMD_Base_Path_UnLit_AutoLuminous;
 	}
 	else
 	{
@@ -780,7 +780,7 @@ UMaterialInterface* UPmxMaterialImport::DuplicateBaseMaterial(
 	FString BaseMatSimpleName;
 	{
 		BaseMatSimpleName = BaseMatOriginal->GetName().Replace(
-			TEXT("M_MMD_MatBase_"), TEXT(""), ESearchCase::CaseSensitive);
+			TEXT("M_MMD_Base_"), TEXT(""), ESearchCase::CaseSensitive);
 		FString BaseMatName = FString::Printf(TEXT("M_%s_Base_%s"), *ParentObjName, *BaseMatSimpleName);
 
 		// The material could already exist in the project
@@ -924,7 +924,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Masked(
 {
 	UMaterialInterface* UnrealMaterial = nullptr;
 
-	UMaterialInterface* ParentMaterial = this->DuplicateBaseMaterial(ParentObjName, E_DupBaseMat_Typ_Normal);
+	UMaterialInterface* ParentMaterial = this->DuplicateBaseMaterial(ParentObjName, E_DupBaseMat_Typ_Lit);
 	if (nullptr == ParentMaterial)
 	{
 		UE_LOG(LogCategoryPMXMaterialImport, Error, TEXT("[%s]:Parent Material nullptr:Path[%s]"),
@@ -968,7 +968,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Masked(
 
 			// ColorTex
 			FStaticSwitchParameter Param;
-			Param.ParameterInfo.Name = FName(D_IVP5U_MatInst_Name_isTextureEnable);
+			Param.ParameterInfo.Name = FName(D_IVP5U_MatInst_Name_isTextureEnabled);
 			Param.Value = true;
 			Param.bOverride = true;
 
@@ -992,15 +992,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Masked(
 				FName(TEXT(D_IVP5U_MatInst_Name_Toon)),
 				ColorTex);
 
-			// ColorTex有効
-			FStaticSwitchParameter Param;
-			Param.ParameterInfo.Name = FName(D_IVP5U_MatInst_Name_isToonEnable);
-			Param.Value = true;
-			Param.bOverride = true;
-
-			StaticParams.StaticSwitchParameters.Add(Param); // DestSeq->MarkRawDataAsModified();
-
-			UE_LOG(LogCategoryPMXMaterialImport, Log, TEXT("[%s]:Toon Texture mode enable "), *(FString(__FUNCTION__)));
+			UE_LOG(LogCategoryPMXMaterialImport, Log, TEXT("[%s]:Toon Texture set"), *(FString(__FUNCTION__)));
 		}
 	}
 
@@ -1053,7 +1045,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Masked_Unlit(
 {
 	UMaterialInterface* UnrealMaterial = nullptr;
 
-	UMaterialInterface* ParentMaterial = this->DuplicateBaseMaterial(ParentObjName, E_DupBaseMat_Typ_Unlit_Normal);
+	UMaterialInterface* ParentMaterial = this->DuplicateBaseMaterial(ParentObjName, E_DupBaseMat_Typ_UnLit);
 	if (nullptr == ParentMaterial)
 	{
 		UE_LOG(LogCategoryPMXMaterialImport, Error, TEXT("[%s]:Parent Material nullptr:Path[%s]"),
@@ -1092,7 +1084,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Masked_Unlit(
 
 		// ColorTex有效时，在StaticSwitch上设为ON
 		FStaticSwitchParameter Param;
-		Param.ParameterInfo.Name = FName(D_IVP5U_MatInst_Name_isTextureEnable);
+		Param.ParameterInfo.Name = FName(D_IVP5U_MatInst_Name_isTextureEnabled);
 		Param.Value = true;
 		Param.bOverride = true;
 
@@ -1150,7 +1142,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Luminous(
 {
 	UMaterialInterface* UnrealMaterial = nullptr;
 
-	UMaterialInterface* ParentMaterial = this->DuplicateBaseMaterial(ParentObjName, E_DupBaseMat_Typ_Luminous);
+	UMaterialInterface* ParentMaterial = this->DuplicateBaseMaterial(ParentObjName, E_DupBaseMat_Typ_Lit_AutoLuminous);
 	if (nullptr == ParentMaterial)
 	{
 		UE_LOG(LogCategoryPMXMaterialImport, Error, TEXT("[%s]:Parent Material nullptr:Path[%s]"),
@@ -1187,7 +1179,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Luminous(
 
 		// ColorTex
 		FStaticSwitchParameter Param;
-		Param.ParameterInfo.Name = FName(D_IVP5U_MatInst_Name_isTextureEnable);
+		Param.ParameterInfo.Name = FName(D_IVP5U_MatInst_Name_isTextureEnabled);
 		Param.Value = true;
 		Param.bOverride = true;
 
@@ -1257,7 +1249,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Luminous_Unlit(
 {
 	UMaterialInterface* UnrealMaterial = nullptr;
 
-	UMaterialInterface* ParentMaterial = this->DuplicateBaseMaterial(ParentObjName, E_DupBaseMat_Typ_Unlit_Luminous);
+	UMaterialInterface* ParentMaterial = this->DuplicateBaseMaterial(ParentObjName, E_DupBaseMat_Typ_UnLit_AutoLuminous);
 	if (nullptr == ParentMaterial)
 	{
 		UE_LOG(LogCategoryPMXMaterialImport, Error, TEXT("[%s]:Parent Material nullptr:Path[%s]"),
@@ -1294,7 +1286,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Luminous_Unlit(
 
 		// ColorTex有効
 		FStaticSwitchParameter Param;
-		Param.ParameterInfo.Name = FName(D_IVP5U_MatInst_Name_isTextureEnable);
+		Param.ParameterInfo.Name = FName(D_IVP5U_MatInst_Name_isTextureEnabled);
 		Param.Value = true;
 		Param.bOverride = true;
 

@@ -325,7 +325,7 @@ bool UPmxFactory::FillSkelMeshImporterFromPmx(
 	for (int k = 0; k < PmxMeshInfo->materialList.Num(); ++k)
 	{
 		pmxMaterialImportHelper.CreateUnrealMaterial(
-			PmxMeshInfo->modelNameJP,
+			FPaths::GetBaseFilename(GetCurrentFilename()),
 			PmxMeshInfo->materialList[k],
 			ImportUI->bCreateMaterialInstanceMode,
 			ImportUI->bUnlitMaterials,

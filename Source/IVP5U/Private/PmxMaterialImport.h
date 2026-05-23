@@ -11,14 +11,10 @@ DECLARE_LOG_CATEGORY_EXTERN(LogCategoryPMXMaterialImport, Log, All)
 /** 复制源材质索引*/
 enum EDuplicateBaseMatTypeIndex
 {
-	/** Select Static Mesh if you'd like to import static mesh. */
-	E_DupBaseMat_Typ_Normal = 0,
-	/** Select Skeletal Mesh if you'd like to import skeletal mesh. */
-	E_DupBaseMat_Typ_Luminous,
-	/** Select Animation if you'd like to import only animation. */
-	E_DupBaseMat_Typ_Unlit_Normal,
-	/** Select Animation if you'd like to import only animation. */
-	E_DupBaseMat_Typ_Unlit_Luminous,
+	E_DupBaseMat_Typ_Lit = 0,
+	E_DupBaseMat_Typ_Lit_AutoLuminous,
+	E_DupBaseMat_Typ_UnLit,
+	E_DupBaseMat_Typ_UnLit_AutoLuminous,
 	E_DupBaseMat_Typ_Max,
 };
 
@@ -28,22 +24,20 @@ class UPmxMaterialImport
 	 *复制导入模型时生成的材质的资源路径
 	 *※将来如果能拥有PJ固有的设定路径的话
 	 */
-#define D_IVP5U_MMDBaseMat_Path_Normal "/IVP5U/Material/M_MMD_Toon.M_MMD_Toon"
-#define D_IVP5U_MMDBaseMat_Path_Luminou "/IVP5U/Material/M_MMD_MatBase_Luminous.M_MMD_MatBase_Luminous"
-#define D_IVP5U_MMDBaseMat_Path_Unlit_Normal "/IVP5U/Material/M_MMD_MatBase_UnLit.M_MMD_MatBase_UnLit"
-#define D_IVP5U_MMDBaseMat_Path_Unlit_Luminou "/IVP5U/Material/M_MMD_MatBase_UnLit_Luminus.M_MMD_MatBase_UnLit_Luminus"
+#define D_IVP5U_MMD_Base_Path_Lit "/IVP5U/Material/M_MMD_Base_Lit.M_MMD_Base_Lit"
+#define D_IVP5U_MMD_Base_Path_Lit_AutoLuminous "/IVP5U/Material/M_MMD_Base_Lit_AutoLuminous.M_MMD_Base_Lit_AutoLuminous"
+#define D_IVP5U_MMD_Base_Path_UnLit "/IVP5U/Material/M_MMD_Base_UnLit.M_MMD_Base_UnLit"
+#define D_IVP5U_MMD_Base_Path_UnLit_AutoLuminous "/IVP5U/Material/M_MMD_Base_UnLit_AutoLuminous.M_MMD_Base_UnLit_AutoLuminous"
 
 	/*
 	 * Material Inst用Parameter Name
 	 */
 	/* Texture Base */
 #define D_IVP5U_MatInst_Name_BaseTexture "TextureBase"
-	/* is Texture Enable Flag */
-#define D_IVP5U_MatInst_Name_isTextureEnable "isTextureEnable"
+	/* is Texture Enabled Flag */
+#define D_IVP5U_MatInst_Name_isTextureEnabled "isTextureEnabled"
 	/* Texture Base */
 #define D_IVP5U_MatInst_Name_Toon "TextureToon"
-	/* is Texture Enable Flag */
-#define D_IVP5U_MatInst_Name_isToonEnable "isToonEnable"
 
 	/* DiffuseColor*/
 #define D_IVP5U_MatInst_Name_DiffuseColor "DiffuseColor"
@@ -51,8 +45,8 @@ class UPmxMaterialImport
 #define D_IVP5U_MatInst_Name_SpecularPower "SpecularPower"
 	/* AmbientColor */
 #define D_IVP5U_MatInst_Name_AmbientColor "AmbientColor"
-	/* isTimeEmmisveEnable */
-#define D_IVP5U_MatInst_Name_isTimeEmmisveEnable "isTimeEmmisveEnable"
+	/* isTimeEmissiveEnabled */
+#define D_IVP5U_MatInst_Name_isTimeEmissiveEnabled "isTimeEmissiveEnabled"
 
 	/* Luminous Specular Power th*/
 #define D_IVP5U_Param_SpecularPower_Thd 110.0f
