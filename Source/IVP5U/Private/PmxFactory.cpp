@@ -199,57 +199,51 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 		UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("PMX Import: %s"), *Filename);
 		{
 			int32 NodeIndex = 0;
-
 			int32 ImportedMeshCount = 0;
 			UStaticMesh* NewStaticMesh = nullptr;
-
 			int32 TotalNumNodes = 0;
+			int32 LODIndex = 0;
 
-			for (int32 i = 0; i < 1; i++)
+			// for MMD?
+			int32 MaxLODLevel = 1;
+			FSkeletalMeshImportData smid;
+			USkeletalMesh* NewMesh = nullptr;
+			if (LODIndex == 0)
 			{
-				int32 LODIndex = 0;
-
-				// for MMD?
-				int32 MaxLODLevel = 1;
-				FSkeletalMeshImportData smid;
-				USkeletalMesh* NewMesh = nullptr;
-				if (LODIndex == 0)
-				{
-					NewMesh = ImportSkeletalMesh(
-						InParent,
-						&pmxMeshInfoPtr,
-						OutputName,
-						Name,
-						RF_Public | RF_Standalone | RF_MarkAsNative | RF_Transactional,
-						FPaths::GetBaseFilename(Filename),
-						&smid);
-					NewObject = NewMesh;
-				}
-
-				// add self
-				if (NewObject)
-				{
-					// MMD Extend asset
-					CreateMMDExtendFromMMDModel(
-						InParent,
-						Cast<USkeletalMesh>(NewObject),
-						&pmxMeshInfoPtr,
-						Name);
-				}
-
-				// end phese
-				if (NewObject)
-				{
-					TotalNumNodes++;
-					NodeIndex++;
-					FFormatNamedArguments Args;
-					Args.Add(TEXT("NodeIndex"), NodeIndex);
-					Args.Add(TEXT("ArrayLength"), 1);
-					GWarn->StatusUpdate(NodeIndex, 1, FText::Format(NSLOCTEXT("UnrealEd", "Importingf", "Importing ({NodeIndex} of {ArrayLength})"), Args));
-				}
-
-				// MarkPackageDirty();
+				NewMesh = ImportSkeletalMesh(
+					InParent,
+					&pmxMeshInfoPtr,
+					OutputName,
+					Name,
+					RF_Public | RF_Standalone | RF_MarkAsNative | RF_Transactional,
+					FPaths::GetBaseFilename(Filename),
+					&smid);
+				NewObject = NewMesh;
 			}
+
+			// add self
+			if (NewObject)
+			{
+				// MMD Extend asset
+				CreateMMDExtendFromMMDModel(
+					InParent,
+					Cast<USkeletalMesh>(NewObject),
+					&pmxMeshInfoPtr,
+					Name);
+			}
+
+			// end phese
+			if (NewObject)
+			{
+				TotalNumNodes++;
+				NodeIndex++;
+				FFormatNamedArguments Args;
+				Args.Add(TEXT("NodeIndex"), NodeIndex);
+				Args.Add(TEXT("ArrayLength"), 1);
+				GWarn->StatusUpdate(NodeIndex, 1, FText::Format(NSLOCTEXT("UnrealEd", "Importingf", "Importing ({NodeIndex} of {ArrayLength})"), Args));
+			}
+
+			// MarkPackageDirty();
 
 			// if total nodes we found is 0, we didn't find anything.
 			if (TotalNumNodes == 0)
@@ -378,55 +372,51 @@ UObject* UPmxFactory::FactoryCreateBinary(
 			const FString Filename(UFactory::CurrentFilename);
 			{
 				int32 NodeIndex = 0;
-
 				int32 ImportedMeshCount = 0;
 				UStaticMesh* NewStaticMesh = nullptr;
 				int32 TotalNumNodes = 0;
-				for (int32 i = 0; i < 1; i++)
+				int32 LODIndex = 0;
+
+				// for MMD?
+				int32 MaxLODLevel = 1;
+				FSkeletalMeshImportData smid;
+				USkeletalMesh* NewMesh = nullptr;
+				if (LODIndex == 0)
 				{
-					int32 LODIndex = 0;
+					UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("PMX Import: %s"), *OutputName.ToString());
 
-					// for MMD?
-					int32 MaxLODLevel = 1;
-					FSkeletalMeshImportData smid;
-					USkeletalMesh* NewMesh = nullptr;
-					if (LODIndex == 0)
-					{
-						UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("PMX Import: %s"), *OutputName.ToString());
+					NewMesh = ImportSkeletalMesh(
+						InParent,
+						&pmxMeshInfoPtr,
+						OutputName,
+						Name,
+						Flags,
+						// ImportUI->SkeletalMeshImportData,
+						FPaths::GetBaseFilename(Filename),
+						&smid);
+					NewObject = NewMesh;
+				}
 
-						NewMesh = ImportSkeletalMesh(
-							InParent,
-							&pmxMeshInfoPtr,
-							OutputName,
-							Name,
-							Flags,
-							// ImportUI->SkeletalMeshImportData,
-							FPaths::GetBaseFilename(Filename),
-							&smid);
-						NewObject = NewMesh;
-					}
+				// add self
+				if (NewObject)
+				{
+					// MMD Extend asset
+					CreateMMDExtendFromMMDModel(
+						InParent,
+						Cast<USkeletalMesh>(NewObject),
+						&pmxMeshInfoPtr,
+						Name);
+				}
 
-					// add self
-					if (NewObject)
-					{
-						// MMD Extend asset
-						CreateMMDExtendFromMMDModel(
-							InParent,
-							Cast<USkeletalMesh>(NewObject),
-							&pmxMeshInfoPtr,
-							Name);
-					}
-
-					// end phese
-					if (NewObject)
-					{
-						TotalNumNodes++;
-						NodeIndex++;
-						FFormatNamedArguments Args;
-						Args.Add(TEXT("NodeIndex"), NodeIndex);
-						Args.Add(TEXT("ArrayLength"), 1);
-						GWarn->StatusUpdate(NodeIndex, 1, FText::Format(NSLOCTEXT("UnrealEd", "Importingf", "Importing ({NodeIndex} of {ArrayLength})"), Args));
-					}
+				// end phese
+				if (NewObject)
+				{
+					TotalNumNodes++;
+					NodeIndex++;
+					FFormatNamedArguments Args;
+					Args.Add(TEXT("NodeIndex"), NodeIndex);
+					Args.Add(TEXT("ArrayLength"), 1);
+					GWarn->StatusUpdate(NodeIndex, 1, FText::Format(NSLOCTEXT("UnrealEd", "Importingf", "Importing ({NodeIndex} of {ArrayLength})"), Args));
 				}
 
 				// if total nodes we found is 0, we didn't find anything.
