@@ -11,7 +11,10 @@
 UCLASS(HideCategories = Object, MinimalAPI)
 class UMMDExtendFactory : public UFactory
 {
-	GENERATED_UCLASS_BODY()
+	GENERATED_BODY()
+
+public:
+	UMMDExtendFactory(const FObjectInitializer& ObjectInitializer);
 
 	virtual bool DoesSupportClass(UClass* Class) override;
 	virtual UClass* ResolveSupportedClass() override;

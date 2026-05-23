@@ -69,7 +69,6 @@ void SPmxOptionWindow::Construct(const FArguments& InArgs)
 							SAssignNew(ImportButton, SButton)
 							.HAlign(HAlign_Center)
 							.Text(LOCTEXT("MMDOptionWindow_Import", "Import"))
-							.IsEnabled(this, &SPmxOptionWindow::CanImport)
 							.OnClicked(this, &SPmxOptionWindow::OnImport)
 						]
 					+ SUniformGridPanel::Slot(2, 0)
@@ -95,9 +94,5 @@ void SPmxOptionWindow::Construct(const FArguments& InArgs)
 	DetailsView->SetObject(ImportUI);
 }
 
-bool SPmxOptionWindow::CanImport()  const
-{
-	return true;
-}
 
 #undef LOCTEXT_NAMESPACE

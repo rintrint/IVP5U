@@ -75,7 +75,6 @@ void SVmdOptionWindow::Construct(const FArguments& InArgs)
 							.HAlign(HAlign_Center)
 							.Text(LOCTEXT("MMDOptionWindow_ImportAll", "Import All"))
 							.ToolTipText(LOCTEXT("MMDOptionWindow_ImportAll_ToolTip", "Import all files with these same settings"))
-							.IsEnabled(this, &SVmdOptionWindow::CanImport)
 							.OnClicked(this, &SVmdOptionWindow::OnImportAll)
 						]
 					+ SUniformGridPanel::Slot(1, 0)
@@ -83,7 +82,6 @@ void SVmdOptionWindow::Construct(const FArguments& InArgs)
 							SAssignNew(ImportButton, SButton)
 							.HAlign(HAlign_Center)
 							.Text(LOCTEXT("MMDOptionWindow_Import", "Import"))
-							.IsEnabled(this, &SVmdOptionWindow::CanImport)
 							.OnClicked(this, &SVmdOptionWindow::OnImport)
 						]
 					+ SUniformGridPanel::Slot(2, 0)
@@ -109,9 +107,5 @@ void SVmdOptionWindow::Construct(const FArguments& InArgs)
 	DetailsView->SetObject(ImportUI);
 }
 
-bool SVmdOptionWindow::CanImport()  const
-{
-	return true;
-}
 
 #undef LOCTEXT_NAMESPACE

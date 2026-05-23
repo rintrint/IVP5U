@@ -78,9 +78,6 @@ public:
 	}
 
 private:
-	bool CanImport() const;
-
-private:
 	UPmxImportUI* ImportUI;
 	TWeakPtr<SWindow> WidgetWindow;
 	TSharedPtr<SButton> ImportButton;

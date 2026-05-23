@@ -9,7 +9,7 @@
 UCLASS(config = Engine, defaultconfig)
 class IVP5U_API UIVP5USettings : public UObject
 {
-	GENERATED_UCLASS_BODY()
+	GENERATED_BODY()
 
 public:
 	/** priority. Default plugins priority=100 */

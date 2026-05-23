@@ -94,7 +94,7 @@ struct FMMD_IKInfo
 UCLASS()
 class UMMDExtendAsset : public UObject
 {
-	GENERATED_UCLASS_BODY()
+	GENERATED_BODY()
 
 public:
 	// mmd target model name
