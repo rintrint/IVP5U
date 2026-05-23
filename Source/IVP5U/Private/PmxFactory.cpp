@@ -143,7 +143,6 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 	FPmxImporter* PmxImporter = FPmxImporter::GetInstance();
 	// For multiple files, use the same settings
 	bDetectImportTypeOnImport = false;
-	importAssetTypeMMD = E_MMD_TO_UE5_SKELETON;
 	bool bIsPmxFormat = FPaths::GetExtension(file).Equals(TEXT("pmx"), ESearchCase::IgnoreCase);
 	// Load MMD Model From binary File
 	MMD4UE5::PmxMeshInfo pmxMeshInfoPtr;
@@ -204,62 +203,59 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 			int32 ImportedMeshCount = 0;
 			UStaticMesh* NewStaticMesh = nullptr;
 
-			if (importAssetTypeMMD == E_MMD_TO_UE5_SKELETON) // skeletal mesh
+			int32 TotalNumNodes = 0;
+
+			// for (int32 i = 0; i < SkelMeshArray.Num(); i++)
+			for (int32 i = 0; i < 1; i++)
 			{
-				int32 TotalNumNodes = 0;
+				int32 LODIndex = 0;
 
-				// for (int32 i = 0; i < SkelMeshArray.Num(); i++)
-				for (int32 i = 0; i < 1; i++)
+				// for MMD?
+				int32 MaxLODLevel = 1;
+				FSkeletalMeshImportData smid;
+				USkeletalMesh* NewMesh = nullptr;
+				if (LODIndex == 0)
 				{
-					int32 LODIndex = 0;
-
-					// for MMD?
-					int32 MaxLODLevel = 1;
-					FSkeletalMeshImportData smid;
-					USkeletalMesh* NewMesh = nullptr;
-					if (LODIndex == 0)
-					{
-						NewMesh = ImportSkeletalMesh(
-							InParent,
-							&pmxMeshInfoPtr,
-							OutputName,
-							Name,
-							RF_Public | RF_Standalone | RF_MarkAsNative | RF_Transactional,
-							FPaths::GetBaseFilename(Filename),
-							&smid);
-						NewObject = NewMesh;
-					}
-
-					// add self
-					if (NewObject)
-					{
-						// MMD Extend asset
-						CreateMMDExtendFromMMDModel(
-							InParent,
-							Cast<USkeletalMesh>(NewObject),
-							&pmxMeshInfoPtr,
-							Name);
-					}
-
-					// end phese
-					if (NewObject)
-					{
-						TotalNumNodes++;
-						NodeIndex++;
-						FFormatNamedArguments Args;
-						Args.Add(TEXT("NodeIndex"), NodeIndex);
-						Args.Add(TEXT("ArrayLength"), 1); // SkelMeshArray.Num());
-						GWarn->StatusUpdate(NodeIndex, 1, FText::Format(NSLOCTEXT("UnrealEd", "Importingf", "Importing ({NodeIndex} of {ArrayLength})"), Args));
-					}
-
-					// MarkPackageDirty();
+					NewMesh = ImportSkeletalMesh(
+						InParent,
+						&pmxMeshInfoPtr,
+						OutputName,
+						Name,
+						RF_Public | RF_Standalone | RF_MarkAsNative | RF_Transactional,
+						FPaths::GetBaseFilename(Filename),
+						&smid);
+					NewObject = NewMesh;
 				}
 
-				// if total nodes we found is 0, we didn't find anything.
-				if (TotalNumNodes == 0)
+				// add self
+				if (NewObject)
 				{
-					AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoMeshFoundOnRoot", "Could not find any valid mesh on the root hierarchy. If you have mesh in the sub hierarchy, please enable option of [Import Meshes In Bone Hierarchy] when import.")));
+					// MMD Extend asset
+					CreateMMDExtendFromMMDModel(
+						InParent,
+						Cast<USkeletalMesh>(NewObject),
+						&pmxMeshInfoPtr,
+						Name);
 				}
+
+				// end phese
+				if (NewObject)
+				{
+					TotalNumNodes++;
+					NodeIndex++;
+					FFormatNamedArguments Args;
+					Args.Add(TEXT("NodeIndex"), NodeIndex);
+					Args.Add(TEXT("ArrayLength"), 1); // SkelMeshArray.Num());
+					GWarn->StatusUpdate(NodeIndex, 1, FText::Format(NSLOCTEXT("UnrealEd", "Importingf", "Importing ({NodeIndex} of {ArrayLength})"), Args));
+				}
+
+				// MarkPackageDirty();
+			}
+
+			// if total nodes we found is 0, we didn't find anything.
+			if (TotalNumNodes == 0)
+			{
+				AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoMeshFoundOnRoot", "Could not find any valid mesh on the root hierarchy. If you have mesh in the sub hierarchy, please enable option of [Import Meshes In Bone Hierarchy] when import.")));
 			}
 		}
 	}
@@ -293,9 +289,6 @@ UObject* UPmxFactory::FactoryCreateBinary(
 {
 	FName OutputName = "";
 	OutputName = FName(*FString::Printf(TEXT("SKM_%s"), *Name.ToString()));
-
-	// MMD Default
-	importAssetTypeMMD = E_MMD_TO_UE5_SKELETON;
 
 	if (bOperationCanceled)
 	{
@@ -389,64 +382,61 @@ UObject* UPmxFactory::FactoryCreateBinary(
 
 				int32 ImportedMeshCount = 0;
 				UStaticMesh* NewStaticMesh = nullptr;
-				if (importAssetTypeMMD == E_MMD_TO_UE5_SKELETON) // skeletal mesh
+				int32 TotalNumNodes = 0;
+				// for (int32 i = 0; i < SkelMeshArray.Num(); i++)
+				for (int32 i = 0; i < 1 /*SkelMeshArray.Num()*/; i++)
 				{
-					int32 TotalNumNodes = 0;
-					// for (int32 i = 0; i < SkelMeshArray.Num(); i++)
-					for (int32 i = 0; i < 1 /*SkelMeshArray.Num()*/; i++)
+					int32 LODIndex = 0;
+
+					// for MMD?
+					int32 MaxLODLevel = 1;
+					FSkeletalMeshImportData smid;
+					USkeletalMesh* NewMesh = nullptr;
+					if (LODIndex == 0)
 					{
-						int32 LODIndex = 0;
+						// UEnum* CompileModeEnum = GetStaticEnum <EObjectFlags>();
 
-						// for MMD?
-						int32 MaxLODLevel = 1;
-						FSkeletalMeshImportData smid;
-						USkeletalMesh* NewMesh = nullptr;
-						if (LODIndex == 0)
-						{
-							// UEnum* CompileModeEnum = GetStaticEnum <EObjectFlags>();
+						UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("PMX Import: %s"), *OutputName.ToString());
 
-							UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("PMX Import: %s"), *OutputName.ToString());
-
-							NewMesh = ImportSkeletalMesh(
-								InParent,
-								&pmxMeshInfoPtr,
-								OutputName,
-								Name,
-								Flags,
-								// ImportUI->SkeletalMeshImportData,
-								FPaths::GetBaseFilename(Filename),
-								&smid);
-							NewObject = NewMesh;
-						}
-
-						// add self
-						if (NewObject)
-						{
-							// MMD Extend asset
-							CreateMMDExtendFromMMDModel(
-								InParent,
-								Cast<USkeletalMesh>(NewObject),
-								&pmxMeshInfoPtr,
-								Name);
-						}
-
-						// end phese
-						if (NewObject)
-						{
-							TotalNumNodes++;
-							NodeIndex++;
-							FFormatNamedArguments Args;
-							Args.Add(TEXT("NodeIndex"), NodeIndex);
-							Args.Add(TEXT("ArrayLength"), 1); // SkelMeshArray.Num());
-							GWarn->StatusUpdate(NodeIndex, 1 /*SkelMeshArray.Num()*/, FText::Format(NSLOCTEXT("UnrealEd", "Importingf", "Importing ({NodeIndex} of {ArrayLength})"), Args));
-						}
+						NewMesh = ImportSkeletalMesh(
+							InParent,
+							&pmxMeshInfoPtr,
+							OutputName,
+							Name,
+							Flags,
+							// ImportUI->SkeletalMeshImportData,
+							FPaths::GetBaseFilename(Filename),
+							&smid);
+						NewObject = NewMesh;
 					}
 
-					// if total nodes we found is 0, we didn't find anything.
-					if (TotalNumNodes == 0)
+					// add self
+					if (NewObject)
 					{
-						AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoMeshFoundOnRoot", "Could not find any valid mesh on the root hierarchy. If you have mesh in the sub hierarchy, please enable option of [Import Meshes In Bone Hierarchy] when import.")));
+						// MMD Extend asset
+						CreateMMDExtendFromMMDModel(
+							InParent,
+							Cast<USkeletalMesh>(NewObject),
+							&pmxMeshInfoPtr,
+							Name);
 					}
+
+					// end phese
+					if (NewObject)
+					{
+						TotalNumNodes++;
+						NodeIndex++;
+						FFormatNamedArguments Args;
+						Args.Add(TEXT("NodeIndex"), NodeIndex);
+						Args.Add(TEXT("ArrayLength"), 1); // SkelMeshArray.Num());
+						GWarn->StatusUpdate(NodeIndex, 1 /*SkelMeshArray.Num()*/, FText::Format(NSLOCTEXT("UnrealEd", "Importingf", "Importing ({NodeIndex} of {ArrayLength})"), Args));
+					}
+				}
+
+				// if total nodes we found is 0, we didn't find anything.
+				if (TotalNumNodes == 0)
+				{
+					AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoMeshFoundOnRoot", "Could not find any valid mesh on the root hierarchy. If you have mesh in the sub hierarchy, please enable option of [Import Meshes In Bone Hierarchy] when import.")));
 				}
 			}
 		}

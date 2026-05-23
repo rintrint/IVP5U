@@ -51,15 +51,6 @@ public:
 	virtual int32 GetPriority() const override;
 	// End of FReimportHandler interface
 
-	enum E_LOAD_ASSETS_TYPE_MMD
-	{
-		E_MMD_TO_UE5_UNKOWN,
-		E_MMD_TO_UE5_SKELETON,
-		E_MMD_TO_UE5_STATICMESH,
-		E_MMD_TO_UE5_ANIMATION
-	};
-	E_LOAD_ASSETS_TYPE_MMD importAssetTypeMMD;
-
 	USkeletalMesh* ImportSkeletalMesh(
 		UObject* InParent,
 		MMD4UE5::PmxMeshInfo* pmxMeshInfoPtr,
