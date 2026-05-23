@@ -38,10 +38,6 @@ class UPmxImportUI : public UObject
 	// UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = Miscellaneous, meta = (ToolTip = "Convert the scene from FBX coordinate system to UE5 coordinate system"))
 	uint32 bConvertScene : 1;
 
-	/** Whether to import the incoming FBX as a skeletal object */
-	// UPROPERTY(EditAnywhere, Category = Mesh, meta = (ImportType = "StaticMesh|SkeletalMesh"))
-	bool bImportAsSkeletal;
-
 	/** For static meshes, enabling this option will combine all meshes in the FBX into a single monolithic mesh in Unreal */
 	// UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = Mesh, meta = (ToolTip = "If enabled, combines all meshes into a single mesh", ImportType = "StaticMesh"))
 	uint32 bCombineMeshes : 1;
@@ -61,14 +57,6 @@ class UPmxImportUI : public UObject
 	/** True to import animations from the FBX File */
 	// UPROPERTY(EditAnywhere, config, Category = Animation, meta = (ImportType = "SkeletalMesh|Animation"))
 	uint32 bImportAnimations : 1;
-
-	/** Override for the name of the animation to import **/
-	// UPROPERTY(EditAnywhere, AdvancedDisplay, Category = Animation, meta = (editcondition = "bImportAnimations", ImportType = "SkeletalMesh"))
-	FString AnimationName;
-
-	/** Enables importing of 'rigid skeletalmesh' (unskinned, hierarchy-based animation) from this FBX file, no longer shown, used behind the scenes */
-	// UPROPERTY()
-	uint32 bImportRigidMesh : 1;
 
 	/** Enable this option to use default sample rate for the imported animation at 30 frames per second */
 	// UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = Animation, meta = (editcondition = "bImportAnimations", ToolTip = "If enabled, samples all animation curves to 30 FPS", ImportType = "SkeletalMesh|Animation"))
@@ -93,10 +81,6 @@ class UPmxImportUI : public UObject
 	/** Import data used when importing skeletal meshes */
 	// UPROPERTY(EditAnywhere, Instanced, Category = Mesh, meta = (ImportType = "SkeletalMesh"))
 	class UMMDSkeletalMeshImportData* SkeletalMeshImportData;
-
-	/** Type of asset to import from the FBX file */
-	// UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = Animation, meta = (editcondition = "bImportAnimations", ImportType = "SkeletalMesh|Animation"))
-	bool bPreserveLocalTransform;
 
 	// Begin UObject Interface
 	virtual bool CanEditChange(const FProperty* InProperty) const override;

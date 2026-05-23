@@ -93,8 +93,6 @@ PMXImportOptions* GetImportOptions(
 			ImportUI->AnimSequenceAsset = nullptr;
 		}
 
-		ImportUI->bImportAsSkeletal = ImportUI->MeshTypeToImport == PMXIT_SkeletalMesh;
-
 		TSharedPtr<SWindow> ParentWindow;
 
 		if (FModuleManager::Get().IsModuleLoaded("MainFrame"))

@@ -87,8 +87,6 @@ VMDImportOptions* GetVMDImportOptions(
 		}
 		ImportUI->ImportUniformScale = ImportOptions->ImportUniformScale;
 
-		// ImportUI->bImportAsSkeletal = ImportUI->MeshTypeToImport == VMDIT_Animation;
-
 		TSharedPtr<SWindow> ParentWindow;
 
 		if (FModuleManager::Get().IsModuleLoaded("MainFrame"))

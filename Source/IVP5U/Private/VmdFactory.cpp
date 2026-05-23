@@ -152,7 +152,6 @@ UObject* UVmdFactory::FactoryCreateBinary(
 		bool bIsPmxFormat = true;
 		// show Import Option Slate
 		bool bImportAll = false;
-		ImportUI->OriginalImportType = EVMDImportType::VMDIT_Animation;
 
 		// 显示导入选项对话框，等待用户操作
 		UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("显示导入选项对话框，等待用户操作"));

@@ -18,17 +18,9 @@ class UVmdImportUI : public UObject
 {
 	GENERATED_UCLASS_BODY()
 
-	/** The original detected type of this import */
-	// UPROPERTY()
-	TEnumAsByte<enum EVMDImportType> OriginalImportType;
-
 	/** Type of asset to import from the FBX file */
 	// UPROPERTY()
 	TEnumAsByte<enum EVMDImportType> MeshTypeToImport;
-
-	/** Use the string in "Name" field as full name of mesh. The option only works when the scene contains one mesh. */
-	// UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = Miscellaneous)
-	uint32 bOverrideFullName : 1;
 
 	/** Skeleton to use for imported asset. When importing a mesh, leaving this as "None" will create a new skeleton. When importing and animation this MUST be specified to import the asset. */
 	UPROPERTY(EditAnywhere, Category = Mesh)
