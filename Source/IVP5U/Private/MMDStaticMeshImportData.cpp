@@ -4,11 +4,6 @@
 #include "CoreMinimal.h"
 #include "Engine/StaticMesh.h"
 
-UMMDStaticMeshImportData::UMMDStaticMeshImportData(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
-{
-}
-
 UMMDStaticMeshImportData* UMMDStaticMeshImportData::GetImportDataForStaticMesh(UStaticMesh* StaticMesh, UMMDStaticMeshImportData* TemplateForCreation)
 {
 	check(StaticMesh);

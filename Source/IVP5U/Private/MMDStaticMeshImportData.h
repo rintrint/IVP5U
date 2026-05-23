@@ -13,7 +13,7 @@
 UCLASS(config = EditorUserSettings, AutoExpandCategories = (Options), MinimalAPI)
 class UMMDStaticMeshImportData : public UMMDMeshImportData
 {
-	GENERATED_UCLASS_BODY()
+	GENERATED_BODY()
 
 	/** Gets or creates MMD import data for the specified static mesh */
 	static UMMDStaticMeshImportData* GetImportDataForStaticMesh(UStaticMesh* StaticMesh, UMMDStaticMeshImportData* TemplateForCreation);
