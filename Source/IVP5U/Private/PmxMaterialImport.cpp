@@ -130,12 +130,10 @@ void UPmxMaterialImport::AssetsCreateTexture(
 					NewTexture->AddressY = TA_Clamp;
 					NewTexture->CompressionSettings = TC_Default;
 					NewTexture->LODGroup = TEXTUREGROUP_World;
-					// Test
 					NewTexture->SRGB = 1;
 				}
 
 				FAssetRegistryModule::AssetCreated(NewTexture);
-				// TexturePackage->SetDirtyFlag(true);
 
 				// Updating Texture & mark it as unsaved
 				NewTexture->AddToRoot();
@@ -144,7 +142,6 @@ void UPmxMaterialImport::AssetsCreateTexture(
 
 				ImportedTexture = NewTexture;
 
-				// TexturePackage->SetPackageFlags(PKG_FilterEditorOnly);
 				int w = NewTexture->GetSizeX();
 				int h = NewTexture->GetSizeY();
 
@@ -267,7 +264,6 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty(
 	int32 TextureCount = PmxMaterial.TextureIndex;
 	if (TextureCount >= 0 && TextureCount < textureAssetList.Num())
 	{
-		// for (int32 TextureIndex = 0; TextureIndex<TextureCount; ++TextureIndex)
 		{
 			// create an unreal texture asset
 			UTexture* UnrealTexture = textureAssetList[TextureCount];
@@ -281,8 +277,6 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty(
 
 				UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(MulExpression);
 
-				// UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(MulExpression);
-				// UnrealMaterial->BaseColor.Expression = MulExpression;
 				MulExpression->MaterialExpressionEditorX = -250;
 				MulExpression->MaterialExpressionEditorY = 0;
 				MulExpression->bHidePreviewWindow = 0;
@@ -301,11 +295,6 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty(
 				MulExpression_2->bHidePreviewWindow = 0;
 
 				MulExpression_2->Desc = TEXT("Textuer alpha * Specure Coloer -> OpacityMask");
-				// MulExpression->ConstA = 1.0f;
-				// MulExpression->ConstB = FresnelBaseReflectFraction_DEPRECATED;
-
-				// MulExpression->A.Connect(SpecularColor_DEPRECATED.OutputIndex, SpecularColor_DEPRECATED.Expression);
-				// SpecularColor_DEPRECATED.Connect(0, MulExpression);
 
 				// A
 				// and link it to the material
@@ -313,11 +302,8 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty(
 
 				UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(UnrealTextureExpression);
 
-				// MaterialInput.Expression = UnrealTextureExpression;
 				MulExpression->A.Expression = UnrealTextureExpression;
 				MulExpression->B.Connect(4, UnrealTextureExpression);
-				// MulExpression_2->B.Connect(4, UnrealTextureExpression);
-				// MulExpression->B.Expression = UnrealTextureExpression.Outputs[4];
 
 				UnrealMaterial->GetEditorOnlyData()->OpacityMask.Connect(4, UnrealTextureExpression);
 
@@ -328,14 +314,10 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty(
 				UnrealTextureExpression->SamplerSource = SSM_Wrap_WorldGroupSettings;
 				// For minus UV axis MMD(e.g. AnjeraBalz///)
 
-				// MulExpression->B.Connect(UnrealTextureExpression->Outputs[4].Expression);
-
 				// B
 				UMaterialExpressionVectorParameter* MyColorExpression = NewObject<UMaterialExpressionVectorParameter>(UnrealMaterial);
 				UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(MyColorExpression);
 
-				// UnrealMaterial->BaseColor.Expression = MyColorExpression;
-				// MulExpression->B.Expression = MyColorExpression;
 				MulExpression_2->A.Expression = MyColorExpression;
 
 				MyColorExpression->DefaultValue.R = PmxMaterial.Diffuse[0];
@@ -440,11 +422,6 @@ void UPmxMaterialImport::FixupMaterial(
 	}
 
 	UnrealMaterial->TwoSided = PmxMaterial.CullingOff;
-
-	// IF Translucent Opacu?
-	// UnrealMaterial->BlendMode = BLEND_Translucent;
-	// IF Addtion
-	// UnrealMaterial->BlendMode = BLEND_Additive;
 }
 
 void UPmxMaterialImport::CreateUnrealMaterial(
@@ -481,8 +458,6 @@ void UPmxMaterialImport::CreateUnrealMaterial(
 			}
 		}
 
-		// MaterialFullName = ObjectTools::SanitizeObjectName(MaterialFullName);
-
 		// Make sure we have a parent
 		if (!ensure(InParent))
 		{
@@ -500,7 +475,6 @@ void UPmxMaterialImport::CreateUnrealMaterial(
 			// do not override existing materials
 			if (FoundMaterial)
 			{
-				// ImportedMaterialData.AddImportedMaterial( PmxMaterial, *FoundMaterial );
 				OutMaterials.Add(FoundMaterial);
 				return;
 			}
@@ -626,7 +600,6 @@ void UPmxMaterialImport::CreateUnrealMaterial(
 
 			// 异常情况：生成失败
 			{
-				// OutMaterials.Add(UnrealMaterial);
 				UE_LOG(LogCategoryPMXMaterialImport, Error, TEXT("[%s]:Material MIC Null.Error[%s]:[%s]"),
 					*(FString(__FUNCTION__)), *ParentObjName, *MaterialFullName);
 				return;
@@ -650,7 +623,6 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty_ForMmdAutolu
 	int32 TextureCount = PmxMaterial.TextureIndex;
 	if (TextureCount >= 0 && TextureCount < textureAssetList.Num())
 	{
-		// for (int32 TextureIndex = 0; TextureIndex<TextureCount; ++TextureIndex)
 		if (PmxMaterial.SphereMode == 2) // auto luminus
 		{
 			// create an unreal texture asset
@@ -675,49 +647,34 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty_ForMmdAutolu
 				UMaterialExpressionMultiply* MulExpression_2 = NewObject<UMaterialExpressionMultiply>(UnrealMaterial);
 				UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(MulExpression_2);
 
-				// UnrealMaterial->OpacityMask.Expression = MulExpression_2;
 				MulExpression_2->MaterialExpressionEditorX = -250;
 				MulExpression_2->MaterialExpressionEditorY = 200;
 				MulExpression_2->bHidePreviewWindow = 0;
 
 				MulExpression_2->Desc = TEXT("Textuer alpha * Specure Coloer -> OpacityMask");
-				// MulExpression->ConstA = 1.0f;
-				// MulExpression->ConstB = FresnelBaseReflectFraction_DEPRECATED;
-
-				// MulExpression->A.Connect(SpecularColor_DEPRECATED.OutputIndex, SpecularColor_DEPRECATED.Expression);
-				// SpecularColor_DEPRECATED.Connect(0, MulExpression);
 
 				// Multipule
 				UMaterialExpressionMultiply* MulExpression_3 = NewObject<UMaterialExpressionMultiply>(UnrealMaterial);
 				UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(MulExpression_3);
 
-				// UnrealMaterial->EmissiveColor.Expression = MulExpression_3; //TES: lighting EmmisicveColor For AutoLuminous
 				MulExpression_3->MaterialExpressionEditorX = -250;
 				MulExpression_3->MaterialExpressionEditorY = 400;
 				MulExpression_3->bHidePreviewWindow = 0;
 				MulExpression_3->A.Expression = MulExpression_2;
 
 				MulExpression_3->Desc = TEXT("Textuer alpha * Specure Coloer -> OpacityMask");
-				// MulExpression->ConstA = 1.0f;
-				// MulExpression->ConstB = FresnelBaseReflectFraction_DEPRECATED;
-
-				// MulExpression->A.Connect(SpecularColor_DEPRECATED.OutputIndex, SpecularColor_DEPRECATED.Expression);
-				// SpecularColor_DEPRECATED.Connect(0, MulExpression);
 
 				// A
 				// and link it to the material
 				UMaterialExpressionTextureSample* UnrealTextureExpression = NewObject<UMaterialExpressionTextureSample>(UnrealMaterial);
 				UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(UnrealTextureExpression);
 
-				// MaterialInput.Expression = UnrealTextureExpression;
 				MulExpression->A.Expression = UnrealTextureExpression;
 				MulExpression->B.Connect(4, UnrealTextureExpression);
 				MulExpression_2->B.Connect(4, UnrealTextureExpression);
 
 				UnrealMaterial->GetEditorOnlyData()->OpacityMask.Connect(4, UnrealTextureExpression);
 
-				// TEST: Non Light EmmisciveColor For Easy AutoLuminous
-				// MulExpression->B.Expression = UnrealTextureExpression.Outputs[4];
 				UnrealTextureExpression->Texture = UnrealTexture;
 				UnrealTextureExpression->SamplerType = /*bSetupAsNormalMap ? SAMPLERTYPE_Normal :*/ SAMPLERTYPE_Color;
 				UnrealTextureExpression->MaterialExpressionEditorX = -500; // FMath::TruncToInt(Location.X);
@@ -725,14 +682,10 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty_ForMmdAutolu
 				UnrealTextureExpression->SamplerSource = SSM_Wrap_WorldGroupSettings;
 				// For minus UV axis MMD(e.g. AnjeraBalz///)
 
-				// MulExpression->B.Connect(UnrealTextureExpression->Outputs[4].Expression);
-
 				// B
 				UMaterialExpressionVectorParameter* MyColorExpression = NewObject<UMaterialExpressionVectorParameter>(UnrealMaterial);
 				UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(MyColorExpression);
 
-				// UnrealMaterial->BaseColor.Expression = MyColorExpression;
-				// MulExpression->B.Expression = MyColorExpression;
 				MulExpression_2->A.Expression = MyColorExpression;
 
 				MyColorExpression->DefaultValue.R = PmxMaterial.Diffuse[0];
@@ -748,8 +701,6 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty_ForMmdAutolu
 
 				UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(MyConstExpression);
 
-				// UnrealMaterial->BaseColor.Expression = MyColorExpression;
-				// MulExpression->B.Expression = MyColorExpression;
 				MulExpression_3->B.Expression = MyConstExpression;
 
 				MyConstExpression->R = PmxMaterial.SpecularPower - 100.0f;
@@ -869,7 +820,6 @@ UMaterialInterface* UPmxMaterialImport::DuplicateBaseMaterial(
 			UE_LOG(LogCategoryPMXMaterialImport, Error, TEXT("[%s]:Material can't Duplicate. Path[%s]"),
 				*(FString(__FUNCTION__)), *ObjectPath.ToString());
 			return nullptr;
-			// continue;
 		}
 	}
 
