@@ -22,16 +22,8 @@ enum EDuplicateBaseMatTypeIndex
 	E_DupBaseMat_Typ_Max,
 };
 
-// UCLASS()
 class UPmxMaterialImport
-//: public UFactory // public UFbxFactory
 {
-	// GENERATED_UCLASS_BODY()
-
-	// Begin UFactory Interface
-	// virtual bool DoesSupportClass(UClass * Class) override;
-	// virtual UClass* ResolveSupportedClass() override;
-
 	/*
 	 *复制导入模型时生成的材质的资源路径
 	 *※将来如果能拥有PJ固有的设定路径的话
