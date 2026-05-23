@@ -25,10 +25,6 @@ class UPmxImportUI : public UObject
 public:
 	UPmxImportUI(const FObjectInitializer& ObjectInitializer);
 
-	/** Type of asset to import from the FBX file */
-	// UPROPERTY()
-	TEnumAsByte<enum EPMXImportType> MeshTypeToImport;
-
 	/** Skeleton to use for imported asset. When importing a mesh, leaving this as "None" will create a new skeleton. When importing and animation this MUST be specified to import the asset. */
 	// UPROPERTY(EditAnywhere, Category = Mesh)
 	class USkeleton* Skeleton;

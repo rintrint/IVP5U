@@ -61,10 +61,6 @@ PMXImportOptions* GetImportOptions(
 		{
 			ImportUI->PhysicsAsset = nullptr;
 		}
-		if (bForceImportType)
-		{
-			ImportUI->MeshTypeToImport = ImportType;
-		}
 
 		// last select asset ref
 		if (ImportOptions->MmdExtendAsset)
