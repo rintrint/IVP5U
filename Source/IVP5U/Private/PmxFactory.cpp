@@ -149,7 +149,6 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 	const uint8* DataPtr = File_Result.GetData();
 	UObject* NewObject = nullptr;
 	FPmxImporter* PmxImporter = FPmxImporter::GetInstance();
-	EPMXImportType ForcedImportType = PMXIT_SkeletalMesh;
 	// For multiple files, use the same settings
 	bDetectImportTypeOnImport = false;
 	importAssetTypeMMD = E_MMD_TO_UE5_SKELETON;
@@ -192,9 +191,7 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 		false, // bShowImportDialog,
 		InParent->GetPathName(),
 		bOperationCanceled,
-		bImportAll,
-		bIsPmxFormat,
-		ForcedImportType);
+		bImportAll);
 	if (bImportAll)
 	{
 		// If the user chose to import all, we don't show the dialog again and use the same settings for each object until importing another set of files
@@ -351,8 +348,6 @@ UObject* UPmxFactory::FactoryCreateBinary(
 
 	FPmxImporter* PmxImporter = FPmxImporter::GetInstance();
 
-	EPMXImportType ForcedImportType = PMXIT_StaticMesh;
-
 	// For multiple files, use the same settings
 	bDetectImportTypeOnImport = false;
 
@@ -414,9 +409,7 @@ UObject* UPmxFactory::FactoryCreateBinary(
 		true, // bShowImportDialog,
 		InParent->GetPathName(),
 		bOperationCanceled,
-		bImportAll,
-		bIsPmxFormat,
-		ForcedImportType);
+		bImportAll);
 	if (bImportAll)
 	{
 		// If the user chose to import all, we don't show the dialog again and use the same settings for each object until importing another set of files

@@ -145,9 +145,7 @@ UObject* UVmdFactory::FactoryCreateBinary(
 		// 如果不是摄影机动画
 		FVmdImporter* VmdImporter = FVmdImporter::GetInstance();
 
-		EVMDImportType ForcedImportType = VMDIT_Animation;
 		bool bOperationCanceled = false;
-		bool bIsPmxFormat = true;
 		// show Import Option Slate
 		bool bImportAll = false;
 
@@ -159,9 +157,7 @@ UObject* UVmdFactory::FactoryCreateBinary(
 			true, // bShowImportDialog,
 			InParent->GetPathName(),
 			bOperationCanceled,
-			bImportAll,
-			bIsPmxFormat,
-			ForcedImportType);
+			bImportAll);
 
 		// 检查用户是否取消了操作
 		if (bOperationCanceled)
@@ -187,9 +183,7 @@ UObject* UVmdFactory::FactoryCreateBinary(
 					true, // bShowImportDialog,
 					InParent->GetPathName(),
 					bOperationCanceled,
-					bImportAll,
-					bIsPmxFormat,
-					ForcedImportType);
+					bImportAll);
 
 				// 再次检查取消状态
 				if (bOperationCanceled)

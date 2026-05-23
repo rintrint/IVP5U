@@ -11,14 +11,13 @@ class SPmxOptionWindow : public SCompoundWidget
 {
 public:
 	SLATE_BEGIN_ARGS(SPmxOptionWindow)
-		: _ImportUI(nullptr), _WidgetWindow(), _FullPath(), _ForcedImportType()
+		: _ImportUI(nullptr), _WidgetWindow(), _FullPath()
 	{
 	}
 
 	SLATE_ARGUMENT(UPmxImportUI*, ImportUI)
 	SLATE_ARGUMENT(TSharedPtr<SWindow>, WidgetWindow)
 	SLATE_ARGUMENT(FText, FullPath)
-	SLATE_ARGUMENT(TOptional<EPMXImportType>, ForcedImportType)
 	SLATE_END_ARGS()
 
 public:

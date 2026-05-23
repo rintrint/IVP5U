@@ -30,9 +30,7 @@ VMDImportOptions* GetVMDImportOptions(
 	bool bShowOptionDialog,
 	const FString& FullPath,
 	bool& bOutOperationCanceled,
-	bool& bOutImportAll,
-	bool bForceImportType,
-	EVMDImportType ImportType)
+	bool& bOutImportAll)
 {
 	bOutOperationCanceled = false;
 
@@ -104,8 +102,7 @@ VMDImportOptions* GetVMDImportOptions(
 			SAssignNew(VmdOptionWindow, SVmdOptionWindow)
 				.ImportUI(ImportUI)
 				.WidgetWindow(Window)
-				.FullPath(FText::FromString(FullPath))
-				.ForcedImportType(bForceImportType ? MakeShared<TOptional<EVMDImportType>>(ImportType) : MakeShared<TOptional<EVMDImportType>>()));
+				.FullPath(FText::FromString(FullPath)));
 
 		// @todo: we can make this slow as showing progress bar later
 		FSlateApplication::Get().AddModalWindow(Window, ParentWindow, false);

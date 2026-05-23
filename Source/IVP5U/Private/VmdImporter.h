@@ -257,9 +257,7 @@ VMDImportOptions* GetVMDImportOptions(
 	bool bShowOptionDialog,
 	const FString& FullPath,
 	bool& bOutOperationCanceled,
-	bool& bOutImportAll,
-	bool bForceImportType = false,
-	EVMDImportType ImportType = VMDIT_Animation);
+	bool& bOutImportAll);
 
 void ApplyVMDImportUIToImportOptions(
 	UVmdImportUI* ImportUI,
