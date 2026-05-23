@@ -54,10 +54,10 @@ class UPmxMaterialImport
 	/* isTimeEmmisveEnable */
 #define D_IVP5U_MatInst_Name_isTimeEmmisveEnable "isTimeEmmisveEnable"
 
-	/* Luminous Specular Powor th*/
-#define D_IVP5U_Param_SpecularPowor_Thd 110.0f
-	/* Luminous Specular Powor Min*/
-#define D_IVP5U_Param_SpecularPowor_Min 100.0f
+	/* Luminous Specular Power th*/
+#define D_IVP5U_Param_SpecularPower_Thd 110.0f
+	/* Luminous Specular Power Min*/
+#define D_IVP5U_Param_SpecularPower_Min 100.0f
 
 	/***********************/
 

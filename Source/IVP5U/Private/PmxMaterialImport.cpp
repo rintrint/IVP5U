@@ -1215,13 +1215,13 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Luminous(
 				PmxMaterial.Ambient[1],
 				PmxMaterial.Ambient[2]));
 	}
-	// Specular Powor
+	// Specular Power
 	{
 		float specPowr = 0.0f;
-		if (PmxMaterial.SpecularPower > D_IVP5U_Param_SpecularPowor_Min)
+		if (PmxMaterial.SpecularPower > D_IVP5U_Param_SpecularPower_Min)
 		{
-			specPowr = (PmxMaterial.SpecularPower - D_IVP5U_Param_SpecularPowor_Min);
-			specPowr = specPowr / (D_IVP5U_Param_SpecularPowor_Thd - D_IVP5U_Param_SpecularPowor_Min);
+			specPowr = (PmxMaterial.SpecularPower - D_IVP5U_Param_SpecularPower_Min);
+			specPowr = specPowr / (D_IVP5U_Param_SpecularPower_Thd - D_IVP5U_Param_SpecularPower_Min);
 		}
 		pUMIC->SetScalarParameterValueEditorOnly(
 			FName(TEXT(D_IVP5U_MatInst_Name_SpecularPower)),
@@ -1322,13 +1322,13 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Luminous_Unlit(
 				PmxMaterial.Ambient[1],
 				PmxMaterial.Ambient[2]));
 	}
-	// Specular Powor
+	// Specular Power
 	{
 		float specPowr = 0.0f;
-		if (PmxMaterial.SpecularPower > D_IVP5U_Param_SpecularPowor_Min)
+		if (PmxMaterial.SpecularPower > D_IVP5U_Param_SpecularPower_Min)
 		{
-			specPowr = (PmxMaterial.SpecularPower - D_IVP5U_Param_SpecularPowor_Min);
-			specPowr = specPowr / (D_IVP5U_Param_SpecularPowor_Thd - D_IVP5U_Param_SpecularPowor_Min);
+			specPowr = (PmxMaterial.SpecularPower - D_IVP5U_Param_SpecularPower_Min);
+			specPowr = specPowr / (D_IVP5U_Param_SpecularPower_Thd - D_IVP5U_Param_SpecularPower_Min);
 		}
 		pUMIC->SetScalarParameterValueEditorOnly(
 			FName(TEXT(D_IVP5U_MatInst_Name_SpecularPower)),
