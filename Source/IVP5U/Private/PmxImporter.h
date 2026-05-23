@@ -335,7 +335,6 @@ namespace MMD4UE5
 struct PMXImportOptions
 {
 	// General options
-	bool bImportMaterials = false;
 	bool bInvertNormalMap = false;
 	bool bImportTextures = false;
 	bool bCreateMaterialInstanceMode = false;

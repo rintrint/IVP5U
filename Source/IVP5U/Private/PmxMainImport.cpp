@@ -165,7 +165,6 @@ void ApplyImportUIToImportOptions(
 {
 	check(ImportUI);
 
-	InOutImportOptions.bImportMaterials = ImportUI->bImportMaterials;
 	InOutImportOptions.bImportTextures = ImportUI->bImportTextures;
 	InOutImportOptions.bCreateMaterialInstanceMode = ImportUI->bCreateMaterialInstanceMode;
 	InOutImportOptions.bUnlitMaterials = ImportUI->bUnlitMaterials;

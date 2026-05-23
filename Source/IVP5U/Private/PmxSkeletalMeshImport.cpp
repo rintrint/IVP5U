@@ -331,32 +331,29 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 	}
 
 	TArray<FString> UVSets;
-	if (ImportUI->bImportMaterials)
+	for (int k = 0; k < PmxMeshInfo->materialList.Num(); ++k)
 	{
-		for (int k = 0; k < PmxMeshInfo->materialList.Num(); ++k)
+		pmxMaterialImportHelper.CreateUnrealMaterial(
+			PmxMeshInfo->modelNameJP,
+			// InParent,
+			PmxMeshInfo->materialList[k],
+			ImportUI->bCreateMaterialInstanceMode,
+			ImportUI->bUnlitMaterials,
+			Materials,
+			textureAssetList);
 		{
-			pmxMaterialImportHelper.CreateUnrealMaterial(
-				PmxMeshInfo->modelNameJP,
-				// InParent,
-				PmxMeshInfo->materialList[k],
-				ImportUI->bCreateMaterialInstanceMode,
-				ImportUI->bUnlitMaterials,
-				Materials,
-				textureAssetList);
+			int ExistingMatIndex = k;
+			int MaterialIndex = k;
+
+			// material asset set flag for morph target
+			if (UMaterialInterface* UnrealMaterialPtr = Materials[MaterialIndex])
 			{
-				int ExistingMatIndex = k;
-				int MaterialIndex = k;
-
-				// material asset set flag for morph target
-				if (UMaterialInterface* UnrealMaterialPtr = Materials[MaterialIndex])
-				{
-					UnrealMaterialPtr->CheckMaterialUsage(MATUSAGE_MorphTargets);
-				}
-
-				ImportData.Materials[ExistingMatIndex].MaterialImportName = //"M_" +
-					PmxMeshInfo->materialList[k].Name;
-				ImportData.Materials[ExistingMatIndex].Material = Materials[MaterialIndex];
+				UnrealMaterialPtr->CheckMaterialUsage(MATUSAGE_MorphTargets);
 			}
+
+			ImportData.Materials[ExistingMatIndex].MaterialImportName = //"M_" +
+				PmxMeshInfo->materialList[k].Name;
+			ImportData.Materials[ExistingMatIndex].Material = Materials[MaterialIndex];
 		}
 	}
 #endif
