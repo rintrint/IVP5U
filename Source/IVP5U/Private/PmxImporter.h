@@ -372,7 +372,7 @@ public:
 	/**
 	 * Get the object of import options
 	 *
-	 * @return FBXImportOptions
+	 * @return PMXImportOptions
 	 */
 	IVP5U_API PMXImportOptions* GetImportOptions() const;
 

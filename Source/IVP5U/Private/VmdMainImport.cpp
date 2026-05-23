@@ -1,7 +1,7 @@
 // Copyright 2015-2026 IVP5U contributors
 
 /*=============================================================================
-Main implementation of FFbxImporter : import FBX data to Unreal
+Main implementation of FVmdImporter : import VMD data to Unreal
 =============================================================================*/
 
 #include "CoreMinimal.h"

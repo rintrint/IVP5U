@@ -183,7 +183,7 @@ void FMorphMeshRawSource::CalculateMorphTargetLODModel(const FMorphMeshRawSource
 
 					// check if position actually changed much
 					if (PositionDelta.SizeSquared() > FMath::Square(THRESH_POINTS_ARE_NEAR) ||
-						// since we can't get imported morphtarget normal from FBX
+						// since we can't get imported morphtarget normal from PMX
 						// we can't compare normal unless it's calculated
 						// this is special flag to ignore normal diff
 						(true && NormalDeltaZ.SizeSquared() > 0.01f))
@@ -228,7 +228,7 @@ bool UPmxFactory::ImportBone(
 
 	for (int LinkIndex = 0; LinkIndex < PmxMeshInfo->boneList.Num(); LinkIndex++)
 	{
-		// Add a bone for each FBX Link
+		// Add a bone for each PMX bone
 		ImportData.RefBonesBinary.Add(SkeletalMeshImportData::FBone());
 
 		// PMX format guarantees parent bone index < child bone index,
@@ -439,13 +439,10 @@ bool UPmxFactory::FillSkelMeshImporterFromFbx(
 			TmpWedges[UnrealVertexIndex].Color = FColor::White;
 		}
 
-		// uvs
+		// zero-init UV slots
 		uint32 UVLayerIndex;
-		// Some FBX meshes can have no UV sets, so also check the UniqueUVCount
 		for (UVLayerIndex = 0; UVLayerIndex < UniqueUVCount; UVLayerIndex++)
 		{
-			// Set all UV's to zero.  If we are here the mesh had no UV sets so we only need to do this for the
-			// first UV set which always exists.
 			TmpWedges[VertexIndex].UVs[UVLayerIndex].X = 0;
 			TmpWedges[VertexIndex].UVs[UVLayerIndex].Y = 0;
 		}

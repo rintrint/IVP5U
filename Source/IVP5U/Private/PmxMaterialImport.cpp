@@ -91,7 +91,6 @@ void UPmxMaterialImport::AssetsCreateTexture(
 		TArray<uint8> Data;
 		if (FFileHelper::LoadFileToArray(Data, *FileName))
 		{
-			// From fbx texture import code
 			auto TextureFact = NewObject<UTextureFactory>();
 			TextureFact->AddToRoot();
 			// save texture settings if texture exist
@@ -496,18 +495,6 @@ void UPmxMaterialImport::CreateUnrealMaterial(
 		// The material could already exist in the project
 		FName ObjectPath = *(BasePackageName + TEXT(".") + MaterialFullName);
 
-		/*
-		if( ImportedMaterialData.IsUnique( PmxMaterial, ObjectPath ) )
-		{
-			UMaterialInterface* FoundMaterial = ImportedMaterialData.GetUnrealMaterial( PmxMaterial );
-			if (FoundMaterial)
-			{
-				// The material was imported from this FBX.  Reuse it
-				OutMaterials.Add(FoundMaterial);
-				return;
-			}
-		}
-		else*/
 		{
 			UMaterialInterface* FoundMaterial = LoadObject<UMaterialInterface>(nullptr, *ObjectPath.ToString(), nullptr, LOAD_NoWarn | LOAD_Quiet);
 			// do not override existing materials

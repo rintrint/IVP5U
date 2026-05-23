@@ -1,7 +1,7 @@
 // Copyright 2015-2026 IVP5U contributors
 
 /*=============================================================================
-Main implementation of FFbxImporter : import FBX data to Unreal
+Main implementation of FPmxImporter : import PMX data to Unreal
 =============================================================================*/
 
 #include "CoreMinimal.h"
@@ -95,7 +95,6 @@ PMXImportOptions* GetImportOptions(
 		}
 
 		TSharedRef<SWindow> Window = SNew(SWindow)
-										 //.Title(NSLOCTEXT("UnrealEd", "FBXImportOpionsTitle", "FBX Import Options"))
 										 .Title(NSLOCTEXT("IVP5U", "MMDImportOpionsTitle", "MMD Import Options"))
 										 .SizingRule(ESizingRule::Autosized);
 

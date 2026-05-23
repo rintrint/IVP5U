@@ -281,7 +281,7 @@ public:
 	/**
 	 * Get the object of import options
 	 *
-	 * @return FBXImportOptions
+	 * @return VMDImportOptions
 	 */
 	IVP5U_API VMDImportOptions* GetImportOptions() const;
 

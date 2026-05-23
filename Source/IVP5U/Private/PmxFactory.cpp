@@ -1,7 +1,5 @@
 // Copyright 2015-2026 IVP5U contributors
 
-// see S:\UE5SRC\EpicUE5\UE_5.0\Engine\Source\Editor\UnrealEd\Private\Fbx\FbxSkeletalMeshImport.cpp
-
 #include "PmxFactory.h"
 
 #include "CoreMinimal.h"
@@ -576,7 +574,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 	SkeletalMesh->PreEditChange(nullptr);
 
 	FSkeletalMeshImportData TempData;
-	// Fill with data from buffer - contains the full .FBX file.
+	// Fill with data from buffer - contains the full .PMX file.
 	FSkeletalMeshImportData* SkelMeshImportDataPtr = OutData ? OutData : &TempData;
 
 	/*Import Bone Start*/
