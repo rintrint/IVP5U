@@ -26,14 +26,6 @@ class UPmxImportUI : public UObject
 	// UPROPERTY()
 	TEnumAsByte<enum EPMXImportType> MeshTypeToImport;
 
-	/** Use the string in "Name" field as full name of mesh. The option only works when the scene contains one mesh. */
-	// UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = Miscellaneous)
-	uint32 bOverrideFullName : 1;
-
-	/** Whether to convert scene from FBX scene. */
-	// UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = Miscellaneous, meta = (ToolTip = "Convert the scene from FBX coordinate system to UE5 coordinate system"))
-	uint32 bConvertScene : 1;
-
 	/** Skeleton to use for imported asset. When importing a mesh, leaving this as "None" will create a new skeleton. When importing and animation this MUST be specified to import the asset. */
 	// UPROPERTY(EditAnywhere, Category = Mesh)
 	class USkeleton* Skeleton;
