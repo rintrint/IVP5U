@@ -3,11 +3,6 @@
 #include "MMDSkeletalMeshImportData.h"
 #include "CoreMinimal.h"
 
-UMMDSkeletalMeshImportData::UMMDSkeletalMeshImportData(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
-{
-}
-
 UMMDSkeletalMeshImportData* UMMDSkeletalMeshImportData::GetImportDataForSkeletalMesh(USkeletalMesh* SkeletalMesh, UMMDSkeletalMeshImportData* TemplateForCreation)
 {
 	check(SkeletalMesh);

@@ -12,7 +12,7 @@
 UCLASS()
 class UMMDSkeletalMeshImportData : public UMMDMeshImportData
 {
-	GENERATED_UCLASS_BODY()
+	GENERATED_BODY()
 
 	/** Gets or creates MMD import data for the specified skeletal mesh */
 	static UMMDSkeletalMeshImportData* GetImportDataForSkeletalMesh(USkeletalMesh* SkeletalMesh, UMMDSkeletalMeshImportData* TemplateForCreation);
