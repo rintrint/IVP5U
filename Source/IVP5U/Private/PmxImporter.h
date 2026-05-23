@@ -335,14 +335,11 @@ namespace MMD4UE5
 struct PMXImportOptions
 {
 	// General options
-	bool bInvertNormalMap = false;
 	bool bImportTextures = false;
 	bool bCreateMaterialInstanceMode = false;
 	bool bUnlitMaterials = false;
-	bool bImportLOD = false;
 	bool bUsedAsFullName = false;
 	bool bConvertScene = false;
-	bool bRemoveNameSpace = false;
 	FVector ImportTranslation = FVector::ZeroVector;
 	FRotator ImportRotation = FRotator::ZeroRotator;
 	float ImportUniformScale = 1.0f;
@@ -368,10 +365,6 @@ struct PMXImportOptions
 	UPhysicsAsset* PhysicsAsset = nullptr;
 	// Animation option
 	USkeleton* SkeletonForAnimation = nullptr;
-	FIntPoint AnimationRange = FIntPoint::ZeroValue;
-	FString AnimationName;
-	bool bPreserveLocalTransform = false;
-	bool bImportCustomAttribute = false;
 
 	UAnimSequence* AnimSequenceAsset = nullptr;
 	UDataTable* MMD2UE5NameTableRow = nullptr;
