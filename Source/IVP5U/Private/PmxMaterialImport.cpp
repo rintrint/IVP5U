@@ -271,7 +271,7 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty(
 			{
 				UnrealMaterial->BlendMode = BLEND_Masked;
 
-				// Multipule
+				// Multiply
 				UMaterialExpressionMultiply* MulExpression = NewObject<UMaterialExpressionMultiply>(UnrealMaterial);
 
 				UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(MulExpression);
@@ -280,9 +280,9 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty(
 				MulExpression->MaterialExpressionEditorY = 0;
 				MulExpression->bHidePreviewWindow = 0;
 
-				MulExpression->Desc = TEXT("Textuer * Texture alpha -> BaseColor");
+				MulExpression->Desc = TEXT("Texture * Texture alpha -> BaseColor");
 
-				// Multipule
+				// Multiply
 				UMaterialExpressionMultiply* MulExpression_2 = NewObject<UMaterialExpressionMultiply>(UnrealMaterial);
 
 				UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(MulExpression_2);
@@ -293,7 +293,7 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty(
 				MulExpression_2->MaterialExpressionEditorY = 200;
 				MulExpression_2->bHidePreviewWindow = 0;
 
-				MulExpression_2->Desc = TEXT("Textuer alpha * Specure Coloer -> OpacityMask");
+				MulExpression_2->Desc = TEXT("Texture alpha * Specular Color -> OpacityMask");
 
 				// A
 				// and link it to the material
@@ -631,7 +631,7 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty_ForMmdAutoLu
 			{
 				UnrealMaterial->BlendMode = BLEND_Masked;
 
-				// Multipule
+				// Multiply
 				UMaterialExpressionMultiply* MulExpression = NewObject<UMaterialExpressionMultiply>(UnrealMaterial);
 				UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(MulExpression);
 				UnrealMaterial->GetEditorOnlyData()->BaseColor.Expression = MulExpression; // test
@@ -640,9 +640,9 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty_ForMmdAutoLu
 				MulExpression->MaterialExpressionEditorY = 0;
 				MulExpression->bHidePreviewWindow = 0;
 
-				MulExpression->Desc = TEXT("Textuer * Texture alpha -> BaseColor");
+				MulExpression->Desc = TEXT("Texture * Texture alpha -> BaseColor");
 
-				// Multipule
+				// Multiply
 				UMaterialExpressionMultiply* MulExpression_2 = NewObject<UMaterialExpressionMultiply>(UnrealMaterial);
 				UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(MulExpression_2);
 
@@ -650,9 +650,9 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty_ForMmdAutoLu
 				MulExpression_2->MaterialExpressionEditorY = 200;
 				MulExpression_2->bHidePreviewWindow = 0;
 
-				MulExpression_2->Desc = TEXT("Textuer alpha * Specure Coloer -> OpacityMask");
+				MulExpression_2->Desc = TEXT("Texture alpha * Specular Color -> OpacityMask");
 
-				// Multipule
+				// Multiply
 				UMaterialExpressionMultiply* MulExpression_3 = NewObject<UMaterialExpressionMultiply>(UnrealMaterial);
 				UnrealMaterial->GetEditorOnlyData()->ExpressionCollection.Expressions.Add(MulExpression_3);
 
@@ -661,7 +661,7 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty_ForMmdAutoLu
 				MulExpression_3->bHidePreviewWindow = 0;
 				MulExpression_3->A.Expression = MulExpression_2;
 
-				MulExpression_3->Desc = TEXT("Textuer alpha * Specure Coloer -> OpacityMask");
+				MulExpression_3->Desc = TEXT("Texture alpha * Specular Color -> OpacityMask");
 
 				// A
 				// and link it to the material
@@ -974,7 +974,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Masked(
 
 			StaticParams.StaticSwitchParameters.Add(Param);
 
-			UE_LOG(LogCategoryPMXMaterialImport, Log, TEXT("[%s]:Base Texure mode enable "), *(FString(__FUNCTION__)));
+			UE_LOG(LogCategoryPMXMaterialImport, Log, TEXT("[%s]:Base Texture mode enable "), *(FString(__FUNCTION__)));
 		}
 	}
 	{
@@ -1000,7 +1000,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Masked(
 
 			StaticParams.StaticSwitchParameters.Add(Param); // DestSeq->MarkRawDataAsModified();
 
-			UE_LOG(LogCategoryPMXMaterialImport, Log, TEXT("[%s]:Toon Texure mode enable "), *(FString(__FUNCTION__)));
+			UE_LOG(LogCategoryPMXMaterialImport, Log, TEXT("[%s]:Toon Texture mode enable "), *(FString(__FUNCTION__)));
 		}
 	}
 
@@ -1026,7 +1026,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Masked(
 
 	if (pUMIC->TwoSided != PmxMaterial.CullingOff)
 	{
-		// TowSide有効
+		// TwoSide有効
 		pUMIC->BasePropertyOverrides.TwoSided = PmxMaterial.CullingOff;
 		pUMIC->BasePropertyOverrides.bOverride_TwoSided = true;
 		pUMIC->UpdateOverridableBaseProperties(); // OverrideParam Update
@@ -1098,7 +1098,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Masked_Unlit(
 
 		StaticParams.StaticSwitchParameters.Add(Param); // 5.2失效
 
-		UE_LOG(LogCategoryPMXMaterialImport, Log, TEXT("[%s]:MIC Texure mode enable "), *(FString(__FUNCTION__)));
+		UE_LOG(LogCategoryPMXMaterialImport, Log, TEXT("[%s]:MIC Texture mode enable "), *(FString(__FUNCTION__)));
 	}
 
 	// Diffuse Color
@@ -1123,7 +1123,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Masked_Unlit(
 
 	if (pUMIC->BasePropertyOverrides.TwoSided != PmxMaterial.CullingOff)
 	{
-		// TowSide有效时设为ON
+		// TwoSide有效时设为ON
 		pUMIC->BasePropertyOverrides.TwoSided = PmxMaterial.CullingOff;
 		pUMIC->BasePropertyOverrides.bOverride_TwoSided = true;
 		pUMIC->UpdateOverridableBaseProperties(); // OverrideParam Update
@@ -1193,7 +1193,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Luminous(
 
 		StaticParams.StaticSwitchParameters.Add(Param);
 
-		UE_LOG(LogCategoryPMXMaterialImport, Log, TEXT("[%s]:MIC Texure mode enable "), *(FString(__FUNCTION__)));
+		UE_LOG(LogCategoryPMXMaterialImport, Log, TEXT("[%s]:MIC Texture mode enable "), *(FString(__FUNCTION__)));
 	}
 
 	// Diffuse Color
@@ -1230,7 +1230,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Luminous(
 
 	if (pUMIC->BasePropertyOverrides.TwoSided != PmxMaterial.CullingOff)
 	{
-		// TowSide有効
+		// TwoSide有効
 		pUMIC->BasePropertyOverrides.TwoSided = PmxMaterial.CullingOff;
 		pUMIC->BasePropertyOverrides.bOverride_TwoSided = true;
 		pUMIC->UpdateOverridableBaseProperties(); // OverrideParam Update
@@ -1300,7 +1300,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Luminous_Unlit(
 
 		StaticParams.StaticSwitchParameters.Add(Param);
 
-		UE_LOG(LogCategoryPMXMaterialImport, Log, TEXT("[%s]:MIC Texure mode enable "), *(FString(__FUNCTION__)));
+		UE_LOG(LogCategoryPMXMaterialImport, Log, TEXT("[%s]:MIC Texture mode enable "), *(FString(__FUNCTION__)));
 	}
 
 	// Diffuse Color
@@ -1337,7 +1337,7 @@ UMaterialInterface* UPmxMaterialImport::CreateMaterialInst_Luminous_Unlit(
 
 	if (pUMIC->BasePropertyOverrides.TwoSided != PmxMaterial.CullingOff)
 	{
-		// TowSide有効の場合はONにする
+		// TwoSide有効の場合はONにする
 		pUMIC->BasePropertyOverrides.TwoSided = PmxMaterial.CullingOff;
 		pUMIC->BasePropertyOverrides.bOverride_TwoSided = true;
 		pUMIC->UpdateOverridableBaseProperties(); // OverrideParam Update

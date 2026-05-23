@@ -310,7 +310,7 @@ bool UPmxFactory::FillSkelMeshImporterFromPmx(
 {
 	TArray<UMaterialInterface*> Materials;
 
-#if 1 // test Material Textuere
+#if 1 // test Material Texture
 	TArray<UTexture*> textureAssetList;
 	for (int k = 0; k < PmxMeshInfo->textureList.Num(); ++k)
 	{

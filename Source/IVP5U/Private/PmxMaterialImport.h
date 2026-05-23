@@ -34,15 +34,15 @@ class UPmxMaterialImport
 #define D_IVP5U_MMDBaseMat_Path_Unlit_Luminou "/IVP5U/Material/M_MMD_MatBase_UnLit_Luminus.M_MMD_MatBase_UnLit_Luminus"
 
 	/*
-	 * Material Inst用Paramem Name
+	 * Material Inst用Parameter Name
 	 */
 	/* Texture Base */
 #define D_IVP5U_MatInst_Name_BaseTexture "TextureBase"
-	/* is Texure Enable Flag */
+	/* is Texture Enable Flag */
 #define D_IVP5U_MatInst_Name_isTextureEnable "isTextureEnable"
 	/* Texture Base */
 #define D_IVP5U_MatInst_Name_Toon "TextureToon"
-	/* is Texure Enable Flag */
+	/* is Texture Enable Flag */
 #define D_IVP5U_MatInst_Name_isToonEnable "isToonEnable"
 
 	/* DiffuseColor*/
