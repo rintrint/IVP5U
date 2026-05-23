@@ -199,7 +199,6 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 		UE_LOG(LogMMD4UE5_PMXFactory, Warning, TEXT("PMX Import: %s"), *Filename);
 		{
 			int32 NodeIndex = 0;
-			int32 TotalNumNodes = 0;
 
 			FSkeletalMeshImportData smid;
 			USkeletalMesh* NewMesh = ImportSkeletalMesh(
@@ -226,7 +225,6 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 			// end phese
 			if (NewObject)
 			{
-				TotalNumNodes++;
 				NodeIndex++;
 				FFormatNamedArguments Args;
 				Args.Add(TEXT("NodeIndex"), NodeIndex);
@@ -236,8 +234,7 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 
 			// MarkPackageDirty();
 
-			// if total nodes we found is 0, we didn't find anything.
-			if (TotalNumNodes == 0)
+			if (!NewObject)
 			{
 				AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoMeshFoundOnRoot", "Could not find any valid mesh on the root hierarchy. If you have mesh in the sub hierarchy, please enable option of [Import Meshes In Bone Hierarchy] when import.")));
 			}
@@ -363,7 +360,6 @@ UObject* UPmxFactory::FactoryCreateBinary(
 			const FString Filename(UFactory::CurrentFilename);
 			{
 				int32 NodeIndex = 0;
-				int32 TotalNumNodes = 0;
 
 				UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("PMX Import: %s"), *OutputName.ToString());
 
@@ -393,7 +389,6 @@ UObject* UPmxFactory::FactoryCreateBinary(
 				// end phese
 				if (NewObject)
 				{
-					TotalNumNodes++;
 					NodeIndex++;
 					FFormatNamedArguments Args;
 					Args.Add(TEXT("NodeIndex"), NodeIndex);
@@ -401,8 +396,7 @@ UObject* UPmxFactory::FactoryCreateBinary(
 					GWarn->StatusUpdate(NodeIndex, 1, FText::Format(NSLOCTEXT("UnrealEd", "Importingf", "Importing ({NodeIndex} of {ArrayLength})"), Args));
 				}
 
-				// if total nodes we found is 0, we didn't find anything.
-				if (TotalNumNodes == 0)
+				if (!NewObject)
 				{
 					AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoMeshFoundOnRoot", "Could not find any valid mesh on the root hierarchy. If you have mesh in the sub hierarchy, please enable option of [Import Meshes In Bone Hierarchy] when import.")));
 				}
