@@ -103,7 +103,7 @@ public:
 		const FVector2D& Location,
 		TArray<UTexture*>& textureAssetList);
 
-	bool CreateAndLinkExpressionForMaterialProperty_ForMmdAutoluminus(
+	bool CreateAndLinkExpressionForMaterialProperty_ForMmdAutoLuminous(
 		MMD4UE5::PMX_MATERIAL& PmxMaterial,
 		UMaterial* UnrealMaterial,
 		FExpressionInput& MaterialInput,

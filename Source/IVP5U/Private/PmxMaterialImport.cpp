@@ -549,7 +549,7 @@ void UPmxMaterialImport::CreateUnrealMaterial(
 			if (bMaterialUnlit)
 			{
 				/* MMD AutoLuminous 疑似設定 */
-				if (PmxMaterial.SpecularPower > 100) // auto luminus
+				if (PmxMaterial.SpecularPower > 100) // AutoLuminous
 				{
 					UnrealMaterial_MI = this->CreateMaterialInst_Luminous_Unlit(
 						ParentObjName, PmxMaterial, MaterialFullName, textureAssetList);
@@ -574,7 +574,7 @@ void UPmxMaterialImport::CreateUnrealMaterial(
 			else
 			{
 				/* MMD AutoLuminous 疑似設定 */
-				if (PmxMaterial.SpecularPower > 100) // auto luminus
+				if (PmxMaterial.SpecularPower > 100) // AutoLuminous
 				{
 					UnrealMaterial_MI = this->CreateMaterialInst_Luminous(
 						ParentObjName, PmxMaterial, MaterialFullName, textureAssetList);
@@ -610,7 +610,7 @@ void UPmxMaterialImport::CreateUnrealMaterial(
 	}
 }
 
-bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty_ForMmdAutoluminus(
+bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty_ForMmdAutoLuminous(
 	MMD4UE5::PMX_MATERIAL& PmxMaterial,
 	UMaterial* UnrealMaterial,
 	FExpressionInput& MaterialInput,
@@ -622,7 +622,7 @@ bool UPmxMaterialImport::CreateAndLinkExpressionForMaterialProperty_ForMmdAutolu
 	int32 TextureCount = PmxMaterial.TextureIndex;
 	if (TextureCount >= 0 && TextureCount < textureAssetList.Num())
 	{
-		if (PmxMaterial.SphereMode == 2) // auto luminus
+		if (PmxMaterial.SphereMode == 2) // AutoLuminous
 		{
 			// create an unreal texture asset
 			UTexture* UnrealTexture = textureAssetList[TextureCount];
