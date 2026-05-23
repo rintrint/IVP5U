@@ -223,7 +223,7 @@ UObject* UVmdFactory::FactoryCreateBinary(
 			if (preParamChk)
 			{
 				UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("参数检查通过，开始导入动画"));
-				if (!ImportOptions->AnimSequenceAsset)
+				if (!ImportUI->AnimSequenceAsset)
 				{
 					// 根据之前从VMD文件读取的数据添加动画序列，这是第二个主要瓶颈，导致点击对话框的Import后有一段延迟，直到导入成功
 					UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("开始添加动画序列"));
@@ -237,8 +237,7 @@ UObject* UVmdFactory::FactoryCreateBinary(
 						IKRig,
 						ImportUI->MMD2UE5NameTableRow,
 						ImportUI->MmdExtendAsset,
-						&vmdMotionInfo,
-						ImportOptions);
+						&vmdMotionInfo);
 					UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("添加动画序列耗时：%.3fs"), FPlatformTime::Seconds() - StartTime);
 				}
 				else
@@ -246,7 +245,7 @@ UObject* UVmdFactory::FactoryCreateBinary(
 					// add morph curve only to exist ainimation
 					LastCreatedAnim = AddtionalMorphCurveImportToAnimations(
 						SkeletalMesh,
-						ImportOptions->AnimSequenceAsset, // UAnimSequence* exsistAnimSequ,
+						ImportUI->AnimSequenceAsset, // UAnimSequence* exsistAnimSequ,
 						ImportUI->MMD2UE5NameTableRow,
 						&vmdMotionInfo);
 				}
@@ -294,8 +293,7 @@ UAnimSequence* UVmdFactory::ImportAnimations(
 	UIKRigDefinition* IKRig,
 	UDataTable* ReNameTable,
 	UMMDExtendAsset* mmdExtend,
-	MMD4UE5::VmdMotionInfo* vmdMotionInfo,
-	VMDImportOptions* ImportOptions)
+	MMD4UE5::VmdMotionInfo* vmdMotionInfo)
 {
 	UAnimSequence* LastCreatedAnim = nullptr;
 
@@ -378,7 +376,7 @@ UAnimSequence* UVmdFactory::ImportAnimations(
 		StartTime = FPlatformTime::Seconds();
 		TArray<FName> BoneNames;
 		TArray<FRawAnimSequenceTrack> RawTracks;
-		if (!PrepareVMDBoneAnimData(LastCreatedAnim, Skeleton, ReNameTable, IKRig, mmdExtend, vmdMotionInfo, ImportOptions, BoneNames, RawTracks))
+		if (!PrepareVMDBoneAnimData(LastCreatedAnim, Skeleton, ReNameTable, IKRig, mmdExtend, vmdMotionInfo, BoneNames, RawTracks))
 		{
 			UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("PrepareVMDBoneAnimData失败"));
 			importSuccessFlag = false;
@@ -840,7 +838,6 @@ bool UVmdFactory::PrepareVMDBoneAnimData(
 	UIKRigDefinition* IKRig,
 	UMMDExtendAsset* mmdExtend,
 	MMD4UE5::VmdMotionInfo* vmdMotionInfo,
-	VMDImportOptions* ImportOptions,
 	TArray<FName>& OutBoneNames,
 	TArray<FRawAnimSequenceTrack>& OutRawTracks)
 {
@@ -866,12 +863,12 @@ bool UVmdFactory::PrepareVMDBoneAnimData(
 			TEXT("PrepareVMDBoneAnimData : Target MMDExtendAsset is null."));
 	}
 
-	if (!ImportOptions)
+	if (!ImportUI)
 	{
 		UE_LOG(LogMMD4UE5_VMDFactory, Log,
-			TEXT("PrepareVMDBoneAnimData : ImportOptions is null, falling back to default scale."));
+			TEXT("PrepareVMDBoneAnimData : ImportUI is null, falling back to default scale."));
 	}
-	const float UniformScale = ImportOptions ? ImportOptions->ImportUniformScale : 0.08f;
+	const float UniformScale = ImportUI ? ImportUI->ImportUniformScale : 0.08f;
 
 	uint32 ResampleRate = 30;
 
@@ -1453,9 +1450,6 @@ bool UVmdFactory::ImportVmdFromFile(const FString& file, USkeletalMesh* Skeletal
 		return false;
 	}
 
-	// 創建一個默認的 ImportOptions
-	VMDImportOptions DefaultImportOptions;
-	VMDImportOptions* ImportOptions = &DefaultImportOptions;
 	UDataTable* MMD2UE5NameTable = nullptr;
 
 	UVmdFactory* MyFactory = NewObject<UVmdFactory>();
@@ -1469,8 +1463,7 @@ bool UVmdFactory::ImportVmdFromFile(const FString& file, USkeletalMesh* Skeletal
 		nullptr,
 		MMD2UE5NameTable,
 		nullptr,
-		&vmdMotionInfo,
-		ImportOptions);
+		&vmdMotionInfo);
 	return true;
 }
 #undef LOCTEXT_NAMESPACE

@@ -57,8 +57,7 @@ class IVP5U_API UVmdFactory : public UFactory
 		UIKRigDefinition* IKRig,
 		UDataTable* ReNameTable,
 		UMMDExtendAsset* mmdExtend,
-		MMD4UE5::VmdMotionInfo* vmdMotionInfo,
-		VMDImportOptions* ImportOptions);
+		MMD4UE5::VmdMotionInfo* vmdMotionInfo);
 
 	/*面向MMD的贝塞尔曲线的计算处理*/
 	float interpolateBezier(float x1, float y1, float x2, float y2, float x);
@@ -79,7 +78,6 @@ class IVP5U_API UVmdFactory : public UFactory
 		UIKRigDefinition* IKRig,
 		UMMDExtendAsset* mmdExtend,
 		MMD4UE5::VmdMotionInfo* vmdMotionInfo,
-		VMDImportOptions* ImportOptions,
 		TArray<FName>& OutBoneNames,
 		TArray<FRawAnimSequenceTrack>& OutRawTracks);
 
