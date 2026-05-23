@@ -281,7 +281,7 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 				// if total nodes we found is 0, we didn't find anything.
 				if (TotalNumNodes == 0)
 				{
-					AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoMeshFoundOnRoot", "Could not find any valid mesh on the root hierarchy. If you have mesh in the sub hierarchy, please enable option of [Import Meshes In Bone Hierarchy] when import.")), "FFbxErrors::SkeletalMesh_NoMeshFoundOnRoot");
+					AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoMeshFoundOnRoot", "Could not find any valid mesh on the root hierarchy. If you have mesh in the sub hierarchy, please enable option of [Import Meshes In Bone Hierarchy] when import.")));
 				}
 #endif
 			}
@@ -290,18 +290,18 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 		{
 			if (importAssetTypeMMD == E_MMD_TO_UE5_SKELETON)
 			{
-				AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_InvalidBone", "Failed to find any bone hierarchy. Try disabling the \"Import As Skeletal\" option to import as a rigid mesh. ")), "FFbxErrors::SkeletalMesh_InvalidBone");
+				AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_InvalidBone", "Failed to find any bone hierarchy. Try disabling the \"Import As Skeletal\" option to import as a rigid mesh. ")));
 			}
 			else
 			{
-				AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_InvalidNode", "Could not find any node.")), "FFbxErrors::SkeletalMesh_InvalidNode");
+				AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_InvalidNode", "Could not find any node.")));
 			}
 		}
 	}
 
 	if (NewObject == nullptr)
 	{
-		AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoObject", "Import failed.")), "FFbxErrors::Generic_ImportingNewObjectFailed");
+		AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoObject", "Import failed.")));
 		return false;
 	}
 
@@ -500,7 +500,7 @@ UObject* UPmxFactory::FactoryCreateBinary(
 					// if total nodes we found is 0, we didn't find anything.
 					if (TotalNumNodes == 0)
 					{
-						AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoMeshFoundOnRoot", "Could not find any valid mesh on the root hierarchy. If you have mesh in the sub hierarchy, please enable option of [Import Meshes In Bone Hierarchy] when import.")), "FFbxErrors::SkeletalMesh_NoMeshFoundOnRoot");
+						AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoMeshFoundOnRoot", "Could not find any valid mesh on the root hierarchy. If you have mesh in the sub hierarchy, please enable option of [Import Meshes In Bone Hierarchy] when import.")));
 					}
 #endif
 				}
@@ -509,18 +509,18 @@ UObject* UPmxFactory::FactoryCreateBinary(
 			{
 				if (importAssetTypeMMD == E_MMD_TO_UE5_SKELETON)
 				{
-					AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_InvalidBone", "Failed to find any bone hierarchy. Try disabling the \"Import As Skeletal\" option to import as a rigid mesh. ")), "FFbxErrors::SkeletalMesh_InvalidBone");
+					AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_InvalidBone", "Failed to find any bone hierarchy. Try disabling the \"Import As Skeletal\" option to import as a rigid mesh. ")));
 				}
 				else
 				{
-					AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_InvalidNode", "Could not find any node.")), "FFbxErrors::SkeletalMesh_InvalidNode");
+					AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_InvalidNode", "Could not find any node.")));
 				}
 			}
 		}
 
 		if (NewObject == nullptr)
 		{
-			AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoObject", "Import failed.")), "FFbxErrors::Generic_ImportingNewObjectFailed");
+			AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("FailedToImport_NoObject", "Import failed.")));
 			Warn->Log(ELogVerbosity::Error, "PMX Import ERR [NewObject is nullptr]...FLT");
 		}
 
@@ -565,7 +565,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		// if any other object exists, we can't import with this name
 		else if (ExistingObject)
 		{
-			AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Warning, FText::Format(LOCTEXT("PmxSkeletaLMeshimport_OverlappingName", "Same name but different class: '{0}' already exists"), FText::FromString(ExistingObject->GetName()))), "FFbxErrors::Generic_SameNameAssetExists");
+			AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Warning, FText::Format(LOCTEXT("PmxSkeletaLMeshimport_OverlappingName", "Same name but different class: '{0}' already exists"), FText::FromString(ExistingObject->GetName()))));
 			return nullptr;
 		}
 	}
@@ -583,7 +583,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 	// from popping up again on each additional pass.
 	if (!ImportBone(pmxMeshInfoPtr, *SkelMeshImportDataPtr, bDiffPose, false, bUseTime0AsRefPose))
 	{
-		AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("PmxSkeletaLMeshimport_MultipleRootFound", "Multiple roots found")), "FFbxErrors::SkeletalMesh_MultipleRoots");
+		AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, LOCTEXT("PmxSkeletaLMeshimport_MultipleRootFound", "Multiple roots found")));
 		// I can't delete object here since this is middle of import
 		// but I can move to transient package, and GC will automatically collect it
 		SkeletalMesh->ClearFlags(RF_Standalone);
@@ -704,7 +704,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 			Skeleton = LoadObject<USkeleton>(InParent, *SkelObjectName, nullptr, LOAD_NoWarn | LOAD_Quiet);
 			if (!Skeleton)
 			{
-				AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, FText::Format(LOCTEXT("PmxSkeletaLMeshimport_SkeletonRecreateError", "'{0}' already exists. It fails to recreate it."), FText::FromString(SkelObjectName))), "FFbxErrors::SkeletalMesh_SkeletonRecreateError");
+				AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Error, FText::Format(LOCTEXT("PmxSkeletaLMeshimport_SkeletonRecreateError", "'{0}' already exists. It fails to recreate it."), FText::FromString(SkelObjectName))));
 				return SkeletalMesh;
 			}
 		}
@@ -802,7 +802,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 				bool bSuccess = FPhysicsAssetUtils::CreateFromSkeletalMesh(NewPhysicsAsset, SkeletalMesh, NewBodyData, CreationErrorMessage);
 				if (!bSuccess)
 				{
-					AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Warning, CreationErrorMessage), "FFbxErrors::SkeletalMesh_FailedToCreatePhyscisAsset");
+					AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Warning, CreationErrorMessage));
 					// delete the asset since we could not have create physics asset
 					TArray<UObject*> ObjectsToDelete;
 					ObjectsToDelete.Add(NewPhysicsAsset);
@@ -949,7 +949,7 @@ UMMDExtendAsset* UPmxFactory::CreateMMDExtendFromMMDModel(
 
 		if (!NewMMDExtendAsset)
 		{
-			AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Warning, FText::Format(LOCTEXT("CouldNotCreateMMDExtendAsset", "Could not create MMD Extend Asset ('{0}') for '{1}'"), FText::FromString(ObjectName), FText::FromString(BaseName.ToString()))), "FFbxErrors::SkeletalMesh_FailedToCreatePhyscisAsset");
+			AddTokenizedErrorMessage(FTokenizedMessage::Create(EMessageSeverity::Warning, FText::Format(LOCTEXT("CouldNotCreateMMDExtendAsset", "Could not create MMD Extend Asset ('{0}') for '{1}'"), FText::FromString(ObjectName), FText::FromString(BaseName.ToString()))));
 		}
 		else
 		{

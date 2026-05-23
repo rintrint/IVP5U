@@ -110,9 +110,7 @@ public:
 		const FString& Filename,
 		int32 LODIndex, FSkeletalMeshImportData& ImportData);
 
-	void AddTokenizedErrorMessage(
-		TSharedRef<FTokenizedMessage> Error,
-		FName PmxErrorName);
+	void AddTokenizedErrorMessage(TSharedRef<FTokenizedMessage> Error);
 
 	UMMDExtendAsset* CreateMMDExtendFromMMDModel(
 		UObject* InParent,

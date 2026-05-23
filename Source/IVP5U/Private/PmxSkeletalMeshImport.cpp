@@ -9,7 +9,6 @@
 #include "Factories.h"
 #include "ImportUtils/SkelImport.h"
 #include "LODUtilities.h"
-#include "Misc/FbxErrors.h"
 #include "Rendering/SkeletalMeshModel.h"
 
 #include "PmxFactory.h"
@@ -246,8 +245,7 @@ bool UPmxFactory::ImportBone(
 				AddTokenizedErrorMessage(
 					FTokenizedMessage::Create(
 						EMessageSeverity::Error,
-						LOCTEXT("MultipleRootsFound", "Multiple roots are found in the bone hierarchy. We only support single root bone.")),
-					FFbxErrors::SkeletalMesh_MultipleRoots);
+						LOCTEXT("MultipleRootsFound", "Multiple roots are found in the bone hierarchy. We only support single root bone.")));
 				return false;
 			}
 		}
@@ -761,9 +759,7 @@ void UPmxFactory::ImportPmxMorphTarget(
 	}
 }
 
-void UPmxFactory::AddTokenizedErrorMessage(
-	TSharedRef<FTokenizedMessage> ErrorMsg,
-	FName PmxErrorName)
+void UPmxFactory::AddTokenizedErrorMessage(TSharedRef<FTokenizedMessage> ErrorMsg)
 {
 	// if not found, use normal log
 	switch (ErrorMsg->GetSeverity())
