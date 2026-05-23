@@ -599,7 +599,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		SkelMeshImportDataPtr->Materials.Add(NewMaterial);
 	}
 
-	if (!FillSkelMeshImporterFromFbx(*SkelMeshImportDataPtr, pmxMeshInfoPtr, InParent))
+	if (!FillSkelMeshImporterFromPmx(*SkelMeshImportDataPtr, pmxMeshInfoPtr, InParent))
 	{
 		// I can't delete object here since this is middle of import
 		// but I can move to transient package, and GC will automatically collect it
@@ -722,7 +722,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		SkeletalMesh->SetSkeleton(Skeleton);
 
 		// --- Import morph targets (before MeshDescription is created) ---
-		ImportFbxMorphTarget(*pmxMeshInfoPtr, SkeletalMesh, InParent, Filename, 0, *SkelMeshImportDataPtr);
+		ImportPmxMorphTarget(*pmxMeshInfoPtr, SkeletalMesh, InParent, Filename, 0, *SkelMeshImportDataPtr);
 
 		// --- Store the original PMX import data; SkelMeshImportDataPtr must not be modified after this ---
 		PRAGMA_DISABLE_DEPRECATION_WARNINGS

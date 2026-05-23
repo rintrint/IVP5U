@@ -307,7 +307,7 @@ bool UPmxFactory::ImportBone(
 	return true;
 }
 
-bool UPmxFactory::FillSkelMeshImporterFromFbx(
+bool UPmxFactory::FillSkelMeshImporterFromPmx(
 	FSkeletalMeshImportData& ImportData,
 	MMD4UE5::PmxMeshInfo*& PmxMeshInfo,
 	UObject* InParent)
@@ -741,7 +741,7 @@ void UPmxFactory::ImportMorphTargetsInternal(
 /**
  * Import Morph Targets for the skeletal mesh
  */
-void UPmxFactory::ImportFbxMorphTarget(
+void UPmxFactory::ImportPmxMorphTarget(
 	MMD4UE5::PmxMeshInfo& PmxMeshInfo,
 	USkeletalMesh* BaseSkelMesh,
 	UObject* InParent,
@@ -763,7 +763,7 @@ void UPmxFactory::ImportFbxMorphTarget(
 
 void UPmxFactory::AddTokenizedErrorMessage(
 	TSharedRef<FTokenizedMessage> ErrorMsg,
-	FName FbxErrorName)
+	FName PmxErrorName)
 {
 	// if not found, use normal log
 	switch (ErrorMsg->GetSeverity())

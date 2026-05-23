@@ -76,7 +76,7 @@ public:
 		bool bDisableMissingBindPoseWarning,
 		bool& bUseTime0AsRefPose);
 
-	bool FillSkelMeshImporterFromFbx(
+	bool FillSkelMeshImporterFromPmx(
 		FSkeletalMeshImportData& ImportData,
 		MMD4UE5::PmxMeshInfo*& PmxMeshInfo,
 		UObject* InParent);
@@ -103,7 +103,7 @@ public:
 		int32 LODIndex, FSkeletalMeshImportData& BaseImportData);
 
 	// Import Morph target
-	void ImportFbxMorphTarget(
+	void ImportPmxMorphTarget(
 		MMD4UE5::PmxMeshInfo& PmxMeshInfo,
 		USkeletalMesh* BaseSkelMesh,
 		UObject* InParent,
@@ -112,7 +112,7 @@ public:
 
 	void AddTokenizedErrorMessage(
 		TSharedRef<FTokenizedMessage> Error,
-		FName FbxErrorName);
+		FName PmxErrorName);
 
 	UMMDExtendAsset* CreateMMDExtendFromMMDModel(
 		UObject* InParent,
