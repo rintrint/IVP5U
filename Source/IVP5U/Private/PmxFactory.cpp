@@ -187,8 +187,6 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 	FString packpath = "/Game/" + filepath + "/" + filepath;
 
 	UObject* InParent = CreatePackage(*packpath);
-	// UObject* InParent = LoadObject<UObject>(ParentPackage, *Name.ToString(), nullptr, LOAD_NoWarn | LOAD_Quiet);
-	// InParent->MarkPackageDirty();
 
 	PMXImportOptions* ImportOptions = GetImportOptions(
 		PmxImporter,
