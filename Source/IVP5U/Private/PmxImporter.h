@@ -357,7 +357,6 @@ struct PMXImportOptions
 	bool bAutoGenerateCollision = false;
 	FName StaticMeshLODGroup = NAME_None;
 	// Skeletal Mesh options
-	bool bImportMorph = false;
 	bool bImportAnimations = false;
 	bool bUpdateSkeletonReferencePose = false;
 	bool bResample = false;

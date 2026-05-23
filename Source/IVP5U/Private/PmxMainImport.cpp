@@ -191,11 +191,8 @@ void ApplyImportUIToImportOptions(
 		InOutImportOptions.ImportRotation = SkeletalMeshData->ImportRotation;
 		InOutImportOptions.ImportUniformScale = SkeletalMeshData->ImportUniformScale;
 	}
-	// add self pre over write..
-	ImportUI->SkeletalMeshImportData->bImportMorphTargets = ImportUI->bImportMorphTargets;
 	// only re-sample if they don't want to use default sample rate
 	InOutImportOptions.bResample = ImportUI->bUseDefaultSampleRate == false;
-	InOutImportOptions.bImportMorph = ImportUI->SkeletalMeshImportData->bImportMorphTargets;
 	InOutImportOptions.bUpdateSkeletonReferencePose = ImportUI->SkeletalMeshImportData->bUpdateSkeletonReferencePose;
 	InOutImportOptions.bImportRigidMesh = ImportUI->OriginalImportType == PMXIT_StaticMesh && ImportUI->MeshTypeToImport == PMXIT_SkeletalMesh;
 	InOutImportOptions.bUseT0AsRefPose = ImportUI->SkeletalMeshImportData->bUseT0AsRefPose;

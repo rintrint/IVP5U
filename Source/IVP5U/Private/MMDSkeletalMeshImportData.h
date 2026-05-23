@@ -30,10 +30,6 @@ class UMMDSkeletalMeshImportData : public UMMDMeshImportData
 	UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = ImportSettings, meta = (ImportType = "SkeletalMesh"))
 	uint32 bImportMeshesInBoneHierarchy : 1;
 
-	/** True to import morph target meshes from the MMD file */
-	UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = ImportSettings, meta = (ImportType = "SkeletalMesh", ToolTip = "If enabled, creates Unreal morph objects for the imported meshes"))
-	uint32 bImportMorphTargets : 1;
-
 	/** If checked, do not filter same vertices. Keep all vertices even if they have exact same properties*/
 	UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = ImportSettings, meta = (ImportType = "SkeletalMesh"))
 	uint32 bKeepOverlappingVertices : 1;

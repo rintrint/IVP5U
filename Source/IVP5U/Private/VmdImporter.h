@@ -248,7 +248,6 @@ struct VMDImportOptions
 	bool bCombineToSingle = false;
 	FColor VertexOverrideColor = FColor::White;
 	// Skeletal Mesh options
-	bool bImportMorph = false;
 	bool bImportAnimations = false;
 	// Animation option
 	USkeleton* SkeletonForAnimation = nullptr;

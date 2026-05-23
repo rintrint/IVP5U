@@ -184,9 +184,7 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 	ImportUI->bIsObjImport = true; // obj mode
 	ImportUI->OriginalImportType = EPMXImportType::PMXIT_SkeletalMesh;
 	ImportUI->bImportMaterials = true;
-	ImportUI->bImportMorphTargets = true;
 	ImportUI->bImportTextures = true;
-	ImportUI->SkeletalMeshImportData->bImportMorphTargets = true;
 
 	FString packpath = "/Game/" + filepath + "/" + filepath;
 
@@ -423,9 +421,7 @@ UObject* UPmxFactory::FactoryCreateBinary(
 	ImportUI->bIsObjImport = true; // obj mode
 	ImportUI->OriginalImportType = EPMXImportType::PMXIT_SkeletalMesh;
 	ImportUI->bImportMaterials = true;
-	ImportUI->bImportMorphTargets = true;
 	ImportUI->bImportTextures = true;
-	ImportUI->SkeletalMeshImportData->bImportMorphTargets = true;
 	UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("PMX Import: %s"), *(InParent->GetPathName()));
 
 	PMXImportOptions* ImportOptions = GetImportOptions(
@@ -758,10 +754,7 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 		SkeletalMesh->SetSkeleton(Skeleton);
 
 		// --- Import morph targets (before MeshDescription is created) ---
-		if (ImportUI->SkeletalMeshImportData->bImportMorphTargets)
-		{
-			ImportFbxMorphTarget(*pmxMeshInfoPtr, SkeletalMesh, InParent, Filename, 0, *SkelMeshImportDataPtr);
-		}
+		ImportFbxMorphTarget(*pmxMeshInfoPtr, SkeletalMesh, InParent, Filename, 0, *SkelMeshImportDataPtr);
 
 		// --- Store the original PMX import data; SkelMeshImportDataPtr must not be modified after this ---
 		PRAGMA_DISABLE_DEPRECATION_WARNINGS

@@ -106,10 +106,6 @@ class UPmxImportUI : public UObject
 	// UPROPERTY(EditAnywhere, Instanced, Category = Mesh, meta = (ImportType = "SkeletalMesh"))
 	class UMMDSkeletalMeshImportData* SkeletalMeshImportData;
 
-	/** True to import morph target meshes from the MMD file */
-	// UPROPERTY(EditAnywhere, config, Category = Mesh, meta = (OBJRestrict = "true", ToolTip = "If enabled, creates Unreal morph objects for the imported meshes"))
-	uint32 bImportMorphTargets : 1;
-
 	/** Type of asset to import from the FBX file */
 	// UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = Animation, meta = (editcondition = "bImportAnimations", ImportType = "SkeletalMesh|Animation"))
 	bool bPreserveLocalTransform;
