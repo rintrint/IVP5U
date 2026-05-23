@@ -55,7 +55,6 @@ namespace UnrealBuildTool.Rules
                     "MessageLog",
                     "RHI",
                     "RenderCore",
-                    "IKRig",
                 }
             );
 
@@ -84,7 +83,6 @@ namespace UnrealBuildTool.Rules
                         "ContentBrowser",
                         "PhysicsUtilities",
                         "SkeletalMeshUtilitiesCommon",
-                        "IKRigEditor",
                         "RawMesh",
                     }
                 );

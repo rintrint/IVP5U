@@ -54,7 +54,6 @@ class IVP5U_API UVmdFactory : public UFactory
 		USkeletalMesh* SkeletalMesh,
 		UObject* Outer,
 		const FString& Name,
-		UIKRigDefinition* IKRig,
 		UDataTable* ReNameTable,
 		UMMDExtendAsset* mmdExtend,
 		MMD4UE5::VmdMotionInfo* vmdMotionInfo);
@@ -75,7 +74,6 @@ class IVP5U_API UVmdFactory : public UFactory
 		UAnimSequence* DestSeq,
 		USkeleton* Skeleton,
 		UDataTable* ReNameTable,
-		UIKRigDefinition* IKRig,
 		UMMDExtendAsset* mmdExtend,
 		MMD4UE5::VmdMotionInfo* vmdMotionInfo,
 		TArray<FName>& OutBoneNames,

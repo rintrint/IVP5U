@@ -26,9 +26,6 @@ class UVmdImportUI : public UObject
 	UPROPERTY(EditAnywhere, Category = Mesh)
 	class USkeletalMesh* SkeletonMesh;
 
-	// UPROPERTY(EditAnywhere, Category = Mesh)
-	class UIKRigDefinition* IKRig;
-
 	/////////////////////////
 
 	/** Skeleton to use for imported asset. When importing a mesh, leaving this as "None" will create a new skeleton. When importing and animation this MUST be specified to import the asset. */

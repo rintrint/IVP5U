@@ -9,7 +9,6 @@
 #include "Framework/Notifications/NotificationManager.h"
 #include "ImportUtils/SkelImport.h"
 #include "ObjectTools.h"
-#include "RigEditor/IKRigController.h"
 #include "Widgets/Notifications/SNotificationList.h"
 
 #include "MMDNameUtils.h"
@@ -137,7 +136,6 @@ UObject* UVmdFactory::FactoryCreateBinary(
 	UAnimSequence* LastCreatedAnim = nullptr;
 	USkeleton* Skeleton = nullptr;
 	USkeletalMesh* SkeletalMesh = nullptr;
-	UIKRigDefinition* IKRig = nullptr;
 	VMDImportOptions* ImportOptions = nullptr;
 
 	// 检查是否为相机动画
@@ -207,7 +205,6 @@ UObject* UVmdFactory::FactoryCreateBinary(
 		{
 			Skeleton = ImportUI->Skeleton;
 			SkeletalMesh = ImportUI->SkeletonMesh;
-			IKRig = ImportUI->IKRig;
 
 			bool preParamChk = true;
 			/*包含关系检查*/
@@ -234,7 +231,6 @@ UObject* UVmdFactory::FactoryCreateBinary(
 						SkeletalMesh,
 						InParent,
 						Name.ToString(),
-						IKRig,
 						ImportUI->MMD2UE5NameTableRow,
 						ImportUI->MmdExtendAsset,
 						&vmdMotionInfo);
@@ -290,7 +286,6 @@ UAnimSequence* UVmdFactory::ImportAnimations(
 	USkeletalMesh* SkeletalMesh,
 	UObject* Outer,
 	const FString& Name,
-	UIKRigDefinition* IKRig,
 	UDataTable* ReNameTable,
 	UMMDExtendAsset* mmdExtend,
 	MMD4UE5::VmdMotionInfo* vmdMotionInfo)
@@ -376,7 +371,7 @@ UAnimSequence* UVmdFactory::ImportAnimations(
 		StartTime = FPlatformTime::Seconds();
 		TArray<FName> BoneNames;
 		TArray<FRawAnimSequenceTrack> RawTracks;
-		if (!PrepareVMDBoneAnimData(LastCreatedAnim, Skeleton, ReNameTable, IKRig, mmdExtend, vmdMotionInfo, BoneNames, RawTracks))
+		if (!PrepareVMDBoneAnimData(LastCreatedAnim, Skeleton, ReNameTable, mmdExtend, vmdMotionInfo, BoneNames, RawTracks))
 		{
 			UE_LOG(LogMMD4UE5_VMDFactory, Error, TEXT("PrepareVMDBoneAnimData失败"));
 			importSuccessFlag = false;
@@ -835,7 +830,6 @@ bool UVmdFactory::PrepareVMDBoneAnimData(
 	UAnimSequence* DestSeq,
 	USkeleton* Skeleton,
 	UDataTable* ReNameTable,
-	UIKRigDefinition* IKRig,
 	UMMDExtendAsset* mmdExtend,
 	MMD4UE5::VmdMotionInfo* vmdMotionInfo,
 	TArray<FName>& OutBoneNames,
@@ -1460,7 +1454,6 @@ bool UVmdFactory::ImportVmdFromFile(const FString& file, USkeletalMesh* Skeletal
 		SkeletalMesh,
 		nullptr,
 		filepath,
-		nullptr,
 		MMD2UE5NameTable,
 		nullptr,
 		&vmdMotionInfo);

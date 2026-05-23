@@ -33,10 +33,6 @@
         {
             "Name": "LevelSequenceEditor",
             "Enabled": true
-        },
-        {
-            "Name": "IKRig",
-            "Enabled": true
         }
     ]
 }
