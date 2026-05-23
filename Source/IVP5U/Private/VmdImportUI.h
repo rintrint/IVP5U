@@ -84,6 +84,4 @@ class UVmdImportUI : public UObject
 	/** mmd extend assset to use for calc ik . */
 	// UPROPERTY(EditAnywhere, Category = Animation)
 	class UMMDExtendAsset* MmdExtendAsset;
-
-	// struct FTableRowBase MMD2UE5NameTableRowDmmy;
 };

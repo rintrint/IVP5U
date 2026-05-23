@@ -265,7 +265,7 @@ PMXImportOptions* FPmxImporter::GetImportOptions() const
 }
 
 UPmxImportUI::UPmxImportUI(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer) //, MMD2UE5NameTableRow(MMD2UE5NameTableRowDmmy)
+	: Super(ObjectInitializer)
 {
 	bCombineMeshes = true;
 

@@ -231,7 +231,7 @@ VMDImportOptions* FVmdImporter::GetImportOptions() const
 }
 
 UVmdImportUI::UVmdImportUI(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer) //, MMD2UE5NameTableRow(MMD2UE5NameTableRowDmmy)
+	: Super(ObjectInitializer)
 {
 	ImportUniformScale = 0.08f;
 }
