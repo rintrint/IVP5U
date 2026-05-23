@@ -36,7 +36,6 @@ UVmdFactory::UVmdFactory(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	SupportedClass = nullptr;
-	// SupportedClass = UPmxFactory::StaticClass();
 	Formats.Empty();
 
 	Formats.Add(TEXT("vmd;vmd animations"));
@@ -501,8 +500,6 @@ float UVmdFactory::interpolateBezier(float x1, float y1, float x2, float y2, flo
 	for (int i = 0; i < 15; i++)
 	{
 		float ft = (3 * s * s * t * x1) + (3 * s * t * t * x2) + (t * t * t) - x;
-		// if (ft == 0)
-		// 	break; // Math.abs(ft) < 0.00001 でもいいかも
 		if (FGenericPlatformMath::Abs(ft) < 0.0001)
 			break;
 		if (ft > 0)
@@ -801,10 +798,7 @@ bool UVmdFactory::PrepareMorphCurveData(
 				break;
 			}
 
-			// MMD表情动画都是线性插值
-			// 原代码，依赖UE5默认使用线性插值
-			// keyFrames.Add(FRichCurveKey(timeCurve, faceKeyPtr->Factor));
-			// 改为明确使用线性插值，不依赖UE5默认行为
+			// MMD表情动画都是线性插值，明确使用线性插值不依赖UE5默认行为
 			FRichCurveKey newKey(timeCurve, faceKeyPtr->Factor);
 			newKey.InterpMode = ERichCurveInterpMode::RCIM_Linear;
 			newKey.TangentMode = ERichCurveTangentMode::RCTM_Auto;
@@ -883,26 +877,6 @@ bool UVmdFactory::PrepareVMDBoneAnimData(
 
 	OutBoneNames.Reset(NumBones);
 	OutRawTracks.Reset(NumBones);
-
-	// /* 添加调试输出：打印Skeleton中的所有骨骼名称 */
-	// UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("====== Skeleton骨骼列表开始 ======"));
-	// for (int32 BoneIndex = 0; BoneIndex < NumBones; ++BoneIndex)
-	// {
-	//     FName BoneName = Skeleton->GetReferenceSkeleton().GetBoneName(BoneIndex);
-	//     UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("Skeleton骨骼[%d]: %s "),
-	//            BoneIndex, *BoneName.ToString());
-	// }
-	// UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("====== Skeleton骨骼列表结束 ======"));
-
-	// /* 添加调试输出：打印VMD文件中的所有骨骼名称 */
-	// UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("====== VMD骨骼列表开始 ======"));
-	// for (int i = 0; i < vmdMotionInfo->keyBoneList.Num(); ++i)
-	// {
-	//     FString boneName = vmdMotionInfo->keyBoneList[i].TrackName;
-	//     UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("VMD骨骼[%d]: %s "),
-	//            i, *boneName);
-	// }
-	// UE_LOG(LogMMD4UE5_VMDFactory, Log, TEXT("====== VMD骨骼列表结束 ======"));
 
 	// 添加调试输出：检查VMD中的骨骼是否在骨架中存在
 	{
@@ -998,13 +972,7 @@ bool UVmdFactory::PrepareVMDBoneAnimData(
 			MMD4UE5::VmdMotionInfo::EVMD_KEYBONE);
 		if (vmdKeyListIndex == -1)
 		{
-			// {
-			//     UE_LOG(LogMMD4UE5_VMDFactory, Warning,
-			//            TEXT("PrepareVMDBoneAnimData Target Bone Not Found...[%s]"),
-			//            *targetName.ToString());
-			// }
-
-			// nop
+			// Target Bone Not Found
 			// 设定与帧相同的值
 			for (int32 i = 0; i < DestSeq->GetNumberOfSampledKeys(); i++)
 			{
@@ -1021,17 +989,9 @@ bool UVmdFactory::PrepareVMDBoneAnimData(
 			int sortIndex = 0;
 			int preKeyIndex = -1;
 			auto& kybone = vmdMotionInfo->keyBoneList[vmdKeyListIndex];
-			// if (kybone.keyList.Num() < 2) continue;
 			int nextKeyIndex = kybone.sortIndexList[sortIndex];
 			int nextKeyFrame = kybone.keyList[nextKeyIndex].Frame;
 			int baseKeyFrame = 0;
-
-			// {
-			//     UE_LOG(LogMMD4UE5_VMDFactory, Log,
-			//            TEXT("PrepareVMDBoneAnimData Target Bone Found...Name[%s]-KeyNum[%d]"),
-			//            *targetName.ToString(),
-			//            kybone.sortIndexList.Num());
-			// }
 
 			// 事先针对各轨迹，在没有父Bone的情况下，在Local坐标下计算预定全部注册的帧（如果有更好的处理……讨论）
 			// 如果进入90度以上的轴旋转，则由于四元数的原因或处理有错误而进入多余的旋转。
@@ -1238,13 +1198,9 @@ void CreateRotationXMatrix(FMatrix* Out, float Angle)
 {
 	float Sin, Cos;
 
-	//_SINCOS(Angle, &Sin, &Cos);
-	//	Sin = sinf( Angle ) ;
-	//	Cos = cosf( Angle ) ;
 	Sin = FMath::Sin(Angle);
 	Cos = FMath::Cos(Angle);
 
-	//_MEMSET(Out, 0, sizeof(MATRIX));
 	FMemory::Memzero(Out, sizeof(FMatrix));
 	Out->M[0][0] = 1.0f;
 	Out->M[1][1] = Cos;
@@ -1252,8 +1208,6 @@ void CreateRotationXMatrix(FMatrix* Out, float Angle)
 	Out->M[2][1] = -Sin;
 	Out->M[2][2] = Cos;
 	Out->M[3][3] = 1.0f;
-
-	// return 0;
 }
 
 // 求仅旋转分量矩阵的积（3）×3以外的部分也不代入值）
