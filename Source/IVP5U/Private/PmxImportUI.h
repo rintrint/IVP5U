@@ -74,7 +74,6 @@ class UPmxImportUI : public UObject
 	// UPROPERTY(EditAnywhere, AdvancedDisplay, config, Category = Animation, meta = (editcondition = "bImportAnimations", ToolTip = "If enabled, samples all animation curves to 30 FPS", ImportType = "SkeletalMesh|Animation"))
 	uint32 bUseDefaultSampleRate : 1;
 
-	/** Whether to automatically create Unreal materials for materials found in the FBX scene */
 	// UPROPERTY(EditAnywhere, config, Category = Material)
 	uint32 bImportMaterials : 1;
 
