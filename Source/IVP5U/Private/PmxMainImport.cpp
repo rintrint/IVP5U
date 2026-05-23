@@ -168,7 +168,6 @@ void ApplyImportUIToImportOptions(
 	InOutImportOptions.bUnlitMaterials = ImportUI->bUnlitMaterials;
 	InOutImportOptions.bUsedAsFullName = ImportUI->bOverrideFullName;
 	InOutImportOptions.bConvertScene = ImportUI->bConvertScene;
-	InOutImportOptions.bImportAnimations = ImportUI->bImportAnimations;
 	InOutImportOptions.SkeletonForAnimation = ImportUI->Skeleton;
 
 	if (ImportUI->MeshTypeToImport == PMXIT_StaticMesh)
@@ -185,15 +184,6 @@ void ApplyImportUIToImportOptions(
 		InOutImportOptions.ImportRotation = SkeletalMeshData->ImportRotation;
 		InOutImportOptions.ImportUniformScale = SkeletalMeshData->ImportUniformScale;
 	}
-	// only re-sample if they don't want to use default sample rate
-	InOutImportOptions.bResample = ImportUI->bUseDefaultSampleRate == false;
-	InOutImportOptions.bUpdateSkeletonReferencePose = ImportUI->SkeletalMeshImportData->bUpdateSkeletonReferencePose;
-	InOutImportOptions.bImportRigidMesh = ImportUI->OriginalImportType == PMXIT_StaticMesh && ImportUI->MeshTypeToImport == PMXIT_SkeletalMesh;
-	InOutImportOptions.bUseT0AsRefPose = ImportUI->SkeletalMeshImportData->bUseT0AsRefPose;
-	InOutImportOptions.bPreserveSmoothingGroups = ImportUI->SkeletalMeshImportData->bPreserveSmoothingGroups;
-	InOutImportOptions.bKeepOverlappingVertices = ImportUI->SkeletalMeshImportData->bKeepOverlappingVertices;
-	InOutImportOptions.bImportMeshesInBoneHierarchy = ImportUI->SkeletalMeshImportData->bImportMeshesInBoneHierarchy;
-	InOutImportOptions.bCreatePhysicsAsset = ImportUI->bCreatePhysicsAsset;
 	InOutImportOptions.PhysicsAsset = ImportUI->PhysicsAsset;
 	// add self
 	InOutImportOptions.AnimSequenceAsset = ImportUI->AnimSequenceAsset;

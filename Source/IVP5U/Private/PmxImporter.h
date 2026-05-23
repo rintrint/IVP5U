@@ -344,15 +344,6 @@ struct PMXImportOptions
 	FRotator ImportRotation = FRotator::ZeroRotator;
 	float ImportUniformScale = 1.0f;
 	// Skeletal Mesh options
-	bool bImportAnimations = false;
-	bool bUpdateSkeletonReferencePose = false;
-	bool bResample = false;
-	bool bImportRigidMesh = false;
-	bool bUseT0AsRefPose = false;
-	bool bPreserveSmoothingGroups = false;
-	bool bKeepOverlappingVertices = false;
-	bool bImportMeshesInBoneHierarchy = false;
-	bool bCreatePhysicsAsset = false;
 	UPhysicsAsset* PhysicsAsset = nullptr;
 	// Animation option
 	USkeleton* SkeletonForAnimation = nullptr;
