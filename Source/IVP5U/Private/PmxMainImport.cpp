@@ -162,29 +162,8 @@ void ApplyImportUIToImportOptions(
 {
 	check(ImportUI);
 
-	InOutImportOptions.bImportTextures = ImportUI->bImportTextures;
-	InOutImportOptions.bCreateMaterialInstanceMode = ImportUI->bCreateMaterialInstanceMode;
-	InOutImportOptions.bUnlitMaterials = ImportUI->bUnlitMaterials;
-	InOutImportOptions.bUsedAsFullName = ImportUI->bOverrideFullName;
-	InOutImportOptions.bConvertScene = ImportUI->bConvertScene;
 	InOutImportOptions.SkeletonForAnimation = ImportUI->Skeleton;
-
-	if (ImportUI->MeshTypeToImport == PMXIT_StaticMesh)
-	{
-		UMMDStaticMeshImportData* StaticMeshData = ImportUI->StaticMeshImportData;
-		InOutImportOptions.ImportTranslation = StaticMeshData->ImportTranslation;
-		InOutImportOptions.ImportRotation = StaticMeshData->ImportRotation;
-		InOutImportOptions.ImportUniformScale = StaticMeshData->ImportUniformScale;
-	}
-	else if (ImportUI->MeshTypeToImport == PMXIT_SkeletalMesh)
-	{
-		UMMDSkeletalMeshImportData* SkeletalMeshData = ImportUI->SkeletalMeshImportData;
-		InOutImportOptions.ImportTranslation = SkeletalMeshData->ImportTranslation;
-		InOutImportOptions.ImportRotation = SkeletalMeshData->ImportRotation;
-		InOutImportOptions.ImportUniformScale = SkeletalMeshData->ImportUniformScale;
-	}
 	InOutImportOptions.PhysicsAsset = ImportUI->PhysicsAsset;
-	// add self
 	InOutImportOptions.AnimSequenceAsset = ImportUI->AnimSequenceAsset;
 	InOutImportOptions.MMD2UE5NameTableRow = ImportUI->MMD2UE5NameTableRow;
 	InOutImportOptions.MmdExtendAsset = ImportUI->MmdExtendAsset;

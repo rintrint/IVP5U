@@ -221,11 +221,6 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 		{
 		}
 
-		if (InterestingNodeCount > 1)
-		{
-			// the option only works when there are only one asset
-			//				ImportOptions->bUsedAsFullName = false;
-		}
 		UFactory::CurrentFilename = file;
 		FString Filename(UFactory::CurrentFilename);
 
@@ -447,12 +442,6 @@ UObject* UPmxFactory::FactoryCreateBinary(
 			}
 			else if (importAssetTypeMMD == E_MMD_TO_UE5_STATICMESH)
 			{
-			}
-
-			if (InterestingNodeCount > 1)
-			{
-				// the option only works when there are only one asset
-				//				ImportOptions->bUsedAsFullName = false;
 			}
 
 			const FString Filename(UFactory::CurrentFilename);

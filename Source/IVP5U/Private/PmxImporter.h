@@ -334,15 +334,6 @@ namespace MMD4UE5
 
 struct PMXImportOptions
 {
-	// General options
-	bool bImportTextures = false;
-	bool bCreateMaterialInstanceMode = false;
-	bool bUnlitMaterials = false;
-	bool bUsedAsFullName = false;
-	bool bConvertScene = false;
-	FVector ImportTranslation = FVector::ZeroVector;
-	FRotator ImportRotation = FRotator::ZeroRotator;
-	float ImportUniformScale = 1.0f;
 	// Skeletal Mesh options
 	UPhysicsAsset* PhysicsAsset = nullptr;
 	// Animation option
