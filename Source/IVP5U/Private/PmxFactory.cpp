@@ -49,7 +49,6 @@ UPmxFactory::UPmxFactory(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	SupportedClass = nullptr;
-	// SupportedClass = UPmxFactory::StaticClass();
 	Formats.Empty();
 
 	Formats.Add(TEXT("pmd;PMD meshes and animations"));
@@ -144,7 +143,6 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 	bool bIsPmxFormat = FPaths::GetExtension(file).Equals(TEXT("pmx"), ESearchCase::IgnoreCase);
 	// Load MMD Model From binary File
 	MMD4UE5::PmxMeshInfo pmxMeshInfoPtr;
-	// pmxMaterialImportHelper.InitializeBaseValue(InParent);
 	bool pmxImportResult = false;
 	if (bIsPmxFormat)
 	{
@@ -184,13 +182,10 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 	if (bImportAll)
 	{
 		// If the user chose to import all, we don't show the dialog again and use the same settings for each object until importing another set of files
-		// bShowOption = false;
 	}
 
 	if (ImportOptions)
 	{
-		// Warn->BeginSlowTask(NSLOCTEXT("PmxFactory", "BeginImportingPmxMeshTask", "Importing Pmx mesh"), true);
-
 		UFactory::CurrentFilename = file;
 		FString Filename(UFactory::CurrentFilename);
 
@@ -231,9 +226,6 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 				Args.Add(TEXT("ArrayLength"), 1);
 				GWarn->StatusUpdate(NodeIndex, 1, FText::Format(NSLOCTEXT("UnrealEd", "Importingf", "Importing ({NodeIndex} of {ArrayLength})"), Args));
 			}
-
-			// MarkPackageDirty();
-
 		}
 	}
 
@@ -319,17 +311,11 @@ UObject* UPmxFactory::FactoryCreateBinary(
 		const FText Message = FText::Format(LOCTEXT("ImportReadMe_Generic_Msg",
 												"Important!! \nReadMe Lisence \n modele Name:\n'{0}'\n \n Model Comment JP:\n'{1}'"),
 			FText::FromString(pmxMeshInfoPtr.modelNameJP), FText::FromString(pmxMeshInfoPtr.modelCommentJP));
-		// if (EAppReturnType::Ok != FMessageDialog::Open(EAppMsgType::OkCancel, Message))
-		//{
-		//	GEditor->GetEditorSubsystem<UImportSubsystem>()->OnAssetPostImport.Broadcast(this, nullptr);
-		//	return nullptr;
-		// }
 		TitleStr = FText::Format(LOCTEXT("ImportReadMe_Generic_Dbg", "{0} 制限事項"), FText::FromString("IVP5U Plugin"));
 		const FText MessageDbg = FText(LOCTEXT("ImportReadMe_Generic_Dbg_Msg",
 			"下一个导入选项的Slate仍在实施中。\n\
 			导入对象只能生成Skeleton。\n\
 			当前有效的参数是显示的项目有效。"));
-		// FMessageDialog::Open(EAppMsgType::Ok, MessageDbg, &TitleStr);
 	}
 
 	// show Import Option Slate
@@ -346,7 +332,6 @@ UObject* UPmxFactory::FactoryCreateBinary(
 	if (bImportAll)
 	{
 		// If the user chose to import all, we don't show the dialog again and use the same settings for each object until importing another set of files
-		// bShowOption = false;
 	}
 
 	if (ImportOptions)
@@ -390,7 +375,6 @@ UObject* UPmxFactory::FactoryCreateBinary(
 					Args.Add(TEXT("ArrayLength"), 1);
 					GWarn->StatusUpdate(NodeIndex, 1, FText::Format(NSLOCTEXT("UnrealEd", "Importingf", "Importing ({NodeIndex} of {ArrayLength})"), Args));
 				}
-
 			}
 		}
 
@@ -551,9 +535,6 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 	BoundingBox.Min = Temp.Min + 1.0f * (Temp.Min - MidMesh);
 	BoundingBox.Max = Temp.Max + 1.0f * (Temp.Max - MidMesh);
 	// Tuck up the bottom as this rarely extends lower than a reference pose's (e.g. having its feet on the floor).
-	// Maya has Y in the vertical, other packages have Z.
-	// BEN const int32 CoordToTuck = bAssumeMayaCoordinates ? 1 : 2;
-	// BEN BoundingBox.Min[CoordToTuck]	= Temp.Min[CoordToTuck] + 0.1f*(Temp.Min[CoordToTuck] - MidMesh[CoordToTuck]);
 	BoundingBox.Min[2] = Temp.Min[2] + 0.1f * (Temp.Min[2] - MidMesh[2]);
 
 	SkeletalMesh->SetImportedBounds(FBoxSphereBounds(FBox(BoundingBox)));
@@ -780,7 +761,6 @@ USkeletalMesh* UPmxFactory::ImportSkeletalMesh(
 					for (int i = 0; i < csn; i++)
 					{
 						FConstraintInstance& cs = NewPhysicsAsset->ConstraintSetup[i]->DefaultInstance;
-						// cs.ProfileInstance.AngularDrive.AngularDriveMode = EAngularDriveMode::TwistAndSwing;
 						cs.ProfileInstance.ConeLimit.Swing1Motion = EAngularConstraintMotion::ACM_Limited;
 						cs.ProfileInstance.ConeLimit.Swing2Motion = EAngularConstraintMotion::ACM_Limited;
 						cs.ProfileInstance.TwistLimit.TwistMotion = EAngularConstraintMotion::ACM_Limited;
