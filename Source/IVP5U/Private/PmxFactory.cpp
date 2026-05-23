@@ -205,7 +205,6 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 
 			int32 TotalNumNodes = 0;
 
-			// for (int32 i = 0; i < SkelMeshArray.Num(); i++)
 			for (int32 i = 0; i < 1; i++)
 			{
 				int32 LODIndex = 0;
@@ -245,7 +244,7 @@ bool UPmxFactory::FImportPmxFromFile(const FString& file)
 					NodeIndex++;
 					FFormatNamedArguments Args;
 					Args.Add(TEXT("NodeIndex"), NodeIndex);
-					Args.Add(TEXT("ArrayLength"), 1); // SkelMeshArray.Num());
+					Args.Add(TEXT("ArrayLength"), 1);
 					GWarn->StatusUpdate(NodeIndex, 1, FText::Format(NSLOCTEXT("UnrealEd", "Importingf", "Importing ({NodeIndex} of {ArrayLength})"), Args));
 				}
 
@@ -383,8 +382,7 @@ UObject* UPmxFactory::FactoryCreateBinary(
 				int32 ImportedMeshCount = 0;
 				UStaticMesh* NewStaticMesh = nullptr;
 				int32 TotalNumNodes = 0;
-				// for (int32 i = 0; i < SkelMeshArray.Num(); i++)
-				for (int32 i = 0; i < 1 /*SkelMeshArray.Num()*/; i++)
+				for (int32 i = 0; i < 1; i++)
 				{
 					int32 LODIndex = 0;
 
@@ -394,8 +392,6 @@ UObject* UPmxFactory::FactoryCreateBinary(
 					USkeletalMesh* NewMesh = nullptr;
 					if (LODIndex == 0)
 					{
-						// UEnum* CompileModeEnum = GetStaticEnum <EObjectFlags>();
-
 						UE_LOG(LogMMD4UE5_PMXFactory, Log, TEXT("PMX Import: %s"), *OutputName.ToString());
 
 						NewMesh = ImportSkeletalMesh(
@@ -428,8 +424,8 @@ UObject* UPmxFactory::FactoryCreateBinary(
 						NodeIndex++;
 						FFormatNamedArguments Args;
 						Args.Add(TEXT("NodeIndex"), NodeIndex);
-						Args.Add(TEXT("ArrayLength"), 1); // SkelMeshArray.Num());
-						GWarn->StatusUpdate(NodeIndex, 1 /*SkelMeshArray.Num()*/, FText::Format(NSLOCTEXT("UnrealEd", "Importingf", "Importing ({NodeIndex} of {ArrayLength})"), Args));
+						Args.Add(TEXT("ArrayLength"), 1);
+						GWarn->StatusUpdate(NodeIndex, 1, FText::Format(NSLOCTEXT("UnrealEd", "Importingf", "Importing ({NodeIndex} of {ArrayLength})"), Args));
 					}
 				}
 
